@@ -10,7 +10,7 @@ public class Character : MonoBehaviour {
 
     public CharacterCamera _characterCamera;
 
-    private Vector2 _directionalInput;
+    protected Vector2 _directionalInput;
 
     public float _moveSpeed = 1;
 
@@ -48,7 +48,7 @@ public class Character : MonoBehaviour {
         _minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(_gravity.y) * _minJumpHeight);
     }
 
-    private void Update() {
+	protected virtual void Update() {
         // Input
         _directionalInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
