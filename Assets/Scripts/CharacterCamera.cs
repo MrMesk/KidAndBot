@@ -12,10 +12,10 @@ public class CharacterCamera : MonoBehaviour {
     // Parametters
     [Range(0,360)]
     public float _rotation;
-    private const float _rotationSensitivity = 5f;
+    private const float _rotationSensitivity = 15f;
     [Range(0, 1)]
     public float _height;
-    private const float _heightSensitivity = 0.025f;
+    private const float _heightSensitivity = 0.075f;
     public bool reflectHeight = true;
 
     public float _distance;
