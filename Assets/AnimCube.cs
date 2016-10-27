@@ -33,7 +33,7 @@ public class AnimCube : MonoBehaviour
 		initialPos = transform.position;
 		movingPos = transform.position;
 
-		Debug.Log ("Dot : " + Vector3.Dot (bumpDir, transform.forward));
+		//Debug.Log ("Dot : " + Vector3.Dot (bumpDir, transform.forward));
 		if ( Vector3.Dot(bumpDir, transform.forward) > 0) 
 		{
 			while (bumpTimer < 1f) 

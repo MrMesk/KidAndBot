@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class RobotController : Character 
 {
@@ -15,27 +16,87 @@ public class RobotController : Character
 	float bumpForce;
 	int forceTier;
 
+	public Slider forceBar;
+
+	bool isGrabbing;
+	AnimCube grabbedCube;
+	Vector3 grabbedNormal = new Vector3();
+	public LineRenderer grappin;
+
 	// Use this for initialization
 	void Start () 
 	{
-	
+		grappin.enabled = false;
+		if (forceBar == null) 
+		{
+			forceBar = GameObject.Find ("ForceBar").GetComponent<Slider> ();
+		}
 	}
-	
-	// Update is called once per frame
 
+	// Update is called once per frame
+	protected override void FixedUpdate()
+	{
+		if (!isGrabbing) 
+		{
+			base.FixedUpdate ();
+		}
+	}
 	protected override void Update () 
 	{
 		base.Update();
-		BumpCheck ();
-		BumpForward ();
+
+		ChargeManagement ();
+
+		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
+
+		if (Input.GetMouseButtonDown (1)) 
+		{
+			Debug.Log ("Right Mouse Click");
+			if (!isGrabbing) 
+			{
+				AttachHook ();
+			} 
+			else 
+			{
+				DetachHook ();
+			}
+		}
+		if (isGrabbing) 
+		{
+			grappin.enabled = true;
+			grappin.SetPosition (0, transform.position);
+			grappin.SetPosition (1, grabbedCube.transform.position);
+
+			if (Input.GetKeyDown (KeyCode.A)) 
+			{
+				Pull (grabbedNormal);
+				isGrabbing = false;
+				grabbedCube = null;
+				grabbedNormal = new Vector3();
+			}
+		} 
+		else 
+		{
+			BumpCheck ();
+			BumpForward ();
+			grappin.enabled = false;
+		}
 	}
 
-	void ChargeBump()
+	void ChargeManagement()
 	{
-		bumpForce += Time.deltaTime;
-		bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] + 0.1f);
-
-		//Debug.Log ("Bump Force : " + bumpForce);
+		
+		if (Input.GetKey (KeyCode.LeftShift)) 
+		{
+			Debug.Log ("Charging");
+			bumpForce += Time.deltaTime;
+			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] + 0.5f);
+		} 
+		else 
+		{
+			bumpForce -= Time.deltaTime;
+			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] + 0.5f);
+		}
 	}
 
 	void ForceCheck()
@@ -57,64 +118,87 @@ public class RobotController : Character
 			forceTier = 0;
 		}
 		Debug.Log ("Force Tier : " + forceTier);
+		bumpForce = 0f;
 	}
 
 	void BumpForward()
 	{
-		//Debug.DrawRay (transform.position, directionalInput, Color.red);
-
-		Ray ray = new Ray (transform.position, transform.forward);
-		RaycastHit hit;
-
-		Debug.DrawRay (ray.origin, ray.direction * 20f, Color.red);
-
-		if (Input.GetMouseButton(0)) 
+		if (Input.GetMouseButtonDown(0)) 
 		{
-			ChargeBump ();
-		} 
-		if (Input.GetMouseButtonUp(0)) 
-		{
+			Ray ray = new Ray (transform.position, transform.forward);
+			RaycastHit hit;
+
 			ForceCheck ();
 
 			Debug.DrawRay (ray.origin, ray.direction * 20f, Color.red);
 			if (Physics.Raycast (ray, out hit, bumpForwardRange)) 
 			{
-				Debug.Log ("Raycast hits !!");
+				//Debug.Log ("Raycast hits !!");
 				Vector3 cubeNormal = hit.normal;
 				AnimCube animCube;
-				//cubeNormal = hit.transform.TransformDirection (cubeNormal);
-
 				if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0 ||
-				    Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
-				    Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
-				    Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
+					Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
+					Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
+					Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
 				{
 					animCube = hit.transform.GetComponent<AnimCube> ();
 					if (animCube.bumping == false) 
 					{
-						animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesUp [forceTier], -cubeNormal));
+						GameObject particleImpact = Resources.Load("Particles/Impact"+forceTier) as GameObject;
+						particleImpact = Instantiate (particleImpact, hit.point, Quaternion.identity) as GameObject;
+						particleImpact.transform.forward = cubeNormal;
+						animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
 					}
 				}
 			} 
-			else 
-			{
-				bumpForce = 0f;
-			}
 		}
-
 	}
 
+	void Pull(Vector3 dir)
+	{
+		ForceCheck ();
+		grabbedCube.StartCoroutine (grabbedCube.BumpToDir (2f, bumpForcesForward [forceTier], dir));
+	}
+
+	void DetachHook()
+	{
+		grabbedCube = null;
+		isGrabbing = false;
+	}
+
+	void AttachHook()
+	{
+		bumpForce = 0f;
+
+		Debug.Log ("Attaching hook");
+		Ray ray = new Ray (transform.position, transform.forward);
+		RaycastHit hit;
+
+		if (Physics.Raycast (ray, out hit, pullRange)) 
+		{
+			//Debug.Log ("Raycast hits !!");
+			Vector3 cubeNormal = hit.normal;
+			AnimCube animCube;
+			if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0 ||
+				Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
+				Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
+				Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
+			{
+				animCube = hit.transform.GetComponent<AnimCube> ();
+				if (animCube.bumping == false) 
+				{
+					grabbedNormal = cubeNormal;
+					grabbedCube = animCube;
+					isGrabbing = true;
+				}
+			}
+		} 
+	}
 
 	void BumpCheck()
 	{
-		//Charging the bump
-		if (Input.GetKey (KeyCode.E)) 
+		if (Input.GetKeyUp (KeyCode.E)) 
 		{
-			ChargeBump ();
-		} 
-		else if (Input.GetKeyUp (KeyCode.E)) 
-		{
-
 			ForceCheck ();
 
 			//Debug.Log ("Force bump : " + bumpForcesUp [forceTier]);
@@ -132,7 +216,7 @@ public class RobotController : Character
 					animCube.StartCoroutine (animCube.BumpUp (2f, bumpForcesUp[forceTier]));
 				}
 			}
-			bumpForce = 0f;
+
 		}
 	}
 

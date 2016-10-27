@@ -62,7 +62,7 @@ public class Character : MonoBehaviour {
         }
     }
 
-    private void FixedUpdate() {
+	protected virtual void FixedUpdate() {
         // Gravity
         Vector3 gravity = _gravity;
         Quaternion gravityRotation = Quaternion.Euler(_gravityRotation);
