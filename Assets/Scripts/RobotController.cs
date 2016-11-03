@@ -197,9 +197,13 @@ public class RobotController : Character
 
 	void BumpCheck()
 	{
-		if (Input.GetKeyUp (KeyCode.E)) 
+		if (Input.GetKeyDown (KeyCode.E)) 
 		{
 			ForceCheck ();
+
+			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
+			particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y,0), Quaternion.identity) as GameObject;
+			particleImpact.transform.forward = Vector3.up;
 
 			//Debug.Log ("Force bump : " + bumpForcesUp [forceTier]);
 			//Debug.Log ("Bump Force : " + bumpForce);

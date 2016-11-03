@@ -9,6 +9,8 @@ public class AnimCube : MonoBehaviour
 	Vector3 movingPos;
 	float bumpTimer;
 	public bool bumping;
+
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -97,8 +99,14 @@ public class AnimCube : MonoBehaviour
 			transform.position = movingPos;
 			yield return null;
 		}
+
+		GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
+		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y/2f,0), Quaternion.identity) as GameObject;
+		particleImpact.transform.forward = Vector3.up;
+
 		initialPos = transform.position;
 		bumpTimer = 0f;
 		bumping = false;
+
 	}
 }
