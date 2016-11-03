@@ -6,13 +6,14 @@ using System.Collections;
 public class Character : MonoBehaviour {
 
     [NonSerialized]
-    private CharacterController characterController;
+    protected CharacterController _characterController;
 
     public CharacterCamera _characterCamera;
+    public CharacterCompass _characterCompass;
 
     protected Vector2 _directionalInput;
 
-    public float _moveSpeed = 1;
+    public float _moveSpeed = 7.5f;
 
 
     public Vector3 _gravity;
@@ -38,10 +39,10 @@ public class Character : MonoBehaviour {
     }
     public MobilityState mobilityState = MobilityState.AIRBORN;
 
-    bool isClimbing = false;
+    protected bool isClimbing = false;
 
-    private void Awake() {
-        characterController = GetComponent<CharacterController>();
+    protected virtual void Awake() {
+        _characterController = GetComponent<CharacterController>();
         // Setup jump
         _gravity.y = -(2 * _maxJumpHeight) / Mathf.Pow(_timeToJumpApex, 2);
         _maxJumpVelocity = Mathf.Abs(_gravity.y) * _timeToJumpApex;
@@ -63,37 +64,39 @@ public class Character : MonoBehaviour {
     }
 
 	protected virtual void FixedUpdate() {
+        DefaultController();
+    }
+
+    protected void DefaultController() {
         // Gravity
         Vector3 gravity = _gravity;
         Quaternion gravityRotation = Quaternion.Euler(_gravityRotation);
         gravity = gravityRotation * gravity;
 
         // Directional
-        Vector3 cameraForward = _characterCamera.transform.forward;
-        cameraForward = Vector3.ProjectOnPlane(cameraForward, gravity);
-        Quaternion forwardRotation = Quaternion.LookRotation(cameraForward, -gravity);
-        Vector3 directionalInput = new Vector3(_directionalInput.x, 0, _directionalInput.y);
-        directionalInput = forwardRotation * directionalInput;
-        directionalInput *= _moveSpeed;
-
-        const int step = 2;
-        Debug.DrawRay(transform.position, directionalInput * 0.25f * step);
+        Vector3 directionalVelocity = GetDirectionalVelocity();
 
         // Jump
-        Vector3 jumpInput = gravityRotation * _jumpVelocity;
-        _jumpVelocity += gravity * Time.fixedDeltaTime;
+        Vector3 jumpVelocity = GetJumpVelocity(gravityRotation);
+        if (!IsClimbing()) {
+            // Apply gravity if not climbing
+            ApplyGravity(gravity);
+        } else {
+            // Reset jump velocity otherwise
+            jumpVelocity = Vector3.zero;
+        }
 
         // Global
-        Vector3 globalVelocity = directionalInput + jumpInput;
+        Vector3 globalVelocity = directionalVelocity + jumpVelocity;
         if (isClimbing) {
             globalVelocity = Vector3.zero;
         }
 
-        CollisionFlags collisionFlags = characterController.Move(globalVelocity * Time.fixedDeltaTime);
+        CollisionFlags collisionFlags = _characterController.Move(globalVelocity * Time.fixedDeltaTime);
 
         // Refresh rotation
         if (_directionalInput.magnitude > 0.1 /* deadzone */) {
-            Quaternion directionalRotation = Quaternion.LookRotation(directionalInput, -gravity);
+            Quaternion directionalRotation = Quaternion.LookRotation(directionalVelocity, -gravity);
             transform.rotation = directionalRotation;
         }
 
@@ -117,7 +120,7 @@ public class Character : MonoBehaviour {
         }
 
         if (_jumpInputDown) {
-            if ((characterController.collisionFlags & CollisionFlags.Below) != 0) {
+            if ((_characterController.collisionFlags & CollisionFlags.Below) != 0) {
                 // Initialise jump
                 _jumpVelocity.y = _maxJumpVelocity;
                 _jumpInputDown = false;
@@ -132,13 +135,35 @@ public class Character : MonoBehaviour {
             }
         }
     }
-    
+
+    protected Vector3 GetDirectionalVelocity() {
+        // Directional
+        Quaternion forwardRotation = _characterCompass.transform.rotation;
+        Vector3 directional = new Vector3(_directionalInput.x, 0, _directionalInput.y);
+        directional = forwardRotation * directional;
+        directional *= _moveSpeed;
+        return directional;
+    }
+
+    protected Vector3 GetJumpVelocity(Quaternion gravityRotation) {
+        // Jump
+        return gravityRotation * _jumpVelocity;
+    }
+
+    protected void ApplyGravity(Vector3 gravity) {
+        _jumpVelocity += gravity * Time.fixedDeltaTime;
+    }
+
+    protected virtual bool IsClimbing() {
+        return false;
+    }
+
     // Climbing
     [Serializable]
     public class ClimbingParameters {
-        public float correctionSpeed = 1;
-        public float ascendSpeed = 1;
-        public float pushSpeed = 1;
+        public float correctionSpeed = 10;
+        public float ascendSpeed = 10;
+        public float pushSpeed = 10;
     }
     public ClimbingParameters climbingParameters = new ClimbingParameters();
 
@@ -176,4 +201,5 @@ public class Character : MonoBehaviour {
         isClimbing = false;
         yield return null;
     }
+
 }
