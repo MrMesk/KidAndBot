@@ -11,7 +11,8 @@ public class RobotController : Character
 	public float[] bumpTiers = new float[4];
 	public float[] bumpForcesUp = new float[4];
 	public float[] bumpForcesForward = new float[4];
-	public LayerMask bumpMask;
+	public LayerMask bumpUpMask;
+	public LayerMask bumpForwardMask;
 
 	float bumpForce;
 	int forceTier;
@@ -77,7 +78,7 @@ public class RobotController : Character
 		} 
 		else 
 		{
-			BumpCheck ();
+			BumpUp ();
 			BumpForward ();
 			grappin.enabled = false;
 		}
@@ -90,12 +91,12 @@ public class RobotController : Character
 		{
 			Debug.Log ("Charging");
 			bumpForce += Time.deltaTime;
-			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] + 0.5f);
+			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] * 1.25f);
 		} 
 		else 
 		{
 			bumpForce -= Time.deltaTime;
-			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] + 0.5f);
+			bumpForce = Mathf.Clamp (bumpForce, 0f, bumpTiers [3] * 1.25f);
 		}
 	}
 
@@ -131,7 +132,7 @@ public class RobotController : Character
 			ForceCheck ();
 
 			Debug.DrawRay (ray.origin, ray.direction * 20f, Color.red);
-			if (Physics.Raycast (ray, out hit, bumpForwardRange)) 
+			if (Physics.Raycast (ray, out hit, bumpForwardRange,bumpForwardMask )) 
 			{
 				//Debug.Log ("Raycast hits !!");
 				Vector3 cubeNormal = hit.normal;
@@ -195,14 +196,14 @@ public class RobotController : Character
 		} 
 	}
 
-	void BumpCheck()
+	void BumpUp()
 	{
-		if (Input.GetKeyDown (KeyCode.E)) 
+		if (Input.GetKeyDown (KeyCode.E) && mobilityState == MobilityState.GROUNDED) 
 		{
 			ForceCheck ();
 
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-			particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y,0), Quaternion.identity) as GameObject;
+			particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y/2,0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
 
 			//Debug.Log ("Force bump : " + bumpForcesUp [forceTier]);
@@ -211,11 +212,12 @@ public class RobotController : Character
 			AnimCube animCube;
 
 			//Getting every block in range, but not the ones below the player and bumping them according to the bumping force
-			nearlyBlocks = Physics.OverlapSphere (transform.position, bumpRange, bumpMask);
+			nearlyBlocks = Physics.OverlapSphere (transform.position, bumpRange, bumpUpMask);
 			foreach (Collider col in nearlyBlocks) 
 			{
+				Debug.Log ("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y/2));
 				animCube = col.GetComponent<AnimCube> ();
-				if (col.transform.position.y >= transform.position.y && animCube.bumping == false) 
+				if (col.transform.position.y - col.transform.localScale.y/2 >= transform.position.y - transform.localScale.y -1f && animCube.bumping == false) 
 				{
 					animCube.StartCoroutine (animCube.BumpUp (2f, bumpForcesUp[forceTier]));
 				}

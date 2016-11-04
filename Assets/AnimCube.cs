@@ -101,7 +101,7 @@ public class AnimCube : MonoBehaviour
 		}
 
 		GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y/2f,0), Quaternion.identity) as GameObject;
+		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y,0), Quaternion.identity) as GameObject;
 		particleImpact.transform.forward = Vector3.up;
 
 		initialPos = transform.position;
