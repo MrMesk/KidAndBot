@@ -60,7 +60,6 @@ public class CharacterCompass : MonoBehaviour {
         Vector3 upwards = -Vector3.Project(_attachedCharacter._characterCamera.transform.forward, forward);
         float dotForward = Vector3.Dot(forward, upwards);
         float dotRight = Vector3.Dot(right, cameraOnRight);
-        Debug.Log(dotRight);
         Vector3 up = (dotForward > 0) ? wall.transform.up : -wall.transform.up;
         Quaternion climbingRotation;
 

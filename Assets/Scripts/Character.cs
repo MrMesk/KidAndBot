@@ -82,8 +82,8 @@ public class Character : MonoBehaviour {
             // Apply gravity if not climbing
             ApplyGravity(gravity);
         } else {
-            // Reset jump velocity otherwise
-            jumpVelocity = Vector3.zero;
+            // Refresh jump velocity
+            _jumpVelocity -= Vector3.Project(_jumpVelocity, gravity);
         }
 
         // Global

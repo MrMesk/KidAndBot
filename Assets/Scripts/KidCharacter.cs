@@ -10,11 +10,11 @@ public class KidCharacter : Character {
     }
 
     protected override void FixedUpdate() {
-        base.FixedUpdate();
-
         if (_needRefreshSelectedClimbableWall) {
             RefreshSelectedClimbableWall();
         }
+
+        base.FixedUpdate();
     }
 
     protected void ClimbingController(Climbable climbableObject) {
@@ -114,6 +114,7 @@ public class KidCharacter : Character {
     }
 
     protected override bool IsClimbing() {
+        Debug.Log(_selectedClimbableWall != null);
         return _selectedClimbableWall != null;
     }
 }
