@@ -14,6 +14,8 @@ public class RobotController : Character
 	public LayerMask bumpUpMask;
 	public LayerMask bumpForwardMask;
 
+	
+
 	float bumpForce;
 	int forceTier;
 
@@ -23,10 +25,26 @@ public class RobotController : Character
 	AnimCube grabbedCube;
 	Vector3 grabbedNormal = new Vector3();
 	public LineRenderer grappin;
+	[Space(10)]
+	[Header("Camera Shaking")]
+
+	public CameraShake cameraShaker;
+	[Space(10)]
+	public float walkShakeFrequency;
+	public float walkShakeDuration;
+	public float walkShakeMagnitude;
+	float walkTimer;
+	[Space(10)]
+	public float[] shakeTiersMagnitude = new float[4];
+	public float[] shakeTiersDuration = new float[4];
 
 	// Use this for initialization
 	void Start () 
 	{
+		if(cameraShaker == null)
+		{
+			cameraShaker = _characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
+		}
 		grappin.enabled = false;
 		if (forceBar == null) 
 		{
@@ -82,8 +100,30 @@ public class RobotController : Character
 			BumpForward ();
 			grappin.enabled = false;
 		}
+
+		if (_directionalInput != Vector2.zero && mobilityState == MobilityState.GROUNDED)
+		{
+			WalkingShake();
+		}
+
+		if (Input.GetButtonDown("Jump"))
+		{
+			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration*2, walkShakeMagnitude*2));
+			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
+			particleImpact.transform.forward = Vector3.up;
+		}
 	}
 
+	void WalkingShake()
+	{
+		walkTimer += Time.deltaTime;
+		if(walkTimer >= walkShakeFrequency)
+		{
+			walkTimer = 0f;
+			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration, walkShakeMagnitude));
+		}
+	}
 	void ChargeManagement()
 	{
 		
@@ -137,10 +177,10 @@ public class RobotController : Character
 				//Debug.Log ("Raycast hits !!");
 				Vector3 cubeNormal = hit.normal;
 				AnimCube animCube;
-				if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0 ||
-					Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
-					Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
-					Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
+				if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0.5f ||
+					Vector3.Dot (cubeNormal, -hit.transform.forward) > 0.5f ||
+					Vector3.Dot (cubeNormal, hit.transform.right) > 0.5f ||
+					Vector3.Dot (cubeNormal, -hit.transform.right) > 0.5f) 
 				{
 					animCube = hit.transform.GetComponent<AnimCube> ();
 					if (animCube.bumping == false) 
@@ -148,9 +188,13 @@ public class RobotController : Character
 						GameObject particleImpact = Resources.Load("Particles/Impact"+forceTier) as GameObject;
 						particleImpact = Instantiate (particleImpact, hit.point, Quaternion.identity) as GameObject;
 						particleImpact.transform.forward = cubeNormal;
-						animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
+						//animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
+						animCube.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
 					}
+
+
 				}
+				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 			} 
 		}
 	}
@@ -158,7 +202,9 @@ public class RobotController : Character
 	void Pull(Vector3 dir)
 	{
 		ForceCheck ();
-		grabbedCube.StartCoroutine (grabbedCube.BumpToDir (2f, bumpForcesForward [forceTier], dir));
+		//grabbedCube.StartCoroutine (grabbedCube.BumpToDir (2f, bumpForcesForward [forceTier], dir));
+		grabbedCube.BumpingToDir(bumpForcesForward[forceTier], dir);
+		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 	}
 
 	void DetachHook()
@@ -206,9 +252,6 @@ public class RobotController : Character
 			particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y/2,0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
 
-			//Debug.Log ("Force bump : " + bumpForcesUp [forceTier]);
-			//Debug.Log ("Bump Force : " + bumpForce);
-
 			AnimCube animCube;
 
 			//Getting every block in range, but not the ones below the player and bumping them according to the bumping force
@@ -222,6 +265,7 @@ public class RobotController : Character
 					animCube.StartCoroutine (animCube.BumpUp (2f, bumpForcesUp[forceTier]));
 				}
 			}
+			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 
 		}
 	}

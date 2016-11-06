@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-[RequireComponent(typeof(Camera))]
+//[RequireComponent(typeof(Camera))]
 public class CharacterCamera : MonoBehaviour {
 
     [NonSerialized]
@@ -21,7 +21,7 @@ public class CharacterCamera : MonoBehaviour {
     public float _distance;
 
     private void Awake() {
-        _attachedCamera = GetComponent<Camera>();
+       // _attachedCamera = GetComponent<Camera>();
     }
 
     private void Update() {
