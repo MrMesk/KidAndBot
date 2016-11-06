@@ -4,27 +4,25 @@ using UnityEngine.UI;
 
 public class RobotController : Character 
 {
-	Collider[] nearlyBlocks;
+	[Space(10)]
+	[Header("Range Parameters")]
+	[Space(10)]
+
 	public float bumpRange;
 	public float bumpForwardRange;
 	public float pullRange;
+
+	[Space(10)]
+	[Header("Bump Force Parameters")]
+	[Space(10)]
+
 	public float[] bumpTiers = new float[4];
 	public float[] bumpForcesUp = new float[4];
 	public float[] bumpForcesForward = new float[4];
 	public LayerMask bumpUpMask;
 	public LayerMask bumpForwardMask;
-
-	
-
-	float bumpForce;
-	int forceTier;
-
 	public Slider forceBar;
 
-	bool isGrabbing;
-	AnimCube grabbedCube;
-	Vector3 grabbedNormal = new Vector3();
-	public LineRenderer grappin;
 	[Space(10)]
 	[Header("Camera Shaking")]
 
@@ -38,9 +36,33 @@ public class RobotController : Character
 	public float[] shakeTiersMagnitude = new float[4];
 	public float[] shakeTiersDuration = new float[4];
 
+	[Space(10)]
+	[Header("SFX")]
+	[Space(10)]
+
+	[FMODUnity.EventRef]
+	public string step = "event:/Step";
+	public string jump = "event:/Step";
+	public string punch = "event:/Step";
+	public string hookOn = "event:/Step";
+	public string hookOff = "event:/Step";
+	public string pull = "event:/Step";
+	public string bump = "event:/Step";
+
+	Collider[] nearlyBlocks;
+
+	float bumpForce;
+	int forceTier;
+
+	bool isGrabbing;
+	AnimCube grabbedCube;
+	Vector3 grabbedNormal = new Vector3();
+	LineRenderer grappin;
+
 	// Use this for initialization
 	void Start () 
 	{
+		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
 		if(cameraShaker == null)
 		{
 			cameraShaker = _characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
@@ -112,6 +134,8 @@ public class RobotController : Character
 			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
 			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
+
+			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
 		}
 	}
 
@@ -122,6 +146,7 @@ public class RobotController : Character
 		{
 			walkTimer = 0f;
 			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration, walkShakeMagnitude));
+			FMODUnity.RuntimeManager.PlayOneShot(step, transform.position);
 		}
 	}
 	void ChargeManagement()
@@ -195,6 +220,7 @@ public class RobotController : Character
 
 				}
 				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+				FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
 			} 
 		}
 	}
@@ -205,12 +231,14 @@ public class RobotController : Character
 		//grabbedCube.StartCoroutine (grabbedCube.BumpToDir (2f, bumpForcesForward [forceTier], dir));
 		grabbedCube.BumpingToDir(bumpForcesForward[forceTier], dir);
 		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+		FMODUnity.RuntimeManager.PlayOneShot(pull, transform.position);
 	}
 
 	void DetachHook()
 	{
 		grabbedCube = null;
 		isGrabbing = false;
+		FMODUnity.RuntimeManager.PlayOneShot(hookOff, transform.position);
 	}
 
 	void AttachHook()
@@ -239,6 +267,8 @@ public class RobotController : Character
 					isGrabbing = true;
 				}
 			}
+
+			FMODUnity.RuntimeManager.PlayOneShot(hookOn, transform.position);
 		} 
 	}
 
@@ -266,7 +296,7 @@ public class RobotController : Character
 				}
 			}
 			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
-
+			FMODUnity.RuntimeManager.PlayOneShot(bump, transform.position);
 		}
 	}
 
