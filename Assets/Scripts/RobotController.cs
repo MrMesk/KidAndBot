@@ -59,15 +59,18 @@ public class RobotController : Character
 	Vector3 grabbedNormal = new Vector3();
 	LineRenderer grappin;
 
+
 	// Use this for initialization
 	void Start () 
 	{
 		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
-		if(cameraShaker == null)
+
+		if (cameraShaker == null)
 		{
 			cameraShaker = _characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
 		}
 		grappin.enabled = false;
+
 		if (forceBar == null) 
 		{
 			forceBar = GameObject.Find ("ForceBar").GetComponent<Slider> ();
@@ -249,15 +252,15 @@ public class RobotController : Character
 		Ray ray = new Ray (transform.position, transform.forward);
 		RaycastHit hit;
 
-		if (Physics.Raycast (ray, out hit, pullRange)) 
+		if (Physics.Raycast (ray, out hit, pullRange, bumpForwardMask)) 
 		{
 			//Debug.Log ("Raycast hits !!");
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
-			if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0 ||
-				Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
-				Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
-				Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
+			if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0.5 ||
+				Vector3.Dot (cubeNormal, -hit.transform.forward) > 0.5 ||
+				Vector3.Dot (cubeNormal, hit.transform.right) > 0.5 ||
+				Vector3.Dot (cubeNormal, -hit.transform.right) > 0.5) 
 			{
 				animCube = hit.transform.GetComponent<AnimCube> ();
 				if (animCube.bumping == false) 
