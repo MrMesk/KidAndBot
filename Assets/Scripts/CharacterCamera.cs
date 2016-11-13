@@ -27,16 +27,9 @@ public class CharacterCamera : MonoBehaviour {
     public float _maxDistance = 10;
     [Header("Parameters")]
     public AnimationCurve _distanceFromHeight = new AnimationCurve();
-
-<<<<<<< 5c7701a1242fbb0d2c3a4ae5fec20ae635f8bf51
-    public float _distance;
-
-    private void Awake() {
-       // _attachedCamera = GetComponent<Camera>();
-=======
+    
     protected virtual void Awake() {
-        _attachedCamera = GetComponent<Camera>();
->>>>>>> Big climb update
+        _attachedCamera = GetComponentInChildren<Camera>();
     }
 
     private void Update() {

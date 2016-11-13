@@ -114,7 +114,6 @@ public class KidCharacter : Character {
     }
 
     protected override bool IsClimbing() {
-        Debug.Log(_selectedClimbableWall != null);
         return _selectedClimbableWall != null;
     }
 }
