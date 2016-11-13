@@ -6,7 +6,9 @@ public class CharacterCompass : MonoBehaviour {
     public Character _attachedCharacter;
 
     public Transform correctedCompas;
-    
+
+    public Vector3 localPosition = new Vector3(0, -1, 0);
+
     public void Start() {
         // Store rotation
         transform.rotation = GetWalkingCompasRotation();
@@ -31,16 +33,16 @@ public class CharacterCompass : MonoBehaviour {
         correctedCompas.rotation = targetRotation;
 
         // Position
-        transform.position = _attachedCharacter.transform.position + new Vector3(0, -1, 0);
+        transform.position = _attachedCharacter.transform.position + localPosition;
     }
 
     public Quaternion GetWalkingCompasRotation() {
         // Get camera forward
-        Vector3 cameraForward = _attachedCharacter._characterCamera.transform.forward;
+        Vector3 cameraForward = _attachedCharacter.characterCamera.transform.forward;
         // Project on ground
-        cameraForward = Vector3.ProjectOnPlane(cameraForward, _attachedCharacter._gravity);
+        cameraForward = Vector3.ProjectOnPlane(cameraForward, _attachedCharacter.gravity);
         // Convert to quaternion/rotation
-        Quaternion forwardRotation = Quaternion.LookRotation(cameraForward, -_attachedCharacter._gravity);
+        Quaternion forwardRotation = Quaternion.LookRotation(cameraForward, -_attachedCharacter.gravity);
         return forwardRotation;
     }
 
@@ -56,8 +58,8 @@ public class CharacterCompass : MonoBehaviour {
         // Get camera forward
         Vector3 forward = Vector3.ProjectOnPlane(wall.transform.forward, Vector3.up);
         Vector3 right = Vector3.ProjectOnPlane(wall.transform.right, Vector3.up);
-        Vector3 cameraOnRight = Vector3.Project(Vector3.ProjectOnPlane(_attachedCharacter._characterCamera.transform.forward, Vector3.up).normalized, right);
-        Vector3 upwards = -Vector3.Project(_attachedCharacter._characterCamera.transform.forward, forward);
+        Vector3 cameraOnRight = Vector3.Project(Vector3.ProjectOnPlane(_attachedCharacter.characterCamera.transform.forward, Vector3.up).normalized, right);
+        Vector3 upwards = -Vector3.Project(_attachedCharacter.characterCamera.transform.forward, forward);
         float dotForward = Vector3.Dot(forward, upwards);
         float dotRight = Vector3.Dot(right, cameraOnRight);
         Vector3 up = (dotForward > 0) ? wall.transform.up : -wall.transform.up;

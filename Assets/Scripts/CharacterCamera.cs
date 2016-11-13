@@ -4,9 +4,7 @@ using System.Collections;
 
 //[RequireComponent(typeof(Camera))]
 public class CharacterCamera : MonoBehaviour {
-
-    [NonSerialized]
-    private Camera _attachedCamera;
+    
     public Character _attachedCharacter;
 
     // Parametters
@@ -28,9 +26,7 @@ public class CharacterCamera : MonoBehaviour {
     [Header("Parameters")]
     public AnimationCurve _distanceFromHeight = new AnimationCurve();
     
-    protected virtual void Awake() {
-        _attachedCamera = GetComponentInChildren<Camera>();
-    }
+    protected virtual void Awake() { }
 
     private void Update() {
         // Input

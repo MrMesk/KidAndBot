@@ -16,7 +16,7 @@ public class Climbable : MonoBehaviour
         Character character = other.GetComponent<Character>();
         if(character != null) 
 		{
-            character.Climb(this);
+            //character.Climb(this);
         }
     }
 

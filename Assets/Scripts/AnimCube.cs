@@ -32,7 +32,7 @@ public class AnimCube : MonoBehaviour
 
 	public void BumpingToDir(float bumpForce, Vector3 bumpDir)
 	{
-		Debug.Log("Bumping to :" + bumpDir + " At " + bumpForce + " force ");
+		//Debug.Log("Bumping to :" + bumpDir + " At " + bumpForce + " force ");
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, bumpDir, out hit, bumpForce, bumpMask))
 		{
@@ -41,7 +41,7 @@ public class AnimCube : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("All clear");
+			//Debug.Log("All clear");
 			bumpPos += bumpDir * bumpForce;
 		}
 	}
