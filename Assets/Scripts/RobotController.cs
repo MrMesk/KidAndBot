@@ -59,18 +59,21 @@ public class RobotController : Character
 	AnimCube grabbedCube;
 	Vector3 grabbedNormal = new Vector3();
 	LineRenderer grappin;
+	BoxCollider grappinCollider;
 
 
 	// Use this for initialization
 	void Start ()
 	{
 		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
+		grappinCollider = transform.Find("GrappinCollider").GetComponent<BoxCollider>();
 
 		if (cameraShaker == null)
 		{
 			cameraShaker = _characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
 		}
 		grappin.enabled = false;
+		grappinCollider.enabled = false;
 
 		if (forceBar == null)
 		{
@@ -264,7 +267,19 @@ public class RobotController : Character
 	{
 		grabbedCube = null;
 		isGrabbing = false;
+		grappinCollider.enabled = false;
 		FMODUnity.RuntimeManager.PlayOneShot(hookOff, transform.position);
+	}
+
+	void PlaceGrapCollider(Vector3 targetPoint)
+	{
+		grappinCollider.enabled = true;
+		Vector3 toCube = grabbedCube.transform.position - transform.position;
+		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.localScale.x/4f);
+		Vector3 newSize = new Vector3(1f,1f, (transform.position - targetPoint).magnitude);
+
+		grappinCollider.size = newSize;
+		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
 	void AttachHook ()
@@ -290,6 +305,7 @@ public class RobotController : Character
 				{
 					grabbedNormal = cubeNormal;
 					grabbedCube = animCube;
+					PlaceGrapCollider(hit.point);
 					isGrabbing = true;
 				}
 			}
