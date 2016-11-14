@@ -277,7 +277,7 @@ public class RobotController : Character
 	{
 		grappinCollider.enabled = true;
 		Vector3 toCube = grabbedCube.transform.position - transform.position;
-		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.localScale.x/4f);
+		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
 		Vector3 newSize = new Vector3(1f,1f, (transform.position - targetPoint).magnitude);
 
 		grappinCollider.size = newSize;
