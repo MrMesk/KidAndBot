@@ -11,12 +11,15 @@ public class AnimCube : MonoBehaviour
 	public bool bumping;
 	public LayerMask bumpMask;
 	Vector3 bumpPos;
+	float lerpState;
+	float moveEvaluateIndex;
 
 	// Use this for initialization
 	void Start () 
 	{
 		bumpPos = transform.position;
-
+		lerpState = 0f;
+		moveEvaluateIndex = 0f;
 		bumpTimer = 0f;
 		bumping = false;
 	}
@@ -26,7 +29,7 @@ public class AnimCube : MonoBehaviour
 	{
 		if(transform.position != bumpPos)
 		{
-			transform.position = Vector3.MoveTowards(transform.position, bumpPos, 0.3f);
+			transform.position = Vector3.Lerp(initialPos, bumpPos, lerpState);
 		}
 	}
 
@@ -44,63 +47,23 @@ public class AnimCube : MonoBehaviour
 			Debug.Log("All clear");
 			bumpPos += bumpDir * bumpForce;
 		}
+		StartCoroutine (BumpToDir (1f));
 	}
 
-	public IEnumerator BumpToDir(float bumpTime, float bumpForce, Vector3 bumpDir)
+	public IEnumerator BumpToDir(float bumpTime)
 	{
-		bumping = true;
 		initialPos = transform.position;
-		movingPos = transform.position;
-
-		//Debug.Log ("Dot : " + Vector3.Dot (bumpDir, transform.forward));
-		if ( Vector3.Dot(bumpDir, transform.forward) > 0) 
+		moveEvaluateIndex = 0f;
+		lerpState = 0f;
+		while (lerpState < bumpTime) 
 		{
-			while (bumpTimer < 1f) 
-			{
-				//Debug.Log ("Bump Timer : " + bumpTimer);
-				bumpTimer += Time.deltaTime / bumpTime;
-				movingPos.z = initialPos.z + moveForward.Evaluate (bumpTimer) * bumpForce;
-				transform.position = movingPos;
-				yield return null;
-			}
-		}
-		else if ( Vector3.Dot(bumpDir, -transform.forward) > 0) 
-		{
-			while (bumpTimer < 1f) 
-			{
-				//Debug.Log ("Bump Timer : " + bumpTimer);
-				bumpTimer += Time.deltaTime / bumpTime;
-				movingPos.z = initialPos.z - moveForward.Evaluate (bumpTimer) * bumpForce;
-				transform.position = movingPos;
-				yield return null;
-			}
-		}
-		else if ( Vector3.Dot(bumpDir, transform.right) > 0) 
-		{
-			while (bumpTimer < 1f) 
-			{
-				//Debug.Log ("Bump Timer : " + bumpTimer);
-				bumpTimer += Time.deltaTime / bumpTime;
-				movingPos.x = initialPos.x + moveForward.Evaluate (bumpTimer) * bumpForce;
-				transform.position = movingPos;
-				yield return null;
-			}
-		}
-		else if ( Vector3.Dot(bumpDir, -transform.right) > 0) 
-		{
-			while (bumpTimer < 1f) 
-			{
-				//Debug.Log ("Bump Timer : " + bumpTimer);
-				bumpTimer += Time.deltaTime / bumpTime;
-				movingPos.x = initialPos.x - moveForward.Evaluate (bumpTimer) * bumpForce;
-				transform.position = movingPos;
-				yield return null;
-			}
+			moveEvaluateIndex += Time.deltaTime;
+			lerpState = moveForward.Evaluate(moveEvaluateIndex/bumpTime);
+			yield return null;
 		}
 
-		initialPos = transform.position;
-		bumpTimer = 0f;
-		bumping = false;
+		lerpState = 0f;
+
 	}
 
 	public IEnumerator BumpUp(float bumpTime, float bumpForce)

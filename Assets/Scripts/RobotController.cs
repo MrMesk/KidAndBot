@@ -93,13 +93,15 @@ public class RobotController : Character
 	{
 		base.Update();
 
+
+
 		ChargeManagement();
 
 		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
 
 		if (Input.GetMouseButtonDown(1))
 		{
-			Debug.Log("Right Mouse Click");
+			//Debug.Log("Right Mouse Click");
 			if (!isGrabbing)
 			{
 				AttachHook();
@@ -115,7 +117,7 @@ public class RobotController : Character
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
 
-			if (Input.GetKeyDown(KeyCode.A))
+			if (Input.GetKeyUp(KeyCode.A))
 			{
 				Pull(grabbedNormal);
 				isGrabbing = false;
@@ -159,9 +161,9 @@ public class RobotController : Character
 	void ChargeManagement ()
 	{
 
-		if (Input.GetKey(KeyCode.LeftShift))
+		if (Input.GetMouseButton(0) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.E) )
 		{
-			Debug.Log("Charging");
+			//Debug.Log("Charging");
 			bumpForce += Time.deltaTime;
 			bumpForce = Mathf.Clamp(bumpForce, 0f, bumpTiers[3] * 1.25f);
 		}
@@ -190,13 +192,13 @@ public class RobotController : Character
 		{
 			forceTier = 0;
 		}
-		Debug.Log("Force Tier : " + forceTier);
+		//Debug.Log("Force Tier : " + forceTier);
 		bumpForce = 0f;
 	}
 
 	void BumpForward ()
 	{
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonUp(0))
 		{
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hit;
@@ -284,9 +286,9 @@ public class RobotController : Character
 
 	void AttachHook ()
 	{
-		bumpForce = 0f;
+		//bumpForce = 0f;
 
-		Debug.Log("Attaching hook");
+		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
 		RaycastHit hit;
 
@@ -316,7 +318,7 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-		if (Input.GetKeyDown(KeyCode.E) && mobilityState == MobilityState.GROUNDED)
+		if (Input.GetKeyUp(KeyCode.E) && mobilityState == MobilityState.GROUNDED)
 		{
 			ForceCheck();
 
