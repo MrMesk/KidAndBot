@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Scenes/KidAndBot.unity.meta
 guid: 9fa590855cae3a6439c838b8082cb3a6
 timeCreated: 1477486029
+=======
+guid: 8e3d289152c525b47aa506a904e59d23
+timeCreated: 1479114903
+>>>>>>> origin/Robot:Assets/StreamingAssets/Master Bank.strings.bank.meta
 licenseType: Free
 DefaultImporter:
   userData: 
