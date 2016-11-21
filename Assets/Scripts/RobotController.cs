@@ -59,24 +59,24 @@ public class RobotController : Character
     bool isGrabbing;
 	AnimCube grabbedCube;
 	Vector3 grabbedNormal = new Vector3();
-<<<<<<< HEAD
-    [Space(10)]
-    public LineRenderer grappin;
-=======
+//<<<<<<< HEAD
+   /* [Space(10)]
+    public LineRenderer grappin;*/
+//=======
 	LineRenderer grappin;
 	BoxCollider grappinCollider;
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 
 
 	// Use this for initialization
 	void Start ()
 	{
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
-=======
+//=======
 		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = transform.Find("GrappinCollider").GetComponent<BoxCollider>();
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 
 		if (cameraShaker == null)
 		{
@@ -111,13 +111,13 @@ public class RobotController : Character
 
 		if (Input.GetMouseButtonDown(1))
 		{
-<<<<<<< HEAD
+//<<<<<<< HEAD
 			//Debug.Log ("Right Mouse Click");
 			if (!isGrabbing) 
-=======
+//=======
 			//Debug.Log("Right Mouse Click");
 			if (!isGrabbing)
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 			{
 				AttachHook();
 			}
@@ -207,11 +207,11 @@ public class RobotController : Character
 		{
 			forceTier = 0;
 		}
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		//Debug.Log ("Force Tier : " + forceTier);
-=======
+//=======
 		//Debug.Log("Force Tier : " + forceTier);
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 		bumpForce = 0f;
 	}
 
@@ -299,10 +299,10 @@ public class RobotController : Character
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
 		Vector3 newSize = new Vector3(1f,1f, (transform.position - targetPoint).magnitude);
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
         //Debug.Log("Attaching hook");
         Ray ray = new Ray (transform.position, transform.forward);
-=======
+//=======
 		grappinCollider.size = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
@@ -313,7 +313,7 @@ public class RobotController : Character
 
 		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 		RaycastHit hit;
 
 		if (Physics.Raycast(ray, out hit, pullRange, bumpForwardMask))
@@ -342,11 +342,11 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		if (Input.GetKeyDown (KeyCode.E) && IsGrounded()) 
-=======
+//=======
 		if (Input.GetKeyUp(KeyCode.E) && mobilityState == MobilityState.GROUNDED)
->>>>>>> origin/Robot
+//>>>>>>> origin/Robot
 		{
 			ForceCheck();
 
