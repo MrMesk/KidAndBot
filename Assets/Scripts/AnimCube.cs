@@ -32,7 +32,7 @@ public class AnimCube : MonoBehaviour
 
 	public void BumpingToDir(float bumpForce, Vector3 bumpDir)
 	{
-		Debug.Log("Bumping to :" + bumpDir + " At " + bumpForce + " force ");
+		//Debug.Log("Bumping to :" + bumpDir + " At " + bumpForce + " force ");
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, bumpDir, out hit, bumpForce, bumpMask))
 		{
@@ -41,7 +41,7 @@ public class AnimCube : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("All clear");
+			//Debug.Log("All clear");
 			bumpPos += bumpDir * bumpForce;
 		}
 	}
@@ -118,7 +118,7 @@ public class AnimCube : MonoBehaviour
 		}
 
 		GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y,0), Quaternion.identity) as GameObject;
+		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.localScale.y/2,0), Quaternion.identity) as GameObject;
 		particleImpact.transform.forward = Vector3.up;
 
 		initialPos = transform.position;

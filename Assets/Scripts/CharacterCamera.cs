@@ -4,34 +4,51 @@ using System.Collections;
 
 //[RequireComponent(typeof(Camera))]
 public class CharacterCamera : MonoBehaviour {
-
-    [NonSerialized]
-    private Camera _attachedCamera;
+    
     public Character _attachedCharacter;
 
     // Parametters
     [Range(0,360)]
-    public float _rotation;
-    private const float _rotationSensitivity = 15f;
+    private float _rotation = 0;
+    [Header("Sensitivity")]
+    public float _mouseRotationSensitivity = 10f;
+    public float _stickRotationSensitivity = 7.5f;
     [Range(0, 1)]
-    public float _height;
-    private const float _heightSensitivity = 0.075f;
-    public bool reflectHeight = true;
-
-    public float _distance;
-
-    private void Awake() {
-       // _attachedCamera = GetComponent<Camera>();
-    }
+    private float _height = 0.5f;
+    public float _mouseHeightSensitivity = 0.075f;
+    public float _stickHeightSensitivity = 0.050f;
+    [Header("Reflection")]
+    public bool _mouseReflectHeight = true;
+    public bool _stickReflectHeight = false;
+    [Header("Parameters")]
+    public float _minDistance = 2;
+    public float _maxDistance = 10;
+    [Header("Parameters")]
+    public AnimationCurve _distanceFromHeight = new AnimationCurve();
+    
+    protected virtual void Awake() { }
 
     private void Update() {
         // Input
-        Vector2 input = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 stickInput = new Vector2(Input.GetAxis("Right Stick X"), Input.GetAxis("Right Stick Y"));
+
         // Refresh rotation
-        _rotation += input.x * _rotationSensitivity;
+        float rotationDelta =
+            // Mouse
+            mouseInput.x * _mouseRotationSensitivity +
+            // Stick
+            stickInput.x * _stickRotationSensitivity;
+        _rotation += rotationDelta * Time.deltaTime;
         _rotation = Mathf.Repeat(_rotation, 360);
+
         // Refresh height
-        _height += (reflectHeight ? -input.y : input.y) * _heightSensitivity;
+        float heightDelta =
+            // Mouse
+            (_mouseReflectHeight ? -mouseInput.y : mouseInput.y) * _mouseHeightSensitivity +
+            // Stick
+            (_stickReflectHeight ? -stickInput.y : stickInput.y) * _stickHeightSensitivity;
+        _height += heightDelta * Time.deltaTime;
         _height = Mathf.Clamp01(_height);
     }
 
@@ -49,10 +66,11 @@ public class CharacterCamera : MonoBehaviour {
     public void RefreshCamera() {
         // Refresh position
         Quaternion rotationAround = Quaternion.Euler(0, _rotation, 0);
-        Quaternion rotationOver = Quaternion.Euler(90 + _height* 180, 0, 0);
+        Quaternion rotationOver = Quaternion.Euler(89 + _height * 180, 0, 0); // 89 instead of 90 (debug)
         Quaternion rotation = rotationAround * rotationOver;
         Vector3 direction = rotation * Vector3.forward;
-        Vector3 position = _distance * direction;
+        float distance = Mathf.Lerp(_minDistance, _maxDistance, _distanceFromHeight.Evaluate(_height));
+        Vector3 position = distance * direction;
         position += _attachedCharacter.transform.position;
         // Set position
         transform.position = position;

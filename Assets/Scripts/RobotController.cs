@@ -53,21 +53,26 @@ public class RobotController : Character
 
 	float bumpForce;
 	int forceTier;
+    
 
-	bool isGrabbing;
+    bool isGrabbing;
 	AnimCube grabbedCube;
 	Vector3 grabbedNormal = new Vector3();
-	LineRenderer grappin;
+    [Space(10)]
+    public LineRenderer grappin;
+
 
 	// Use this for initialization
 	void Start () 
 	{
-		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
-		if(cameraShaker == null)
+		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
+
+		if (cameraShaker == null)
 		{
-			cameraShaker = _characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
+			cameraShaker = characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
 		}
 		grappin.enabled = false;
+
 		if (forceBar == null) 
 		{
 			forceBar = GameObject.Find ("ForceBar").GetComponent<Slider> ();
@@ -92,7 +97,7 @@ public class RobotController : Character
 
 		if (Input.GetMouseButtonDown (1)) 
 		{
-			Debug.Log ("Right Mouse Click");
+			//Debug.Log ("Right Mouse Click");
 			if (!isGrabbing) 
 			{
 				AttachHook ();
@@ -183,7 +188,7 @@ public class RobotController : Character
 		{
 			forceTier = 0;
 		}
-		Debug.Log ("Force Tier : " + forceTier);
+		//Debug.Log ("Force Tier : " + forceTier);
 		bumpForce = 0f;
 	}
 
@@ -245,19 +250,19 @@ public class RobotController : Character
 	{
 		bumpForce = 0f;
 
-		Debug.Log ("Attaching hook");
-		Ray ray = new Ray (transform.position, transform.forward);
+        //Debug.Log("Attaching hook");
+        Ray ray = new Ray (transform.position, transform.forward);
 		RaycastHit hit;
 
-		if (Physics.Raycast (ray, out hit, pullRange)) 
+		if (Physics.Raycast (ray, out hit, pullRange, bumpForwardMask)) 
 		{
 			//Debug.Log ("Raycast hits !!");
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
-			if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0 ||
-				Vector3.Dot (cubeNormal, -hit.transform.forward) > 0 ||
-				Vector3.Dot (cubeNormal, hit.transform.right) > 0 ||
-				Vector3.Dot (cubeNormal, -hit.transform.right) > 0) 
+			if (Vector3.Dot (cubeNormal, hit.transform.forward) > 0.5 ||
+				Vector3.Dot (cubeNormal, -hit.transform.forward) > 0.5 ||
+				Vector3.Dot (cubeNormal, hit.transform.right) > 0.5 ||
+				Vector3.Dot (cubeNormal, -hit.transform.right) > 0.5) 
 			{
 				animCube = hit.transform.GetComponent<AnimCube> ();
 				if (animCube.bumping == false) 
@@ -274,7 +279,7 @@ public class RobotController : Character
 
 	void BumpUp()
 	{
-		if (Input.GetKeyDown (KeyCode.E) && mobilityState == MobilityState.GROUNDED) 
+		if (Input.GetKeyDown (KeyCode.E) && IsGrounded()) 
 		{
 			ForceCheck ();
 
@@ -297,8 +302,25 @@ public class RobotController : Character
 			}
 			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 			FMODUnity.RuntimeManager.PlayOneShot(bump, transform.position);
-		}
+
+            // Bump kid
+            TryBumpKid();
+        }
 	}
 
+    public bool TryBumpKid() {
+        GameObject kid = GameObject.Find("Kid");
+        if (kid == null) { return false; } // Kid not found
+        float distToKid = Vector3.Distance(transform.position, kid.transform.position);
+        if (distToKid > bumpRange) { return false; } // Kid too far
+        Abilities.JumpAbility jumpAbility = kid.GetComponentInChildren<Abilities.JumpAbility>();
+        if (jumpAbility == null) { return false; } // Kid can't jump
+        jumpAbility.ForceJumpRequest();
+        return true; // Succesfully forced kid to jump
+    }
+
+    public override bool IsGrabbing() {
+        return isGrabbing;
+    }
 
 }
