@@ -18,7 +18,7 @@ public class CharacterCompass : MonoBehaviour {
         // Rotation
         Quaternion targetRotation;
         try {
-            targetRotation = GetClimbingCompasRotation();
+            targetRotation = GetClimbingCompasRotation2();
         } catch {
             targetRotation = GetWalkingCompasRotation();
             targetRotation = Snap(targetRotation);
@@ -80,6 +80,58 @@ public class CharacterCompass : MonoBehaviour {
         }
 
         return climbingRotation;
+    }
+
+    public Quaternion GetClimbingCompasRotation2() {
+        // Get kid
+        if(_attachedCharacter.GetType() != typeof(KidCharacter)) {
+            throw new System.Exception();
+        }
+        KidCharacter kidCharacter = (KidCharacter)_attachedCharacter;
+
+
+        // Get kid's climbing collider
+        Collider currentlyClimbingCollider = kidCharacter._selectedClimbableWall._collider;
+
+        // Get kid's position
+        Vector3 kidPosition = kidCharacter.transform.position;
+
+        // Get kid's foot
+        Vector3 kidFootPosition = kidPosition + (-_attachedCharacter.transform.up * (_attachedCharacter.transform.localScale.y / 2));
+
+        var pointData = ColliderHelper.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
+        
+        Debug.DrawRay(pointData.position, pointData.normal, Color.green);
+
+        // Get collider's normal
+        /*
+        Ray ray = new Ray(kidPosition, kidFootPosition - kidPosition);
+        RaycastHit hit;
+        const float checkDist = 4f;
+        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        if (!currentlyClimbingCollider.Raycast(ray, out hit, checkDist)) {
+            return GetWalkingCompasRotation();
+        }*/
+        Vector3 normal = pointData.normal;
+
+        
+
+        CharacterCamera kidCamera = kidCharacter.characterCamera;
+        Vector3 cameraForward = Vector3.ProjectOnPlane(kidCamera.transform.forward, Vector3.up);
+        //cameraForward = kidCamera.transform.forward;
+
+        Vector3 upward = Vector3.ProjectOnPlane(normal, -kidCamera.transform.right);
+        Vector3 forward = Quaternion.AngleAxis(90, kidCamera.transform.right) * upward;
+        Quaternion rotation = Quaternion.LookRotation(forward, upward);
+        float balanceDot = Vector3.Dot(normal, -kidCamera.transform.right);
+        rotation = Quaternion.AngleAxis(90 * balanceDot, forward) * rotation;
+
+        Debug.DrawRay(kidCharacter.transform.position, kidCamera.transform.right, Color.green);
+        Debug.DrawRay(kidCharacter.transform.position, upward, Color.yellow);
+
+        //Debug.Log(balanceDot);
+
+        return rotation;
     }
 
     public Quaternion Snap(Quaternion rotation) {

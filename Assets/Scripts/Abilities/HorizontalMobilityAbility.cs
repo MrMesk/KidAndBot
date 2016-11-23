@@ -40,9 +40,19 @@ namespace Abilities {
                 case DebugInputMode.GAMEPAD:
                     directionalInput = new Vector2(Input.GetAxisRaw("Left Stick X"), Input.GetAxisRaw("Left Stick Y"));
                     break;
+                case DebugInputMode.KEYBOARD:
+                    directionalInput = new Vector2(Input.GetAxisRaw("Horizontal Keyboard"), Input.GetAxisRaw("Vertical Keyboard"));
+                    break;
+                case DebugInputMode.NONE:
+                    directionalInput = Vector2.zero;
+                    break;
                 case DebugInputMode.BOTH:
                 default:
-                    directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+                    directionalInput = Vector2.Lerp(
+                        new Vector2(Input.GetAxisRaw("Left Stick X"), Input.GetAxisRaw("Left Stick Y")),
+                        new Vector2(Input.GetAxisRaw("Horizontal Keyboard"), Input.GetAxisRaw("Vertical Keyboard")),
+                        0.5f
+                        );
                     break;
             }
             

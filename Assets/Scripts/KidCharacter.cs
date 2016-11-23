@@ -85,7 +85,7 @@ public class KidCharacter : Character {
         if (selection = null) _needRefreshSelectedClimbableWall = false;
     }
 
-    [NonSerialized] public List<ClimbableWall> _triggeredClimbableWalls = new List<ClimbableWall>();
+    public List<ClimbableWall> _triggeredClimbableWalls = new List<ClimbableWall>();
     [NonSerialized] public ClimbableWall _selectedClimbableWall = null;
 
     private bool _needRefreshSelectedClimbableWall = false;
@@ -112,8 +112,8 @@ public class KidCharacter : Character {
         ClimbableWall cw = other.gameObject.GetComponent<ClimbableWall>();
         if (cw != null) {
             // Entred climbable wall trigger
-            _needRefreshSelectedClimbableWall = true;
             _triggeredClimbableWalls.Add(cw);
+            _needRefreshSelectedClimbableWall = true;
             RefreshCurrentParent();
         }
     }
@@ -122,6 +122,7 @@ public class KidCharacter : Character {
         if (cw != null) {
             // Exited climbable wall trigger
             _triggeredClimbableWalls.Remove(cw);
+            _needRefreshSelectedClimbableWall = true;
             RefreshCurrentParent();
         }
     }
@@ -131,8 +132,24 @@ public class KidCharacter : Character {
             return;
         }
 
+        // Connected collider
+        bool needParentRefresh = false;
         if (!connectedColliders.Contains(collision.collider)) {
             connectedColliders.Add(collision.collider);
+            needParentRefresh = true;
+        }
+
+        // Climb
+        ClimbableWall cw = collision.gameObject.GetComponent<ClimbableWall>();
+        if (cw != null) {
+            // Entred climbable wall trigger
+            _triggeredClimbableWalls.Add(cw);
+            _needRefreshSelectedClimbableWall = true;
+            needParentRefresh = true;
+        }
+        
+        // Parent refresh
+        if (needParentRefresh) {
             RefreshCurrentParent();
         }
     }
@@ -142,8 +159,24 @@ public class KidCharacter : Character {
             return;
         }
 
+        // Connected collider
+        bool needParentRefresh = false;
         if (connectedColliders.Contains(collision.collider)) {
             connectedColliders.Remove(collision.collider);
+            _needRefreshSelectedClimbableWall = true;
+            needParentRefresh = true;
+        }
+
+        // Climb
+        ClimbableWall cw = collision.gameObject.GetComponent<ClimbableWall>();
+        if (cw != null) {
+            // Exited climbable wall trigger
+            _triggeredClimbableWalls.Remove(cw);
+            needParentRefresh = true;
+        }
+
+        // Parent refresh
+        if (needParentRefresh) {
             RefreshCurrentParent();
         }
     }

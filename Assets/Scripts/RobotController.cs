@@ -74,8 +74,8 @@ public class RobotController : Character
 //<<<<<<< HEAD
 		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
 //=======
-		grappin = transform.Find("Grappin").GetComponent<LineRenderer>();
-		grappinCollider = transform.Find("GrappinCollider").GetComponent<BoxCollider>();
+		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
+		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
 //>>>>>>> origin/Robot
 
 		if (cameraShaker == null)
