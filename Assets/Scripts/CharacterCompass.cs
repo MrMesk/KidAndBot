@@ -102,16 +102,7 @@ public class CharacterCompass : MonoBehaviour {
         var pointData = ColliderHelper.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
         
         Debug.DrawRay(pointData.position, pointData.normal, Color.green);
-
-        // Get collider's normal
-        /*
-        Ray ray = new Ray(kidPosition, kidFootPosition - kidPosition);
-        RaycastHit hit;
-        const float checkDist = 4f;
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
-        if (!currentlyClimbingCollider.Raycast(ray, out hit, checkDist)) {
-            return GetWalkingCompasRotation();
-        }*/
+        
         Vector3 normal = pointData.normal;
 
         
@@ -126,8 +117,8 @@ public class CharacterCompass : MonoBehaviour {
         float balanceDot = Vector3.Dot(normal, -kidCamera.transform.right);
         rotation = Quaternion.AngleAxis(90 * balanceDot, forward) * rotation;
 
-        Debug.DrawRay(kidCharacter.transform.position, kidCamera.transform.right, Color.green);
-        Debug.DrawRay(kidCharacter.transform.position, upward, Color.yellow);
+        //Debug.DrawRay(kidCharacter.transform.position, kidCamera.transform.right, Color.green);
+        //Debug.DrawRay(kidCharacter.transform.position, upward, Color.yellow);
 
         //Debug.Log(balanceDot);
 
