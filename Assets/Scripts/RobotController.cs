@@ -310,10 +310,12 @@ public class RobotController : Character
 			//Debug.Log ("Raycast hits !!");
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
-			if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
+			/*if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, -hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, hit.transform.right) > 0.5 ||
-				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)
+				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)*/
+
+			if (Vector3.Dot((transform.position - hit.point), cubeNormal) > 0.5)
 			{
 				animCube = hit.transform.GetComponent<AnimCube>();
 				if (animCube.bumping == false)
@@ -331,7 +333,7 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-		Debug.Log("Is Grounded " + IsGrounded());
+		
 		if (Input.GetKeyUp(KeyCode.E) && IsGrounded())
 		{
 			ForceCheck();
