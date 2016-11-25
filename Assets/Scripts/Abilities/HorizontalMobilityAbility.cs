@@ -1,9 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using InControl;
 
 namespace Abilities {
-    public class HorizontalMobilityAbility : MonoBehaviour {
+
+
+    public partial class HorizontalMobilityAbility {
+        public class PlayerActions {
+            public PlayerTwoAxisAction Move;
+        }
+    }
+
+    public partial class HorizontalMobilityAbility : MonoBehaviour {
         [Header("Configuration")]
         public float _moveSpeed = 7.5f;
 
