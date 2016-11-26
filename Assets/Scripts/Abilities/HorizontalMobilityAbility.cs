@@ -7,12 +7,25 @@ namespace Abilities {
 
 
     public partial class HorizontalMobilityAbility {
-        public class PlayerActions {
+        public class PlayerActions : PlayerActionSet {
+            public PlayerAction Left;
+            public PlayerAction Right;
+            public PlayerAction Up;
+            public PlayerAction Down;
             public PlayerTwoAxisAction Move;
+
+            public PlayerActions() {
+                Left = CreatePlayerAction("Move Left");
+                Right = CreatePlayerAction("Move Right");
+                Up = CreatePlayerAction("Move Up");
+                Down = CreatePlayerAction("Move Down");
+                Move = CreateTwoAxisPlayerAction(Left, Right, Down, Up);
+            }
         }
     }
 
     public partial class HorizontalMobilityAbility : MonoBehaviour {
+        // Configuration
         [Header("Configuration")]
         public float _moveSpeed = 7.5f;
 
@@ -22,15 +35,23 @@ namespace Abilities {
             KEYBOARD,
             BOTH
         }
+
+
+        // Debug
         [Header("Debug")]
         public DebugInputMode debugInputMode = DebugInputMode.BOTH;
 
-       [Header("Sings & Feedbacks")]
+        // S&F
+        [Header("Sings & Feedbacks")]
         [Range(0,1)]
         public float editLookDirectionDeadZone = 0.1f;
 
+
+        // State
         [NonSerialized] private Character character;
         [NonSerialized] private Vector2 directionalInput;
+        // Input
+        [NonSerialized] public PlayerActions playerInput;
 
         public Vector3 directionalVelocity { get; private set; }
 
@@ -41,6 +62,30 @@ namespace Abilities {
                 this.enabled = false;
                 return;
             }
+            Initialise();
+        }
+
+        private void Initialise() {
+            playerInput = new PlayerActions();
+
+
+        }
+
+        private void InitialiseInput() {
+            playerInput = new PlayerActions();
+
+            playerInput.Up.AddDefaultBinding(Key.UpArrow);
+            playerInput.Down.AddDefaultBinding(Key.DownArrow);
+            playerInput.Left.AddDefaultBinding(Key.LeftArrow);
+            playerInput.Right.AddDefaultBinding(Key.RightArrow);
+
+            playerInput.Left.AddDefaultBinding(InputControlType.LeftStickLeft);
+            playerInput.Right.AddDefaultBinding(InputControlType.LeftStickRight);
+            playerInput.Up.AddDefaultBinding(InputControlType.LeftStickUp);
+            playerInput.Down.AddDefaultBinding(InputControlType.LeftStickDown);
+
+            playerInput.ListenOptions.MaxAllowedBindings = 2;
+
         }
 
         public void Update() {
