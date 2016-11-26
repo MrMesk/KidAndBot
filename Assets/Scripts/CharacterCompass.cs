@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class CharacterCompass : MonoBehaviour {
@@ -8,6 +9,8 @@ public class CharacterCompass : MonoBehaviour {
     public Transform correctedCompas;
 
     public Vector3 localPosition = new Vector3(0, -1, 0);
+    
+    [NonSerialized] public Vector3 climbNormal;
 
     public void Start() {
         // Store rotation
@@ -103,9 +106,7 @@ public class CharacterCompass : MonoBehaviour {
         
         Debug.DrawRay(pointData.position, pointData.normal, Color.green);
         
-        Vector3 normal = pointData.normal;
-
-        
+        Vector3 normal = climbNormal = pointData.normal;        
 
         CharacterCamera kidCamera = kidCharacter.characterCamera;
         Vector3 cameraForward = Vector3.ProjectOnPlane(kidCamera.transform.forward, Vector3.up);
