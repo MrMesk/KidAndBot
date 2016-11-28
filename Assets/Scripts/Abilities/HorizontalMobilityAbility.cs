@@ -1,29 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
-using InControl;
 
 namespace Abilities {
-
-
-    public partial class HorizontalMobilityAbility {
-        public class PlayerActions : PlayerActionSet {
-            public PlayerAction Left;
-            public PlayerAction Right;
-            public PlayerAction Up;
-            public PlayerAction Down;
-            public PlayerTwoAxisAction Move;
-
-            public PlayerActions() {
-                Left = CreatePlayerAction("Move Left");
-                Right = CreatePlayerAction("Move Right");
-                Up = CreatePlayerAction("Move Up");
-                Down = CreatePlayerAction("Move Down");
-                Move = CreateTwoAxisPlayerAction(Left, Right, Down, Up);
-            }
-        }
-    }
-
+    
     public partial class HorizontalMobilityAbility : MonoBehaviour {
         // Configuration
         [Header("Configuration")]
@@ -51,7 +31,7 @@ namespace Abilities {
         [NonSerialized] private Character character;
         [NonSerialized] private Vector2 directionalInput;
         // Input
-        [NonSerialized] public PlayerActions playerInput;
+        private PlayerInput.Controller input { get { return character.input; } }
 
         public Vector3 directionalVelocity { get; private set; }
 
@@ -62,54 +42,10 @@ namespace Abilities {
                 this.enabled = false;
                 return;
             }
-            Initialise();
-        }
-
-        private void Initialise() {
-            playerInput = new PlayerActions();
-
-
-        }
-
-        private void InitialiseInput() {
-            playerInput = new PlayerActions();
-
-            playerInput.Up.AddDefaultBinding(Key.UpArrow);
-            playerInput.Down.AddDefaultBinding(Key.DownArrow);
-            playerInput.Left.AddDefaultBinding(Key.LeftArrow);
-            playerInput.Right.AddDefaultBinding(Key.RightArrow);
-
-            playerInput.Left.AddDefaultBinding(InputControlType.LeftStickLeft);
-            playerInput.Right.AddDefaultBinding(InputControlType.LeftStickRight);
-            playerInput.Up.AddDefaultBinding(InputControlType.LeftStickUp);
-            playerInput.Down.AddDefaultBinding(InputControlType.LeftStickDown);
-
-            playerInput.ListenOptions.MaxAllowedBindings = 2;
-
         }
 
         public void Update() {
-            // Input
-            switch (debugInputMode) {
-                case DebugInputMode.GAMEPAD:
-                    directionalInput = new Vector2(Input.GetAxisRaw("Left Stick X"), Input.GetAxisRaw("Left Stick Y"));
-                    break;
-                case DebugInputMode.KEYBOARD:
-                    directionalInput = new Vector2(Input.GetAxisRaw("Horizontal Keyboard"), Input.GetAxisRaw("Vertical Keyboard"));
-                    break;
-                case DebugInputMode.NONE:
-                    directionalInput = Vector2.zero;
-                    break;
-                case DebugInputMode.BOTH:
-                default:
-                    directionalInput = Vector2.Lerp(
-                        new Vector2(Input.GetAxisRaw("Left Stick X"), Input.GetAxisRaw("Left Stick Y")),
-                        new Vector2(Input.GetAxisRaw("Horizontal Keyboard"), Input.GetAxisRaw("Vertical Keyboard")),
-                        0.5f
-                        );
-                    break;
-            }
-            
+            directionalInput = input.shared.directional;
         }
 
         public void LateUpdate() {

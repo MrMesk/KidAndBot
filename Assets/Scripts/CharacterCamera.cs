@@ -26,6 +26,9 @@ public class CharacterCamera : MonoBehaviour {
     [Header("Parameters")]
     public AnimationCurve _distanceFromHeight = new AnimationCurve();
     
+    // Input
+    private PlayerInput.Controller input { get { return _attachedCharacter.input; } }
+
     protected virtual void Awake() { }
 
     private void Update() {
@@ -33,6 +36,8 @@ public class CharacterCamera : MonoBehaviour {
         Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector2 stickInput = new Vector2(Input.GetAxis("Right Stick X"), Input.GetAxis("Right Stick Y"));
 
+        mouseInput = Vector2.zero;
+        stickInput = input.shared.camera.Value;
         // Refresh rotation
         float rotationDelta =
             // Mouse

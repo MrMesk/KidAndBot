@@ -21,8 +21,9 @@ namespace Abilities {
 
         private bool madeJumpRequest = false;
         private bool madeStopJumpRequest = false;
-
-
+        
+        // Input
+        private PlayerInput.Controller input { get { return character.input; } }
 
         void Start() {
             // Retrieve required component(s)
@@ -51,12 +52,12 @@ namespace Abilities {
             // Input
 
             // Jump request
-            madeJumpRequest |= Input.GetButtonDown("Jump");
-            madeJumpRequest &= !Input.GetButtonUp("Jump");
+            madeJumpRequest |= input.kid.jump.WasPressed;
+            madeJumpRequest &= !input.kid.jump.WasReleased;
 
             // Stop jump request
-            madeStopJumpRequest |= Input.GetButtonUp("Jump");
-            madeStopJumpRequest &= !Input.GetButtonDown("Jump");
+            madeStopJumpRequest |= input.kid.jump.WasReleased;
+            madeStopJumpRequest &= !input.kid.jump.WasPressed;
         }
 
         void FixedUpdate() {

@@ -109,16 +109,10 @@ public class RobotController : Character
 
 		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
 
-		if (Input.GetMouseButtonDown(1))
+		if (input.bot.grab.WasPressed)
 		{
-//<<<<<<< HEAD
-			//Debug.Log ("Right Mouse Click");
-			if (!isGrabbing) 
-//=======
 			//Debug.Log("Right Mouse Click");
-			if (!isGrabbing)
-//>>>>>>> origin/Robot
-			{
+			if (!isGrabbing) {
 				AttachHook();
 			}
 			else
@@ -132,7 +126,7 @@ public class RobotController : Character
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
 
-			if (Input.GetKeyUp(KeyCode.A))
+			if (input.bot.pull.WasReleased)
 			{
 				Pull(grabbedNormal);
 				isGrabbing = false;
@@ -152,7 +146,7 @@ public class RobotController : Character
 			WalkingShake();
 		}
 
-		if (Input.GetButtonDown("Jump"))
+		if (input.kid.jump.WasPressed)
 		{
 			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration * 2, walkShakeMagnitude * 2));
 			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
@@ -176,7 +170,7 @@ public class RobotController : Character
 	void ChargeManagement ()
 	{
 
-		if (Input.GetMouseButton(0) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.E) )
+		if (input.bot.punch.IsPressed || input.bot.pull.IsPressed || input.bot.bump.IsPressed)
 		{
 			//Debug.Log("Charging");
 			bumpForce += Time.deltaTime;
@@ -217,7 +211,7 @@ public class RobotController : Character
 
 	void BumpForward ()
 	{
-		if (Input.GetMouseButtonUp(0))
+		if (input.bot.punch.WasReleased)
 		{
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hit;
@@ -342,12 +336,7 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-//<<<<<<< HEAD
-		if (Input.GetKeyDown (KeyCode.E) && IsGrounded()) 
-//=======
-		if (Input.GetKeyUp(KeyCode.E) && mobilityState == MobilityState.GROUNDED)
-//>>>>>>> origin/Robot
-		{
+		if (input.bot.bump.WasPressed && IsGrounded()) {
 			ForceCheck();
 
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;

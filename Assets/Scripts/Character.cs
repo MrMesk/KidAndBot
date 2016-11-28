@@ -43,9 +43,26 @@ public class Character : MonoBehaviour {
     [NonSerialized] protected bool isClimbing = false;
     [NonSerialized] protected Vector2 _directionalInput;
 
+    // Input
+    private delegate PlayerInput.Controller ControllerGetter();
+    private ControllerGetter getController;
+    public PlayerInput.Controller input { get { return getController(); } }
+
     protected virtual void Awake() {
         // Retrieve component(s)
         controller = GetComponent<CharacterController>();
+        
+        // Retrieve input controller
+        var characterType = this.GetType();
+        if (characterType == typeof(KidCharacter)) {
+            getController = delegate () {
+                return PlayerInput.Controller.kidController;
+            };
+        } else if (characterType == typeof(RobotController)) {
+            getController = delegate () {
+                return PlayerInput.Controller.botController;
+            };
+        }
     }
 
 	protected virtual void Update() { }
