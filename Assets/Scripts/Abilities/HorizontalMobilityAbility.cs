@@ -29,7 +29,7 @@ namespace Abilities {
 
         // State
         [NonSerialized] private Character character;
-        [NonSerialized] private Vector2 directionalInput;
+        [NonSerialized] public Vector2 directionalInput;
         // Input
         private PlayerInput.Controller input { get { return character.input; } }
 

@@ -14,6 +14,8 @@ public class AnimCube : MonoBehaviour
 	float lerpState;
 	float moveEvaluateIndex;
 
+	int cubeScale;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -22,6 +24,8 @@ public class AnimCube : MonoBehaviour
 		moveEvaluateIndex = 0f;
 		bumpTimer = 0f;
 		bumping = false;
+
+		cubeScale = Mathf.FloorToInt(GetComponent<BoxCollider>().size.x);
 	}
 	
 	// Update is called once per frame
@@ -39,16 +43,42 @@ public class AnimCube : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, bumpDir, out hit, bumpForce, bumpMask))
 		{
-			//Debug.Log("Raycast hits !");
-			bumpPos += bumpDir * (Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x / 2);
-			Debug.Log ("LevelModule Scale : " + transform.GetComponent<BoxCollider> ().size.x);
+			Debug.Log("Raycast hits !");
+			Debug.Log("Bump force " + (Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2));
+			bumpPos = GetFarthestPoint(Mathf.RoundToInt(Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2), bumpDir);
 		}
 		else
 		{
 			//Debug.Log("All clear");
-			bumpPos += bumpDir * bumpForce;
+			Debug.Log("Bump force " + bumpForce);
+			bumpPos = GetFarthestPoint(Mathf.RoundToInt(bumpForce), bumpDir);
+			//bumpPos += bumpDir * bumpForce;
 		}
 		StartCoroutine (BumpToDir (1f));
+	}
+
+	public Vector3 GetFarthestPoint(int maxDistance, Vector3 dir)
+	{
+		Vector3 farthestPoint = bumpPos;
+		for (int i = cubeScale*4; i <= maxDistance; i += cubeScale*4)
+		{
+			Debug.Log("i = " + i);
+			Vector3 checkPos = bumpPos + dir.normalized * i;
+
+			RaycastHit hit;
+			Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
+			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale*2 +1))
+			{
+				Debug.Log("Position " + checkPos + "Accessible !");
+				farthestPoint = checkPos;
+			}
+			else
+			{
+				break;
+			}
+		}
+		Debug.Log("Farthest point : " + farthestPoint);
+		return farthestPoint;
 	}
 
 	public IEnumerator BumpToDir(float bumpTime)
