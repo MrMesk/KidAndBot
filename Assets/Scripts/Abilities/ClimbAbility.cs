@@ -29,7 +29,7 @@ public class ClimbAbility : MonoBehaviour {
             return;
         }
         return;
-
+        /*
         Vector3 climbCorrectionVector = -character.characterCompass.climbNormal * 2f;
 
         Debug.DrawRay(transform.position, climbCorrectionVector, Color.red);
@@ -38,6 +38,6 @@ public class ClimbAbility : MonoBehaviour {
 
         // Apply to global velocity
         character.globalVelocity += climbCorrectionVector;
-
+        */
     }
 }

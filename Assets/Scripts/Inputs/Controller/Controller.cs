@@ -3,13 +3,7 @@ using System.Collections;
 using InControl;
 
 namespace PlayerInput {
-
-    public enum CharacterMode {
-        NONE,
-        KID,
-        BOT
-    }
-
+    
     public class Controller {
         public static Controller kidController;
         public static Controller botController;
@@ -41,8 +35,8 @@ namespace PlayerInput {
 
         public static void Swap() {
             Controller temp = Controller.kidController;
-            Controller kidController = Controller.botController;
-            Controller botController = temp;
+            Controller.kidController = Controller.botController;
+            Controller.botController = temp;
         }
     }
     

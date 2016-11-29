@@ -55,7 +55,7 @@ namespace InControl
 			{
 				if (Application.platform == RuntimePlatform.OSXEditor ||
 				    Application.platform == RuntimePlatform.OSXPlayer ||
-				    Application.platform == RuntimePlatform.OSXWebPlayer ||
+				    // Application.platform == RuntimePlatform.OSXWebPlayer || // DEBUG
 				    Application.platform == RuntimePlatform.OSXDashboardPlayer)
 				{
 					return macName;

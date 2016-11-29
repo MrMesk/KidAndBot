@@ -12,6 +12,7 @@ namespace PlayerInput {
     }
     
     public class InputHelper : MonoBehaviour {
+        [Obsolete]
         public static void AddDefaultBinding_DEPRECATED(PlayerAction playerAction, ButtonInput input, BindingFilter setupMode) {
             switch (setupMode) {
                 case BindingFilter.KEYBOARD:

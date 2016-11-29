@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using InControl;
 
 //#if UNITY_EDITOR
@@ -76,7 +77,8 @@ namespace InControl
 		{
 			if (Input.GetKeyDown( KeyCode.R ))
 			{
-				Application.LoadLevel( "TestInputManager" );
+				//Application.LoadLevel( "TestInputManager" ); // DEBUG
+                SceneManager.LoadScene("TestInputManager");
 			}
 
 			#if UNITY_ANDROID && INCONTROL_OUYA && !UNITY_EDITOR

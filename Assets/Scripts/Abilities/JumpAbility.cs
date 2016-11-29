@@ -53,11 +53,11 @@ namespace Abilities {
 
             // Jump request
             madeJumpRequest |= input.kid.jump.WasPressed;
-            madeJumpRequest &= !input.kid.jump.WasReleased;
+            madeJumpRequest &= input.kid.jump.IsPressed;
 
             // Stop jump request
             madeStopJumpRequest |= input.kid.jump.WasReleased;
-            madeStopJumpRequest &= !input.kid.jump.WasPressed;
+            madeStopJumpRequest &= !input.kid.jump.IsPressed;
         }
 
         void FixedUpdate() {

@@ -4,10 +4,11 @@ using System.Collections;
 
 public class CharacterCompass : MonoBehaviour {
 
-    public Character _attachedCharacter;
-
-    public Transform correctedCompas;
-
+    /// <summary>
+    /// The character this compas is attached to
+    /// </summary>
+    public Character character;
+    
     public Vector3 localPosition = new Vector3(0, -1, 0);
     
     [NonSerialized] public Vector3 climbNormal;
@@ -26,34 +27,35 @@ public class CharacterCompass : MonoBehaviour {
             targetRotation = GetWalkingCompasRotation();
             targetRotation = Snap(targetRotation);
         }
-
+        // Smoothing
         float deltaAngle = Quaternion.Angle(transform.rotation, targetRotation);
         if(deltaAngle < 135) {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, (deltaAngle * 4 + 180) * Time.deltaTime);
         } else {
             transform.rotation = targetRotation;
         }
-        correctedCompas.rotation = targetRotation;
 
         // Position
-        transform.position = _attachedCharacter.transform.position + localPosition;
+        transform.position = character.transform.position + localPosition;
     }
 
     public Quaternion GetWalkingCompasRotation() {
         // Get camera forward
-        Vector3 cameraForward = _attachedCharacter.characterCamera.transform.forward;
+        Vector3 cameraForward = character.characterCamera.transform.forward;
         // Project on ground
-        cameraForward = Vector3.ProjectOnPlane(cameraForward, _attachedCharacter.gravity);
+        cameraForward = Vector3.ProjectOnPlane(cameraForward, character.gravity);
         // Convert to quaternion/rotation
-        Quaternion forwardRotation = Quaternion.LookRotation(cameraForward, -_attachedCharacter.gravity);
+        Quaternion forwardRotation = Quaternion.LookRotation(cameraForward, -character.gravity);
         return forwardRotation;
     }
 
+    [Obsolete]
+    // Legacy
     public Quaternion GetClimbingCompasRotation() {
         // Check if attached character is a kid
-        if (_attachedCharacter.GetType() != typeof(KidCharacter))
+        if (character.GetType() != typeof(KidCharacter))
             throw new System.Exception();
-        KidCharacter attachedKidCharacter = (KidCharacter)_attachedCharacter;
+        KidCharacter attachedKidCharacter = (KidCharacter)character;
         // Check if attached character is climbing
         ClimbableWall wall = attachedKidCharacter._selectedClimbableWall;
         if (wall == null)
@@ -61,8 +63,8 @@ public class CharacterCompass : MonoBehaviour {
         // Get camera forward
         Vector3 forward = Vector3.ProjectOnPlane(wall.transform.forward, Vector3.up);
         Vector3 right = Vector3.ProjectOnPlane(wall.transform.right, Vector3.up);
-        Vector3 cameraOnRight = Vector3.Project(Vector3.ProjectOnPlane(_attachedCharacter.characterCamera.transform.forward, Vector3.up).normalized, right);
-        Vector3 upwards = -Vector3.Project(_attachedCharacter.characterCamera.transform.forward, forward);
+        Vector3 cameraOnRight = Vector3.Project(Vector3.ProjectOnPlane(character.characterCamera.transform.forward, Vector3.up).normalized, right);
+        Vector3 upwards = -Vector3.Project(character.characterCamera.transform.forward, forward);
         float dotForward = Vector3.Dot(forward, upwards);
         float dotRight = Vector3.Dot(right, cameraOnRight);
         Vector3 up = (dotForward > 0) ? wall.transform.up : -wall.transform.up;
@@ -86,42 +88,37 @@ public class CharacterCompass : MonoBehaviour {
     }
 
     public Quaternion GetClimbingCompasRotation2() {
-        // Get kid
-        if(_attachedCharacter.GetType() != typeof(KidCharacter)) {
+        // Get kid character
+        if(character.GetType() != typeof(KidCharacter)) {
             throw new System.Exception();
         }
-        KidCharacter kidCharacter = (KidCharacter)_attachedCharacter;
-
-
-        // Get kid's climbing collider
-        Collider currentlyClimbingCollider = kidCharacter._selectedClimbableWall._collider;
+        KidCharacter kidCharacter = (KidCharacter)character;
 
         // Get kid's position
         Vector3 kidPosition = kidCharacter.transform.position;
 
-        // Get kid's foot
-        Vector3 kidFootPosition = kidPosition + (-_attachedCharacter.transform.up * (_attachedCharacter.transform.localScale.y / 2));
-
+        // Get kid's climbing collider
+        Collider currentlyClimbingCollider = kidCharacter._selectedClimbableWall._collider;
+                
+        // Get closest point on climbing collider
         var pointData = ColliderHelper.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
-        
-        Debug.DrawRay(pointData.position, pointData.normal, Color.green);
-        
+        // Get this point's normal
         Vector3 normal = climbNormal = pointData.normal;        
 
+        // Camera
         CharacterCamera kidCamera = kidCharacter.characterCamera;
-        Vector3 cameraForward = Vector3.ProjectOnPlane(kidCamera.transform.forward, Vector3.up);
-        //cameraForward = kidCamera.transform.forward;
 
+        // Rotation upward
         Vector3 upward = Vector3.ProjectOnPlane(normal, -kidCamera.transform.right);
+        // Rotation forward
         Vector3 forward = Quaternion.AngleAxis(90, kidCamera.transform.right) * upward;
+        // Rotation
         Quaternion rotation = Quaternion.LookRotation(forward, upward);
+
+        // Balance
         float balanceDot = Vector3.Dot(normal, -kidCamera.transform.right);
+        // Balance application
         rotation = Quaternion.AngleAxis(90 * balanceDot, forward) * rotation;
-
-        //Debug.DrawRay(kidCharacter.transform.position, kidCamera.transform.right, Color.green);
-        //Debug.DrawRay(kidCharacter.transform.position, upward, Color.yellow);
-
-        //Debug.Log(balanceDot);
 
         return rotation;
     }

@@ -14,64 +14,6 @@ public class ControlsManager : MonoBehaviour {
     public KidInputConfiguration kidInputsConfig;
     public BotInputConfiguration botInputsConfig;
     
-    // Setup mode
-    /*
-    public enum ContolsSetupMode {
-        NONE,
-        KEYBOARD_GAMEPAD,
-        GAMEPAD_KEYBOARD,
-        GAMEPAD_GAMEPAD
-    }
-    [Header("Setup mode")]
-    [SerializeField]
-    private ContolsSetupMode controlsSetupModep = ContolsSetupMode.GAMEPAD_KEYBOARD;
-    public static ContolsSetupMode GetContolsSetupMode() { return instance.controlsSetupModep; }
-    */
-    /*
-    // Initialisation
-    private void Initialise() {
-        const int kidId = 0;
-        const int botId = 1;
-        switch (controlsSetupModep) {
-            case ContolsSetupMode.KEYBOARD_GAMEPAD:
-                KidInput.GetInstance().Setup(sharedInputsConfig, kidInputsConfig, SetupMode.KEYBOARD);
-                BotInput.GetInstance().Setup(sharedInputsConfig, botInputsConfig, SetupMode.GAMEPAD);
-                break;
-            case ContolsSetupMode.GAMEPAD_KEYBOARD:
-                KidInput.GetInstance().Setup(
-                    sharedInputsConfig,
-                    kidInputsConfig,
-                    SetupMode.GAMEPAD,
-                    (InputManager.Devices.Count > kidId) ? InputManager.Devices[kidId] : null
-                    );
-                BotInput.GetInstance().Setup(sharedInputsConfig, botInputsConfig, SetupMode.KEYBOARD);
-                break;
-            case ContolsSetupMode.GAMEPAD_GAMEPAD:
-                KidInput.GetInstance().Setup(
-                    sharedInputsConfig,
-                    kidInputsConfig,
-                    SetupMode.GAMEPAD,
-                    (InputManager.Devices.Count > kidId) ? InputManager.Devices[kidId] : null
-                    );
-                BotInput.GetInstance().Setup(
-                    sharedInputsConfig,
-                    botInputsConfig,
-                    SetupMode.GAMEPAD,
-                    (InputManager.Devices.Count > botId) ? InputManager.Devices[botId] : null
-                    );
-                break;
-        }
-
-    }
-    */
-
-    // Debug
-    public void OnGUI() {
-        GUILayout.Label(InputManager.Devices.Count.ToString());
-        GUILayout.Label("Bot bump = " + BotInput.bump.IsPressed.ToString());
-        GUILayout.Label("Kid jump = " + KidInput.jump.IsPressed.ToString());
-    }
-
     private void Awake() {
         // Singleton setup
         if (instance == null) {
