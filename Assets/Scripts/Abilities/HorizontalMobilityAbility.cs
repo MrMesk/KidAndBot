@@ -3,7 +3,9 @@ using System.Collections;
 using System;
 
 namespace Abilities {
-    public class HorizontalMobilityAbility : MonoBehaviour {
+    
+    public partial class HorizontalMobilityAbility : MonoBehaviour {
+        // Configuration
         [Header("Configuration")]
         public float _moveSpeed = 7.5f;
 
@@ -13,15 +15,23 @@ namespace Abilities {
             KEYBOARD,
             BOTH
         }
+
+
+        // Debug
         [Header("Debug")]
         public DebugInputMode debugInputMode = DebugInputMode.BOTH;
 
-       [Header("Sings & Feedbacks")]
+        // S&F
+        [Header("Sings & Feedbacks")]
         [Range(0,1)]
         public float editLookDirectionDeadZone = 0.1f;
 
+
+        // State
         [NonSerialized] private Character character;
         [NonSerialized] private Vector2 directionalInput;
+        // Input
+        private PlayerInput.Controller input { get { return character.input; } }
 
         public Vector3 directionalVelocity { get; private set; }
 
@@ -35,17 +45,7 @@ namespace Abilities {
         }
 
         public void Update() {
-            // Input
-            switch (debugInputMode) {
-                case DebugInputMode.GAMEPAD:
-                    directionalInput = new Vector2(Input.GetAxisRaw("Left Stick X"), Input.GetAxisRaw("Left Stick Y"));
-                    break;
-                case DebugInputMode.BOTH:
-                default:
-                    directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-                    break;
-            }
-            
+            directionalInput = input.shared.directional;
         }
 
         public void LateUpdate() {
