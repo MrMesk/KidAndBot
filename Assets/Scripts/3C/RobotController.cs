@@ -209,7 +209,7 @@ public class RobotController : Character
 
 			ForceCheck();
 			robotAnim.SetTrigger("Punching");
-			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+			//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 			if (Physics.Raycast(ray, out hit, bumpForwardRange, bumpForwardMask))
 			{
 				//Debug.Log ("Raycast hits !!");
@@ -227,10 +227,33 @@ public class RobotController : Character
 						particleImpact = Instantiate(particleImpact, hit.point, Quaternion.identity) as GameObject;
 						particleImpact.transform.forward = cubeNormal;
 						//animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
-						animCube.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
+
+						AnimCube basis;
+						//Debug.Log ("Is Basis linked ? " + animCube.linked);
+						if (animCube.linked == true) 
+						{
+							basis = animCube.GetBasis ();
+						} 
+						else 
+						{
+							basis = animCube;
+						}
+						//Debug.Log ("Basis : " + basis.name);
+						if (basis.IsAgainstWall (-cubeNormal)) 
+						{
+							if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall (-cubeNormal)) 
+							{
+								basis = animCube;
+								basis.transform.parent = GameObject.Find ("Level").transform;
+							}
+
+							basis.transform.GetComponentInChildren<AnimCube>().transform.parent = null;
+							basis = animCube.GetBasis ();
+						} 
+
+						basis.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
+						//animCube.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
 					}
-
-
 				}
 				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 				FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
@@ -252,7 +275,6 @@ public class RobotController : Character
 					particleImpact = Instantiate(particleImpact, hit.point, Quaternion.identity) as GameObject;
 					particleImpact.transform.forward = cubeNormal;
 					destructibleWall.Destruct(-cubeNormal, bumpForcesForward[forceTier] * 20f);
-
 				}
 				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 				FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
@@ -263,8 +285,32 @@ public class RobotController : Character
 	void Pull (Vector3 dir)
 	{
 		ForceCheck();
-		//grabbedCube.StartCoroutine (grabbedCube.BumpToDir (2f, bumpForcesForward [forceTier], dir));
-		grabbedCube.BumpingToDir(bumpForcesForward[forceTier], dir);
+
+		AnimCube basis;
+
+		if (grabbedCube.linked == true) 
+		{
+			basis = grabbedCube.GetBasis ();
+		} 
+		else 
+		{
+			basis = grabbedCube;
+		}
+
+		if (basis.IsAgainstWall (dir)) 
+		{
+			if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall (dir)) 
+			{
+				basis = grabbedCube;
+				basis.transform.parent = GameObject.Find ("Level").transform;
+			}
+
+			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = null;
+			basis = grabbedCube.GetBasis ();
+		} 
+
+		basis.BumpingToDir(bumpForcesForward[forceTier], dir);
+
 		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
 		FMODUnity.RuntimeManager.PlayOneShot(pull, transform.position);
 	}
@@ -320,7 +366,8 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-		if (input.bot.bump.WasPressed && IsGrounded()) {
+		if (input.bot.bump.WasPressed && IsGrounded()) 
+		{
 			ForceCheck();
 
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
@@ -333,7 +380,7 @@ public class RobotController : Character
 			nearlyBlocks = Physics.OverlapSphere(transform.position, bumpRange, bumpUpMask);
 			foreach (Collider col in nearlyBlocks)
 			{
-				Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
+				//Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
 				animCube = col.GetComponent<AnimCube>();
 				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - transform.localScale.y - 1f && animCube.bumping == false)
 				{
@@ -359,7 +406,8 @@ public class RobotController : Character
         return true; // Succesfully forced kid to jump
     }
 
-    public override bool IsGrabbing() {
+    public override bool IsGrabbing() 
+	{
         return isGrabbing;
     }
 
