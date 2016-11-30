@@ -10,15 +10,20 @@ public class AnimCube : MonoBehaviour
 	float bumpTimer;
 	public bool bumping;
 	public LayerMask bumpMask;
+	public LayerMask checkMask;
 	Vector3 bumpPos;
 	float lerpState;
 	float moveEvaluateIndex;
+	/*[HideInInspector]*/ public bool linked = false; //Is the LM Linked with another one ? (On top/Below it)
+	[FMODUnity.EventRef]
+	public string click = "event:/Step";
 
 	int cubeScale;
 
 	// Use this for initialization
 	void Start () 
 	{
+		linked = false;
 		bumpPos = transform.position;
 		lerpState = 0f;
 		moveEvaluateIndex = 0f;
@@ -31,10 +36,10 @@ public class AnimCube : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if(transform.position != bumpPos)
+		/*if(transform.position != bumpPos)
 		{
-			transform.position = Vector3.Lerp(initialPos, bumpPos, lerpState);
-		}
+			
+		}*/
 	}
 
 	public void BumpingToDir(float bumpForce, Vector3 bumpDir)
@@ -43,17 +48,18 @@ public class AnimCube : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position, bumpDir, out hit, bumpForce, bumpMask))
 		{
-			Debug.Log("Raycast hits !");
-			Debug.Log("Bump force " + (Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2));
+			//Debug.Log("Raycast hits !");
+			//Debug.Log("Bump force " + (Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2));
 			bumpPos = GetFarthestPoint(Mathf.RoundToInt(Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2), bumpDir);
 		}
 		else
 		{
 			//Debug.Log("All clear");
-			Debug.Log("Bump force " + bumpForce);
+			//Debug.Log("Bump force " + bumpForce);
 			bumpPos = GetFarthestPoint(Mathf.RoundToInt(bumpForce), bumpDir);
 			//bumpPos += bumpDir * bumpForce;
 		}
+		StopCoroutine (BumpToDir (1f));
 		StartCoroutine (BumpToDir (1f));
 	}
 
@@ -62,14 +68,14 @@ public class AnimCube : MonoBehaviour
 		Vector3 farthestPoint = bumpPos;
 		for (int i = cubeScale*4; i <= maxDistance; i += cubeScale*4)
 		{
-			Debug.Log("i = " + i);
+			//Debug.Log("i = " + i);
 			Vector3 checkPos = bumpPos + dir.normalized * i;
 
 			RaycastHit hit;
-			Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
+			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
 			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale*2 +1))
 			{
-				Debug.Log("Position " + checkPos + "Accessible !");
+				//Debug.Log("Position " + checkPos + "Accessible !");
 				farthestPoint = checkPos;
 			}
 			else
@@ -90,10 +96,12 @@ public class AnimCube : MonoBehaviour
 		{
 			moveEvaluateIndex += Time.deltaTime;
 			lerpState = moveForward.Evaluate(moveEvaluateIndex/bumpTime);
+			transform.position = Vector3.Lerp(initialPos, bumpPos, lerpState);
 			yield return null;
 		}
 
 		lerpState = 0f;
+		LMCheckBelow ();
 
 	}
 
@@ -119,5 +127,61 @@ public class AnimCube : MonoBehaviour
 		bumpTimer = 0f;
 		bumping = false;
 
+	}
+
+	///////////////////// Stacking Modules
+	/// 
+	/// 
+
+
+	void LMCheckBelow()
+	{
+		RaycastHit hit;
+		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale * 2 + 1, checkMask)) 
+		{
+			Debug.Log ("A Level Module is below !!!");
+			linked = true;
+			hit.transform.GetComponent<AnimCube> ().linked = true;
+			FMODUnity.RuntimeManager.PlayOneShot(click, transform.position);
+			transform.parent = hit.transform;
+		}
+	}
+
+	public AnimCube GetBasis()
+	{
+		Transform below = GetComponentInParent<AnimCube> ().transform;
+		Debug.Log ("Below + " + below.name);
+		if (below != null) 
+		{
+			Transform bottomPoint = below.parent;
+			if (bottomPoint != null) 
+			{
+				return bottomPoint.GetComponent<AnimCube> ();
+			} 
+			else 
+			{
+				return below.GetComponent<AnimCube> ();
+			}
+		} 
+		else 
+		{
+			return GetComponent<AnimCube> ();
+		}
+	}
+
+	public bool IsAgainstWall(Vector3 dir)
+	{
+		float rayLength = cubeScale * 2 + 1f;
+		Debug.Log ("Ray length : " + rayLength);
+		if (Physics.Raycast (transform.position, dir, rayLength, bumpMask)) 
+		{
+			Debug.Log (gameObject.name + " is against a wall !");
+			return true;
+		} 
+		else 
+		{
+			Debug.Log (gameObject.name + " isn't against a wall !");
+			return false;
+		}
 	}
 }
