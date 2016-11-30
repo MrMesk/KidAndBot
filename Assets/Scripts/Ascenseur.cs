@@ -2,54 +2,28 @@
 using System.Collections;
 
 public class Ascenseur : MonoBehaviour {
-
-	public GameObject pointUp;
-	public GameObject pointDown;
-	public float speed;
-
-	public bool goDown;
-	public bool goUp;
-
-	// Use this for initialization
-	void Start () 
-	{
-		goUp = true;
-
-	}
 	
-	// Update is called once per frame
-	void Update () 
+	public float waitingTime;
+	public float timeToMove;
 
 
-	{	// Monte
+	public IEnumerator  Ascend ( Vector3 endPos, Vector3 initialPosition)
+	{
+		
+		float progress = 0f;
 
-
-		if(transform.position.y >= 0  && goUp == true) 
+		while( progress < 1)
 		{
-			//transform.position.y += pointUp.transform.position.y * speed ;
-			transform.position += Vector3.up * speed * Time.deltaTime;
-			if(transform.position.y > 11 ) 
-			{
-				goUp = false;
-				goDown = true;
+			progress += Time.deltaTime / timeToMove;
+			Vector3 position = transform.position;
+			position.y = Mathf.Lerp(initialPosition.y, endPos.y, progress);
+			transform.position = position;
 
-			}
+			yield return null;
+		
 		}
 
-		//Descend
-		if(transform.position.y <= 15 && goDown == true ) 
-		{
-			Debug.Log("Doit Descendre");
-			//transform.position.y += pointDown.transform.position.y  * speed ;
-			transform.position += Vector3.down * speed * Time.deltaTime;
-			if(transform.position.y >= 0 ) 
-			{
-				goUp = true;
-				goDown = false;
-
-			}
-		}
-
-
+		yield return new WaitForSeconds(waitingTime);
+		StartCoroutine(Ascend(initialPosition, endPos ));
 	}
 }
