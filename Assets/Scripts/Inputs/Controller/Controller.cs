@@ -14,18 +14,7 @@ namespace PlayerInput {
         public KidControls kid;
         public BotControls bot;
 
-        private InputDevice device = InputManager.ActiveDevice;
-        public InputDevice Device {
-            get {
-                return device;
-            }
-            set {
-                device = value;
-                shared.Device = value;
-                kid.Device = value;
-                bot.Device = value;
-            }
-        }
+        public InputDevice device = null;
 
         public Controller() {
             shared = new SharedControls();

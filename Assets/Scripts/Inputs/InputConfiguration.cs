@@ -29,7 +29,7 @@ namespace PlayerInput {
         )]
     public class KidInputConfiguration : InputConfiguration {
         // Jump
-        public ButtonInput jump = new ButtonInput();
+        public TriggerInput jump = new TriggerInput();
     }
 
     // Bot inputs
@@ -40,20 +40,20 @@ namespace PlayerInput {
         )]
     public class BotInputConfiguration : InputConfiguration {
         // Punch
-        public ButtonInput punch;
+        public TriggerInput punch;
         // Grab
-        public ButtonInput grab;
+        public TriggerInput grab;
         // Pull
-        public ButtonInput pull;
+        public TriggerInput pull;
         // Bump
-        public ButtonInput bump;
+        public TriggerInput bump;
     }
 
     [Serializable]
-    public abstract class Input { }
+    public abstract class ConfigurableInput { }
 
     [Serializable]
-    public class ButtonInput : Input {
+    public class TriggerInput : ConfigurableInput {
         // Key input
         public Key keyboard = Key.None;
         // Gamepad input
@@ -63,15 +63,15 @@ namespace PlayerInput {
     }
 
     [Serializable]
-    public class AxisInput : Input {
+    public class AxisInput : ConfigurableInput {
         // Positive
-        public ButtonInput positive = new ButtonInput();
+        public TriggerInput positive = new TriggerInput();
         // Negative
-        public ButtonInput negative = new ButtonInput();
+        public TriggerInput negative = new TriggerInput();
     }
 
     [Serializable]
-    public class TwoAxisInput : Input {
+    public class TwoAxisInput : ConfigurableInput {
         // X Axis
         public AxisInput xAxis = new AxisInput();
         // Y Axis
