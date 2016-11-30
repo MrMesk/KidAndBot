@@ -50,6 +50,11 @@ public class RobotController : Character
 	public string pull = "event:/Step";
 	public string bump = "event:/Step";
 
+	[Space(10)]
+	[Header("Animation")]
+	[Space(10)]
+
+	public Animator robotAnim;
 	Collider[] nearlyBlocks;
 
 	float bumpForce;
@@ -59,24 +64,19 @@ public class RobotController : Character
     bool isGrabbing;
 	AnimCube grabbedCube;
 	Vector3 grabbedNormal = new Vector3();
-//<<<<<<< HEAD
-   /* [Space(10)]
-    public LineRenderer grappin;*/
-//=======
+
 	LineRenderer grappin;
 	BoxCollider grappinCollider;
-//>>>>>>> origin/Robot
 
+	Abilities.HorizontalMobilityAbility hMobility;
 
 	// Use this for initialization
 	void Start ()
 	{
-//<<<<<<< HEAD
-		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
-//=======
+		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbility>();
 		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
-//>>>>>>> origin/Robot
+
 
 		if (cameraShaker == null)
 		{
@@ -103,8 +103,6 @@ public class RobotController : Character
 	{
 		base.Update();
 
-
-
 		ChargeManagement();
 
 		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
@@ -126,7 +124,7 @@ public class RobotController : Character
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
 
-			if (input.bot.pull.WasReleased)
+			if (input.bot.punch.WasReleased)
 			{
 				Pull(grabbedNormal);
 				isGrabbing = false;
@@ -141,20 +139,17 @@ public class RobotController : Character
 			grappin.enabled = false;
 		}
 
-		if (_directionalInput != Vector2.zero && mobilityState == MobilityState.GROUNDED)
+		//Debug.Log("Directional Input" + _directionalInput);
+		if (hMobility.directionalInput != Vector2.zero && !isGrabbing/* && IsGrounded()*/)
 		{
 			WalkingShake();
+			robotAnim.SetBool("Walking", true);
 		}
-
-		if (input.kid.jump.WasPressed)
+		else
 		{
-			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration * 2, walkShakeMagnitude * 2));
-			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
-			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
-			particleImpact.transform.forward = Vector3.up;
-
-			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
+			robotAnim.SetBool("Walking", false);
 		}
+
 	}
 
 	void WalkingShake ()
@@ -201,11 +196,7 @@ public class RobotController : Character
 		{
 			forceTier = 0;
 		}
-//<<<<<<< HEAD
-		//Debug.Log ("Force Tier : " + forceTier);
-//=======
-		//Debug.Log("Force Tier : " + forceTier);
-//>>>>>>> origin/Robot
+
 		bumpForce = 0f;
 	}
 
@@ -217,7 +208,7 @@ public class RobotController : Character
 			RaycastHit hit;
 
 			ForceCheck();
-
+			robotAnim.SetTrigger("Punching");
 			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 			if (Physics.Raycast(ray, out hit, bumpForwardRange, bumpForwardMask))
 			{
@@ -293,26 +284,19 @@ public class RobotController : Character
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
 		Vector3 newSize = new Vector3(1f,1f, (transform.position - targetPoint).magnitude);
 
-//<<<<<<< HEAD
-        //Debug.Log("Attaching hook");
+
         Ray ray = new Ray (transform.position, transform.forward);
-//=======
 		grappinCollider.size = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
 	void AttachHook ()
 	{
-		//bumpForce = 0f;
-
-		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
-//>>>>>>> origin/Robot
 		RaycastHit hit;
 
 		if (Physics.Raycast(ray, out hit, pullRange, bumpForwardMask))
 		{
-			//Debug.Log ("Raycast hits !!");
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
 			if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
