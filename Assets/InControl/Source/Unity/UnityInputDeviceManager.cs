@@ -118,7 +118,7 @@ namespace InControl
             if (InputManager.UnityVersion < new VersionInfo(4, 5)) {
                 if (Application.platform == RuntimePlatform.OSXEditor ||
                     Application.platform == RuntimePlatform.OSXPlayer //||
-                                                                      //Application.platform == RuntimePlatform.OSXWebPlayer // DEBUG
+                    //Application.platform == RuntimePlatform.OSXWebPlayer // DEBUG
                     ) {
                     if (unityJoystickName == "Unknown Wireless Controller") {
                         // Ignore PS4 controller in Bluetooth mode on Mac since it connects but does nothing.
@@ -131,7 +131,7 @@ namespace InControl
             if (InputManager.UnityVersion >= new VersionInfo(4, 6, 3)) {
                 if (Application.platform == RuntimePlatform.WindowsEditor ||
                     Application.platform == RuntimePlatform.WindowsPlayer // ||
-                                                                          //Application.platform == RuntimePlatform.WindowsWebPlayer // DEBUG
+                    //Application.platform == RuntimePlatform.WindowsWebPlayer // DEBUG
                     ) {
                     if (String.IsNullOrEmpty(unityJoystickName)) {
                         return;

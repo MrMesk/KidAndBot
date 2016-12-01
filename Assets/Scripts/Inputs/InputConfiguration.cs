@@ -6,6 +6,7 @@ using InControl;
 
 namespace PlayerInput {
     
+    [Serializable]
     public abstract class InputConfiguration : ScriptableObject { }
 
     // Shared inputs
@@ -14,10 +15,13 @@ namespace PlayerInput {
         menuName = "Input Configuration/Shared",
         order = 0
         )]
+    [Serializable]
     public class SharedInputConfiguration : InputConfiguration {
         // Directional
+        [SerializeField]
         public TwoAxisInput directional = new TwoAxisInput();
         // Camera
+        [SerializeField]
         public TwoAxisInput camera = new TwoAxisInput();
     }
 
@@ -27,8 +31,10 @@ namespace PlayerInput {
         menuName = "Input Configuration/Kid",
         order = 0
         )]
+    [Serializable]
     public class KidInputConfiguration : InputConfiguration {
         // Jump
+        [SerializeField]
         public TriggerInput jump = new TriggerInput();
     }
 
@@ -40,12 +46,16 @@ namespace PlayerInput {
         )]
     public class BotInputConfiguration : InputConfiguration {
         // Punch
+        [SerializeField]
         public TriggerInput punch;
         // Grab
+        [SerializeField]
         public TriggerInput grab;
         // Pull
+        [SerializeField]
         public TriggerInput pull;
         // Bump
+        [SerializeField]
         public TriggerInput bump;
     }
 
@@ -55,10 +65,13 @@ namespace PlayerInput {
     [Serializable]
     public class TriggerInput : ConfigurableInput {
         // Key input
+        [SerializeField]
         public Key keyboard = Key.None;
         // Gamepad input
+        [SerializeField]
         public InputControlType gamePad = InputControlType.None;
         // Mouse input
+        [SerializeField]
         public Mouse mouse = Mouse.None;
     }
 

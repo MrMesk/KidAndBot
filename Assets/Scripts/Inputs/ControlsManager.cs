@@ -10,9 +10,9 @@ public class ControlsManager : MonoBehaviour {
 
     // Configuration
     [Header("Configuration files")]
-    public SharedInputConfiguration sharedInputsConfig;
-    public KidInputConfiguration kidInputsConfig;
-    public BotInputConfiguration botInputsConfig;
+    public PlayerInput.Configuration.Shared sharedInputsConfig;
+    public PlayerInput.Configuration.Kid kidInputsConfig;
+    public PlayerInput.Configuration.Bot botInputsConfig;
     
     private void Awake() {
         // Singleton setup
@@ -21,6 +21,15 @@ public class ControlsManager : MonoBehaviour {
         } else {
 
         }
+
+        //sharedInputsConfig = ScriptableObject.CreateInstance<SharedInputConfiguration>();
+
+        //sharedInputsConfig.camera.xAxis.positive.gamePad = InputControlType.RightStickRight;
+        //sharedInputsConfig.camera.xAxis.negative.gamePad = InputControlType.RightStickLeft;
+        //sharedInputsConfig.camera.yAxis.positive.gamePad = InputControlType.RightStickUp;
+        //sharedInputsConfig.camera.yAxis.negative.gamePad = InputControlType.RightStickDown;
+        
+        //
 
         Initialise();
     }
@@ -41,10 +50,12 @@ public class ControlsManager : MonoBehaviour {
     private void InputManager_OnDeviceAttached(InputDevice device) {
         if (Controller.kidController.device == null) {
             // Kid controller attached
+            Debug.Log("Kid controller attached - " + device.SortOrder);
             SetupControllerForGamePad(Controller.kidController, device);
         } else
         if (Controller.botController.device == null) {
             // Bot controller attached
+            Debug.Log("Bot controller attached - " + device.SortOrder);
             SetupControllerForGamePad(Controller.botController, device);
         }
     }
@@ -56,6 +67,7 @@ public class ControlsManager : MonoBehaviour {
             Controller.kidController.device.SortOrder == device.SortOrder
         ) {
             // Kid controller detached
+            Debug.Log("Kid controller detached - " + device.SortOrder);
             SetupControllerForKeybord(Controller.kidController);
         }
         else
@@ -64,6 +76,7 @@ public class ControlsManager : MonoBehaviour {
             Controller.botController.device.SortOrder == device.SortOrder
         ) {
             // Bot controller detached
+            Debug.Log("Bot controller detached - " + device.SortOrder);
             SetupControllerForKeybord(Controller.botController);
         }
     }
