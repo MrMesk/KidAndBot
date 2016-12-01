@@ -14,18 +14,7 @@ namespace PlayerInput {
         public KidControls kid;
         public BotControls bot;
 
-        private InputDevice device = InputManager.ActiveDevice;
-        public InputDevice Device {
-            get {
-                return device;
-            }
-            set {
-                device = value;
-                shared.Device = value;
-                kid.Device = value;
-                bot.Device = value;
-            }
-        }
+        public InputDevice device = null;
 
         public Controller() {
             shared = new SharedControls();
@@ -78,7 +67,7 @@ namespace PlayerInput {
             camera = CreateTwoAxisPlayerAction(cameraLeft, cameraRight, cameraDown, cameraUp);
         }
 
-        public void AddDefaultBinding(SharedInputConfiguration sharedInputsConfig, BindingFilter bindingFilter) {
+        public void AddDefaultBinding(PlayerInput.Configuration.Shared sharedInputsConfig, BindingFilter bindingFilter) {
             // Directional
             InputHelper.AddDefaultBinding(directionalRight, sharedInputsConfig.directional.xAxis.positive, bindingFilter);
             InputHelper.AddDefaultBinding(directionalLeft, sharedInputsConfig.directional.xAxis.negative, bindingFilter);
@@ -104,7 +93,7 @@ namespace PlayerInput {
             jump = CreatePlayerAction("jump");
         }
 
-        public void AddDefaultBinding(KidInputConfiguration kidInputsConfig, BindingFilter bindingFilter) {
+        public void AddDefaultBinding(PlayerInput.Configuration.Kid kidInputsConfig, BindingFilter bindingFilter) {
             // Jump
             InputHelper.AddDefaultBinding(jump, kidInputsConfig.jump, bindingFilter);
         }
@@ -133,7 +122,7 @@ namespace PlayerInput {
             bump = CreatePlayerAction("bump");
         }
 
-        public void AddDefaultBinding(BotInputConfiguration botInputsConfig, BindingFilter bindingFilter) {
+        public void AddDefaultBinding(PlayerInput.Configuration.Bot botInputsConfig, BindingFilter bindingFilter) {
             // Punch
             InputHelper.AddDefaultBinding(punch, botInputsConfig.punch, bindingFilter);
             // Grab
