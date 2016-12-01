@@ -13,7 +13,7 @@ namespace PlayerInput {
     
     public class InputHelper : MonoBehaviour {
         [Obsolete]
-        public static void AddDefaultBinding_DEPRECATED(PlayerAction playerAction, ButtonInput input, BindingFilter setupMode) {
+        public static void AddDefaultBinding_DEPRECATED(PlayerAction playerAction, TriggerInput input, BindingFilter setupMode) {
             switch (setupMode) {
                 case BindingFilter.KEYBOARD:
                     // Key
@@ -45,7 +45,7 @@ namespace PlayerInput {
         }
 
 
-        public static void AddDefaultBinding(PlayerAction playerAction, ButtonInput input, BindingFilter setupMode) {
+        public static void AddDefaultBinding(PlayerAction playerAction, TriggerInput input, BindingFilter setupMode) {
             switch (setupMode) {
                 case BindingFilter.KEYBOARD:
                     // Key
