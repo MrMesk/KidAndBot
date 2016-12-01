@@ -31,6 +31,8 @@ public class AnimCube : MonoBehaviour
 		bumping = false;
 
 		cubeScale = Mathf.FloorToInt(GetComponent<BoxCollider>().size.x);
+
+		LMCheckBelow ();
 	}
 	
 	// Update is called once per frame
@@ -149,12 +151,21 @@ public class AnimCube : MonoBehaviour
 
 	public AnimCube GetBasis()
 	{
-		Transform below = GetComponentInParent<AnimCube> ().transform;
-		Debug.Log ("Below + " + below.name);
+		Transform LMParent;
+		LMParent = transform.parent;
+		Debug.Log ("LM Parent : " + LMParent.name);
+		if (LMParent.tag == "LevelContainer") 
+		{
+			Debug.Log ("This LM Is already at basis !");
+			return GetComponent<AnimCube> ();
+		}
+
+		AnimCube below = LMParent.GetComponent<AnimCube> ();
+		Debug.Log ("Below : " + below.name);
 		if (below != null) 
 		{
-			Transform bottomPoint = below.parent;
-			if (bottomPoint != null) 
+			Transform bottomPoint = below.transform.parent;
+			if (bottomPoint != null && bottomPoint.GetComponent<AnimCube>() != null) 
 			{
 				return bottomPoint.GetComponent<AnimCube> ();
 			} 
