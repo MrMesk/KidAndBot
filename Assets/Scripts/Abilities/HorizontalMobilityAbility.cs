@@ -45,7 +45,7 @@ namespace Abilities {
         }
 
         public void Update() {
-            directionalInput = input.shared.directional;
+            directionalInput = input.shared.directional.Value;
         }
 
         public void LateUpdate() {

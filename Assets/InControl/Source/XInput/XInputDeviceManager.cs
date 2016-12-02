@@ -24,9 +24,9 @@ namespace InControl
 		}
 
 
-		public override void Update( ulong updateTick, float deltaTime )
-		{
-			for (int deviceIndex = 0; deviceIndex < 4; deviceIndex++)
+		public override void Update( ulong updateTick, float deltaTime ) {
+            Debug.Log(string.Format("bool[] { {0}, {1}, {2}, {3} }", deviceConnected[0], deviceConnected[1], deviceConnected[2], deviceConnected[3]));
+            for (int deviceIndex = 0; deviceIndex < 4; deviceIndex++)
 			{
 				var device = devices[deviceIndex] as XInputDevice;
 
