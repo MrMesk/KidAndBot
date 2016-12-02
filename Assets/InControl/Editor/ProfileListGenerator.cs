@@ -23,7 +23,7 @@ namespace InControl
 			var unityInputDeviceProfileType = typeof(InControl.UnityInputDeviceProfile);
 			var autoDiscoverAttributeType = typeof(InControl.AutoDiscover);
 
-			var code2 = "";
+			var code2 = " ";
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 			{
 				foreach (var type in assembly.GetTypes())
@@ -41,6 +41,7 @@ namespace InControl
 
 			var instance = ScriptableObject.CreateInstance<UnityInputDeviceProfileList>(); 
 			var filePath = AssetDatabase.GetAssetPath( MonoScript.FromScriptableObject( instance ) );
+            if(string.IsNullOrEmpty(filePath)) filePath = "Assets/InControl/Source/Unity/UnityInputDeviceProfileList.cs"; // Error fix
 			ScriptableObject.DestroyImmediate( instance );
 
 			string code1 = @"using System;
