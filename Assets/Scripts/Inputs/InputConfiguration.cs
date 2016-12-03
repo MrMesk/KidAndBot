@@ -6,6 +6,7 @@ using InControl;
 
 namespace PlayerInput {
     
+    [Serializable]
     public abstract class InputConfiguration : ScriptableObject { }
 
     // Shared inputs
@@ -14,10 +15,13 @@ namespace PlayerInput {
         menuName = "Input Configuration/Shared",
         order = 0
         )]
+    [Serializable]
     public class SharedInputConfiguration : InputConfiguration {
         // Directional
+        [SerializeField]
         public TwoAxisInput directional = new TwoAxisInput();
         // Camera
+        [SerializeField]
         public TwoAxisInput camera = new TwoAxisInput();
     }
 
@@ -27,9 +31,11 @@ namespace PlayerInput {
         menuName = "Input Configuration/Kid",
         order = 0
         )]
+    [Serializable]
     public class KidInputConfiguration : InputConfiguration {
         // Jump
-        public ButtonInput jump = new ButtonInput();
+        [SerializeField]
+        public TriggerInput jump = new TriggerInput();
     }
 
     // Bot inputs
@@ -40,38 +46,45 @@ namespace PlayerInput {
         )]
     public class BotInputConfiguration : InputConfiguration {
         // Punch
-        public ButtonInput punch;
+        [SerializeField]
+        public TriggerInput punch;
         // Grab
-        public ButtonInput grab;
+        [SerializeField]
+        public TriggerInput grab;
         // Pull
-        public ButtonInput pull;
+        [SerializeField]
+        public TriggerInput pull;
         // Bump
-        public ButtonInput bump;
+        [SerializeField]
+        public TriggerInput bump;
     }
 
     [Serializable]
-    public abstract class Input { }
+    public abstract class ConfigurableInput { }
 
     [Serializable]
-    public class ButtonInput : Input {
+    public class TriggerInput : ConfigurableInput {
         // Key input
+        [SerializeField]
         public Key keyboard = Key.None;
         // Gamepad input
+        [SerializeField]
         public InputControlType gamePad = InputControlType.None;
         // Mouse input
+        [SerializeField]
         public Mouse mouse = Mouse.None;
     }
 
     [Serializable]
-    public class AxisInput : Input {
+    public class AxisInput : ConfigurableInput {
         // Positive
-        public ButtonInput positive = new ButtonInput();
+        public TriggerInput positive = new TriggerInput();
         // Negative
-        public ButtonInput negative = new ButtonInput();
+        public TriggerInput negative = new TriggerInput();
     }
 
     [Serializable]
-    public class TwoAxisInput : Input {
+    public class TwoAxisInput : ConfigurableInput {
         // X Axis
         public AxisInput xAxis = new AxisInput();
         // Y Axis

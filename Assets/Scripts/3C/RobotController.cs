@@ -229,16 +229,17 @@ public class RobotController : Character
 						//animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
 
 						AnimCube basis;
-						//Debug.Log ("Is Basis linked ? " + animCube.linked);
+						Debug.Log ("Is Collided cube linked ? " + animCube.linked);
 						if (animCube.linked == true) 
 						{
 							basis = animCube.GetBasis ();
+							Debug.Log ("Is Basis" + basis.name + " linked ? " + basis.linked);
 						} 
 						else 
 						{
 							basis = animCube;
 						}
-						//Debug.Log ("Basis : " + basis.name);
+						Debug.Log ("Basis : " + basis.name);
 						if (basis.IsAgainstWall (-cubeNormal)) 
 						{
 							if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall (-cubeNormal)) 
@@ -247,7 +248,7 @@ public class RobotController : Character
 								basis.transform.parent = GameObject.Find ("Level").transform;
 							}
 
-							basis.transform.GetComponentInChildren<AnimCube>().transform.parent = null;
+							basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
 							basis = animCube.GetBasis ();
 						} 
 
@@ -305,7 +306,7 @@ public class RobotController : Character
 				basis.transform.parent = GameObject.Find ("Level").transform;
 			}
 
-			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = null;
+			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
 			basis = grabbedCube.GetBasis ();
 		} 
 
