@@ -372,7 +372,7 @@ public class RobotController : Character
 			ForceCheck();
 
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y, 0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
 
 			AnimCube animCube;
@@ -383,7 +383,7 @@ public class RobotController : Character
 			{
 				//Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
 				animCube = col.GetComponent<AnimCube>();
-				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - transform.localScale.y - 1f && animCube.bumping == false)
+				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - transform.localScale.y - 4f && animCube.bumping == false)
 				{
 					animCube.StartCoroutine(animCube.BumpUp(2f, bumpForcesUp[forceTier]));
 				}

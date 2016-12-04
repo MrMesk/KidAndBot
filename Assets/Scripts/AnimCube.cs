@@ -52,7 +52,7 @@ public class AnimCube : MonoBehaviour
 		{
 			//Debug.Log("Raycast hits !");
 			//Debug.Log("Bump force " + (Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2));
-			bumpPos = GetFarthestPoint(Mathf.RoundToInt(Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x * 2), bumpDir);
+			bumpPos = GetFarthestPoint(Mathf.RoundToInt(Vector3.Magnitude(transform.position - hit.point) - transform.GetComponent<BoxCollider>().size.x / 2), bumpDir);
 		}
 		else
 		{
@@ -68,7 +68,7 @@ public class AnimCube : MonoBehaviour
 	public Vector3 GetFarthestPoint(int maxDistance, Vector3 dir)
 	{
 		Vector3 farthestPoint = bumpPos;
-		for (int i = cubeScale*4; i <= maxDistance; i += cubeScale*4)
+		for (int i = cubeScale; i <= maxDistance; i += cubeScale)
 		{
 			//Debug.Log("i = " + i);
 			Vector3 checkPos = bumpPos + dir.normalized * i;
@@ -139,7 +139,7 @@ public class AnimCube : MonoBehaviour
 	void LMCheckBelow()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale * 2 + 1, checkMask)) 
+		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale / 2 + 1, checkMask)) 
 		{
 			Debug.Log ("A Level Module is below !!!");
 			linked = true;
@@ -182,7 +182,7 @@ public class AnimCube : MonoBehaviour
 
 	public bool IsAgainstWall(Vector3 dir)
 	{
-		float rayLength = cubeScale * 2 + 1f;
+		float rayLength = cubeScale / 2 + 1f;
 		Debug.Log ("Ray length : " + rayLength);
 		if (Physics.Raycast (transform.position, dir, rayLength, bumpMask)) 
 		{
