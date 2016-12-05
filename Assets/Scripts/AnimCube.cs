@@ -75,7 +75,7 @@ public class AnimCube : MonoBehaviour
 
 			RaycastHit hit;
 			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
-			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale*2 +1))
+			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale/2 +1))
 			{
 				//Debug.Log("Position " + checkPos + "Accessible !");
 				farthestPoint = checkPos;
