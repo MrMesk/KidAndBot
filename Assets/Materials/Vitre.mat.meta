@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Materials/Vitre.mat.meta
 guid: 43b761a9f3d1e459fb261bfa6171f5a6
 timeCreated: 1480893262
+=======
+guid: 8e3d289152c525b47aa506a904e59d23
+timeCreated: 1480930443
+>>>>>>> 6557bf79836537cfa2ef6ae96b32a6d2353b0b33:Assets/StreamingAssets/Master Bank.strings.bank.meta
 licenseType: Free
 NativeFormatImporter:
   userData: 

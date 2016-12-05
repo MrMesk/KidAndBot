@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Prefabs/LD/Actual/Passerelle.prefab.meta
 guid: 14fcf401fd2d9402580228a19a20f5b6
 timeCreated: 1480765202
+=======
+guid: ffb86f4440042a54a8b2e006410fdf01
+timeCreated: 1480930443
+>>>>>>> 6557bf79836537cfa2ef6ae96b32a6d2353b0b33:Assets/StreamingAssets/Master Bank.bank.meta
 licenseType: Free
 NativeFormatImporter:
   userData: 
