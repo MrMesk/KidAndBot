@@ -27,6 +27,6 @@ public class ActivAscenseur : MonoBehaviour {
 		_scriptAscenseur.StartCoroutine(_scriptAscenseur.Ascend( maxPos, minPos));
 
 
-		this.enabled = false;
+		gameObject.SetActive (false);
 	}
 }

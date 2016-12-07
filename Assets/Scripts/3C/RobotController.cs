@@ -68,11 +68,14 @@ public class RobotController : Character
 	LineRenderer grappin;
 	BoxCollider grappinCollider;
 
+	float botHeight;
+
 	Abilities.HorizontalMobilityAbility hMobility;
 
 	// Use this for initialization
 	void Start ()
 	{
+		botHeight = GetComponent<CharacterController> ().height;
 		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbility>();
 		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
@@ -329,7 +332,7 @@ public class RobotController : Character
 		grappinCollider.enabled = true;
 		Vector3 toCube = grabbedCube.transform.position - transform.position;
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
-		Vector3 newSize = new Vector3(1f,1f, (transform.position - targetPoint).magnitude);
+		Vector3 newSize = new Vector3(4f,4f, (transform.position - targetPoint).magnitude * 3);
 
 
         Ray ray = new Ray (transform.position, transform.forward);
@@ -367,12 +370,12 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-		if (input.bot.bump.WasPressed && IsGrounded()) 
+		if (input.bot.bump.WasReleased && IsGrounded()) 
 		{
 			ForceCheck();
 
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y, 0), Quaternion.identity) as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, botHeight/2, 0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
 
 			AnimCube animCube;
@@ -383,7 +386,7 @@ public class RobotController : Character
 			{
 				//Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
 				animCube = col.GetComponent<AnimCube>();
-				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - transform.localScale.y - 4f && animCube.bumping == false)
+				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - botHeight/2 - 4f && animCube.bumping == false)
 				{
 					animCube.StartCoroutine(animCube.BumpUp(2f, bumpForcesUp[forceTier]));
 				}

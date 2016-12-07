@@ -24,6 +24,7 @@ public class Ascenseur : MonoBehaviour {
 		}
 
 		yield return new WaitForSeconds(waitingTime);
+		progress = 0f;
 		StartCoroutine(Ascend(initialPosition, endPos ));
 	}
 }
