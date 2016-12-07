@@ -75,20 +75,12 @@ public class RobotController : Character
 	// Use this for initialization
 	void Start ()
 	{
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
+
 		botHeight = GetComponent<CharacterController> ().height;
 		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbility>();
-		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
-		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
 
-=======
-//<<<<<<< HEAD
-		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
-//=======
 		grappin = transform.Find("Rendering").Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = transform.Find("Rendering").Find("GrappinCollider").GetComponent<BoxCollider>();
-//>>>>>>> origin/Robot
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 
 		if (cameraShaker == null)
 		{
@@ -121,14 +113,9 @@ public class RobotController : Character
 
 		if (input.bot.grab.WasPressed)
 		{
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
-			//Debug.Log("Right Mouse Click");
-			if (!isGrabbing) {
-=======
-			Debug.Log("Is Grabbing : " + isGrabbing);
+
 			if (!isGrabbing)
 			{
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 				AttachHook();
 			}
 			else
@@ -163,13 +150,11 @@ public class RobotController : Character
 			WalkingShake();
 			robotAnim.SetBool("Walking", true);
 		}
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		else
 		{
 			robotAnim.SetBool("Walking", false);
 		}
 
-=======
 		/*
 		if (Input.GetButtonDown("Jump"))
 		{
@@ -180,7 +165,7 @@ public class RobotController : Character
 
 			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
 		}*/
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
+
 	}
 
 	void WalkingShake ()
@@ -362,28 +347,17 @@ public class RobotController : Character
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
 		Vector3 newSize = new Vector3(4f,4f, (transform.position - targetPoint).magnitude * 3);
 
-
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
-        Ray ray = new Ray (transform.position, transform.forward);
-=======
-
         //Debug.Log("Attaching hook");
         Ray ray = new Ray (transform.position, transform.forward);
 
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		grappinCollider.size = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
 	void AttachHook ()
 	{
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
-		Ray ray = new Ray(transform.position, transform.forward);
-=======
 		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
-
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		RaycastHit hit;
 
 		if (Physics.Raycast(ray, out hit, pullRange, bumpForwardMask))
@@ -413,12 +387,7 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
-<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		if (input.bot.bump.WasReleased && IsGrounded()) 
-=======
-		
-		if (Input.GetKeyUp(KeyCode.E) && IsGrounded())
->>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		{
 			ForceCheck();
 
