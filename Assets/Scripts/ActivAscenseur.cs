@@ -6,6 +6,7 @@ public class ActivAscenseur : MonoBehaviour {
 
 	Ascenseur _scriptAscenseur;
 	public Vector3 maxPos ;
+    public Vector3 minPos;
 
 	public GameObject ascenseur;
 
@@ -23,7 +24,7 @@ public class ActivAscenseur : MonoBehaviour {
 	void OnTriggerEnter (Collider col)
 	{
 		
-		_scriptAscenseur.StartCoroutine(_scriptAscenseur.Ascend( maxPos, ascenseur.transform.position));
+		_scriptAscenseur.StartCoroutine(_scriptAscenseur.Ascend( maxPos, minPos));
 
 
 		this.enabled = false;
