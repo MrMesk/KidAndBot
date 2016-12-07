@@ -128,10 +128,12 @@ public class RobotController : Character
 			grappin.enabled = true;
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
-
-			if (input.bot.punch.WasReleased)
+			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x /2 - 1;
+			Debug.Log("Distance to LM : " + dist);
+			Debug.Log("Character size" + GetComponent<CharacterController>().radius);
+			if (input.bot.punch.WasReleased && dist > 48f)
 			{
-				Pull(grabbedNormal);
+				Pull(grabbedNormal, dist);
 				isGrabbing = false;
 				grabbedCube = null;
 				grabbedNormal = new Vector3();
@@ -299,10 +301,21 @@ public class RobotController : Character
 		}
 	}
 
-	void Pull (Vector3 dir)
+	void Pull (Vector3 dir, float distToLM)
 	{
 		ForceCheck();
 
+		while(bumpForcesForward[forceTier] > distToLM)
+		{
+			if (forceTier >= 1)
+			{
+				forceTier--;
+			}
+			else
+			{
+				break;
+			}
+		}
 		AnimCube basis;
 
 		if (grabbedCube.linked == true) 
