@@ -75,11 +75,20 @@ public class RobotController : Character
 	// Use this for initialization
 	void Start ()
 	{
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		botHeight = GetComponent<CharacterController> ().height;
 		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbility>();
 		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
 
+=======
+//<<<<<<< HEAD
+		//grappin = transform.FindChild("Grappin").GetComponent<LineRenderer>();
+//=======
+		grappin = transform.Find("Rendering").Find("Grappin").GetComponent<LineRenderer>();
+		grappinCollider = transform.Find("Rendering").Find("GrappinCollider").GetComponent<BoxCollider>();
+//>>>>>>> origin/Robot
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 
 		if (cameraShaker == null)
 		{
@@ -112,8 +121,14 @@ public class RobotController : Character
 
 		if (input.bot.grab.WasPressed)
 		{
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 			//Debug.Log("Right Mouse Click");
 			if (!isGrabbing) {
+=======
+			Debug.Log("Is Grabbing : " + isGrabbing);
+			if (!isGrabbing)
+			{
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 				AttachHook();
 			}
 			else
@@ -148,11 +163,24 @@ public class RobotController : Character
 			WalkingShake();
 			robotAnim.SetBool("Walking", true);
 		}
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		else
 		{
 			robotAnim.SetBool("Walking", false);
 		}
 
+=======
+		/*
+		if (Input.GetButtonDown("Jump"))
+		{
+			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration * 2, walkShakeMagnitude * 2));
+			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
+			particleImpact.transform.forward = Vector3.up;
+
+			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
+		}*/
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 	}
 
 	void WalkingShake ()
@@ -335,24 +363,39 @@ public class RobotController : Character
 		Vector3 newSize = new Vector3(4f,4f, (transform.position - targetPoint).magnitude * 3);
 
 
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
         Ray ray = new Ray (transform.position, transform.forward);
+=======
+
+        //Debug.Log("Attaching hook");
+        Ray ray = new Ray (transform.position, transform.forward);
+
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		grappinCollider.size = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
 	void AttachHook ()
 	{
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		Ray ray = new Ray(transform.position, transform.forward);
+=======
+		//Debug.Log("Attaching hook");
+		Ray ray = new Ray(transform.position, transform.forward);
+
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		RaycastHit hit;
 
 		if (Physics.Raycast(ray, out hit, pullRange, bumpForwardMask))
 		{
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
-			if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
+			/*if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, -hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, hit.transform.right) > 0.5 ||
-				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)
+				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)*/
+
+			if (Vector3.Dot((transform.position - hit.point), cubeNormal) > 0.5)
 			{
 				animCube = hit.transform.GetComponent<AnimCube>();
 				if (animCube.bumping == false)
@@ -370,7 +413,12 @@ public class RobotController : Character
 
 	void BumpUp ()
 	{
+<<<<<<< HEAD:Assets/Scripts/3C/RobotController.cs
 		if (input.bot.bump.WasReleased && IsGrounded()) 
+=======
+		
+		if (Input.GetKeyUp(KeyCode.E) && IsGrounded())
+>>>>>>> 4f570ff25fa5cee53cdffd2a8159094ca94a2001:Assets/Scripts/RobotController.cs
 		{
 			ForceCheck();
 
