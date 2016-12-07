@@ -248,7 +248,7 @@ public class RobotController : Character
 							if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall (-cubeNormal)) 
 							{
 								basis = animCube;
-								basis.transform.parent = GameObject.Find ("Level").transform;
+								basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
 							}
 
 							basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
@@ -306,7 +306,7 @@ public class RobotController : Character
 			if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall (dir)) 
 			{
 				basis = grabbedCube;
-				basis.transform.parent = GameObject.Find ("Level").transform;
+				basis.transform.parent = GameObject.FindGameObjectWithTag ("LevelContainer").transform;
 			}
 
 			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
