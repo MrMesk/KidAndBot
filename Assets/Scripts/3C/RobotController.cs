@@ -75,11 +75,12 @@ public class RobotController : Character
 	// Use this for initialization
 	void Start ()
 	{
+
 		botHeight = GetComponent<CharacterController> ().height;
 		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbility>();
-		grappin = GameObject.Find("Grappin").GetComponent<LineRenderer>();
-		grappinCollider = GameObject.Find("GrappinCollider").GetComponent<BoxCollider>();
 
+		grappin = transform.Find("Rendering").Find("Grappin").GetComponent<LineRenderer>();
+		grappinCollider = transform.Find("Rendering").Find("GrappinCollider").GetComponent<BoxCollider>();
 
 		if (cameraShaker == null)
 		{
@@ -112,8 +113,9 @@ public class RobotController : Character
 
 		if (input.bot.grab.WasPressed)
 		{
-			//Debug.Log("Right Mouse Click");
-			if (!isGrabbing) {
+
+			if (!isGrabbing)
+			{
 				AttachHook();
 			}
 			else
@@ -126,10 +128,12 @@ public class RobotController : Character
 			grappin.enabled = true;
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
-
-			if (input.bot.punch.WasReleased)
+			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x /2 - 1;
+			Debug.Log("Distance to LM : " + dist);
+			Debug.Log("Character size" + GetComponent<CharacterController>().radius);
+			if (input.bot.punch.WasReleased && dist > 48f)
 			{
-				Pull(grabbedNormal);
+				Pull(grabbedNormal, dist);
 				isGrabbing = false;
 				grabbedCube = null;
 				grabbedNormal = new Vector3();
@@ -152,6 +156,17 @@ public class RobotController : Character
 		{
 			robotAnim.SetBool("Walking", false);
 		}
+
+		/*
+		if (Input.GetButtonDown("Jump"))
+		{
+			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration * 2, walkShakeMagnitude * 2));
+			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
+			particleImpact.transform.forward = Vector3.up;
+
+			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
+		}*/
 
 	}
 
@@ -286,10 +301,21 @@ public class RobotController : Character
 		}
 	}
 
-	void Pull (Vector3 dir)
+	void Pull (Vector3 dir, float distToLM)
 	{
 		ForceCheck();
 
+		while(bumpForcesForward[forceTier] > distToLM)
+		{
+			if (forceTier >= 1)
+			{
+				forceTier--;
+			}
+			else
+			{
+				break;
+			}
+		}
 		AnimCube basis;
 
 		if (grabbedCube.linked == true) 
@@ -334,14 +360,16 @@ public class RobotController : Character
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x/4f);
 		Vector3 newSize = new Vector3(4f,4f, (transform.position - targetPoint).magnitude * 3);
 
-
+        //Debug.Log("Attaching hook");
         Ray ray = new Ray (transform.position, transform.forward);
+
 		grappinCollider.size = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
 	void AttachHook ()
 	{
+		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
 		RaycastHit hit;
 
@@ -349,10 +377,12 @@ public class RobotController : Character
 		{
 			Vector3 cubeNormal = hit.normal;
 			AnimCube animCube;
-			if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
+			/*if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, -hit.transform.forward) > 0.5 ||
 				Vector3.Dot(cubeNormal, hit.transform.right) > 0.5 ||
-				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)
+				Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5)*/
+
+			if (Vector3.Dot((transform.position - hit.point), cubeNormal) > 0.5)
 			{
 				animCube = hit.transform.GetComponent<AnimCube>();
 				if (animCube.bumping == false)
