@@ -23,6 +23,7 @@ public class CharacterCamera : MonoBehaviour {
     [Header("Parameters")]
     public float _minDistance = 2;
     public float _maxDistance = 10;
+	public LayerMask _checkMask;
     [Header("Parameters")]
     public AnimationCurve _distanceFromHeight = new AnimationCurve();
     
@@ -31,7 +32,8 @@ public class CharacterCamera : MonoBehaviour {
 
     protected virtual void Awake() { }
 
-    private void Update() {
+    private void Update() 
+	{
         // Input
         Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector2 stickInput = new Vector2(Input.GetAxis("Right Stick X"), Input.GetAxis("Right Stick Y"));
@@ -57,26 +59,46 @@ public class CharacterCamera : MonoBehaviour {
         _height = Mathf.Clamp01(_height);
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate() 
+	{
 
     }
 
-    private void LateUpdate() {
-        if(_attachedCharacter == null) {
+    private void LateUpdate() 
+	{
+        if(_attachedCharacter == null) 
+		{
             return;
         }
         RefreshCamera();
     }
 
-    public void RefreshCamera() {
+    public void RefreshCamera() 
+	{
         // Refresh position
         Quaternion rotationAround = Quaternion.Euler(0, _rotation, 0);
         Quaternion rotationOver = Quaternion.Euler(89 + _height * 180, 0, 0); // 89 instead of 90 (debug)
         Quaternion rotation = rotationAround * rotationOver;
         Vector3 direction = rotation * Vector3.forward;
-        float distance = Mathf.Lerp(_minDistance, _maxDistance, _distanceFromHeight.Evaluate(_height));
+
+		float fixedDistance;
+
+		//Debug.DrawRay (_attachedCharacter.transform.position,transform.position - _attachedCharacter.transform.position,Color.red);
+		RaycastHit hit;
+		if (Physics.Raycast (_attachedCharacter.transform.position, transform.position - _attachedCharacter.transform.position, out hit, _maxDistance, _checkMask)) 
+		{
+			fixedDistance = Vector3.Distance (_attachedCharacter.transform.position, hit.point);
+		} 
+		else 
+		{
+			fixedDistance = _maxDistance;
+		}
+			
+
+		//Debug.Log ("Distance to Wall : " + fixedDistance);
+		float distance = Mathf.Lerp(_minDistance, fixedDistance, _distanceFromHeight.Evaluate(_height));
         Vector3 position = distance * direction;
-        position += _attachedCharacter.transform.position;
+		position += _attachedCharacter.transform.position + new Vector3(0, _attachedCharacter.GetComponent<CharacterController>().height/3);
         // Set position
         transform.position = position;
 
