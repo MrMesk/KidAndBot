@@ -129,8 +129,8 @@ public class RobotController : Character
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
 			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x /2 - 1;
-			Debug.Log("Distance to LM : " + dist);
-			Debug.Log("Character size" + GetComponent<CharacterController>().radius);
+			//Debug.Log("Distance to LM : " + dist);
+			//Debug.Log("Character size" + GetComponent<CharacterController>().radius);
 			if (input.bot.punch.WasReleased && dist > 48f)
 			{
 				Pull(grabbedNormal, dist);
