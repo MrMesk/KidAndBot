@@ -95,17 +95,17 @@ public class KidCharacter : Character {
         if (_selectedClimbableWall != null) {
             // Unselect
             _selectedClimbableWall.CleanHitMat();
-            // Fake ground hit
-            ResetGravity();
-            if (eHitGround != null) {
-                eHitGround.Invoke();
-            }
-
         }
         // Select
         _selectedClimbableWall = newClimbableWall;
         if (_selectedClimbableWall == null) return;
         _selectedClimbableWall.SetHitMat();
+
+        // Fake ground hit
+        ResetGravity();
+        if (eHitGround != null) {
+            eHitGround.Invoke();
+        }
     }
 
     protected void OnTriggerEnter(Collider other) {
