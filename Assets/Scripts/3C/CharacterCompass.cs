@@ -10,6 +10,8 @@ public class CharacterCompass : MonoBehaviour {
     public Character character;
     
     public Vector3 localPosition = new Vector3(0, -1, 0);
+
+	public Transform overrideCameraTransform;
     
     [NonSerialized] public Vector3 climbNormal;
 
@@ -41,7 +43,7 @@ public class CharacterCompass : MonoBehaviour {
 
     public Quaternion GetWalkingCompasRotation() {
         // Get camera forward
-        Vector3 cameraForward = character.characterCamera.transform.forward;
+		Vector3 cameraForward = overrideCameraTransform != null ? overrideCameraTransform.forward : character.characterCamera.transform.forward;
         // Project on ground
         cameraForward = Vector3.ProjectOnPlane(cameraForward, character.gravity);
         // Convert to quaternion/rotation
@@ -106,17 +108,17 @@ public class CharacterCompass : MonoBehaviour {
         Vector3 normal = climbNormal = pointData.normal;        
 
         // Camera
-        CharacterCamera kidCamera = kidCharacter.characterCamera;
+		Transform kidCamera = overrideCameraTransform != null ? overrideCameraTransform : kidCharacter.characterCamera.transform;
 
         // Rotation upward
-        Vector3 upward = Vector3.ProjectOnPlane(normal, -kidCamera.transform.right);
+        Vector3 upward = Vector3.ProjectOnPlane(normal, -kidCamera.right);
         // Rotation forward
-        Vector3 forward = Quaternion.AngleAxis(90, kidCamera.transform.right) * upward;
+        Vector3 forward = Quaternion.AngleAxis(90, kidCamera.right) * upward;
         // Rotation
         Quaternion rotation = Quaternion.LookRotation(forward, upward);
 
         // Balance
-        float balanceDot = Vector3.Dot(normal, -kidCamera.transform.right);
+        float balanceDot = Vector3.Dot(normal, -kidCamera.right);
         // Balance application
         rotation = Quaternion.AngleAxis(90 * balanceDot, forward) * rotation;
 
