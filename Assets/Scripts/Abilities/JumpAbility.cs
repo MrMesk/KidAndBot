@@ -10,6 +10,7 @@ namespace Abilities {
         public float maxJumpHeight = 4;
         public float minJumpHeight = 1;
         public float timeToJumpApex = .4f;
+        public float airFriction = 50.0f;
 
         // State
         private Character character;
@@ -62,8 +63,14 @@ namespace Abilities {
 
         void FixedUpdate() {
             // Check for jump request
-            if (character.IsGrounded() && madeJumpRequest) {
-                Jump();
+            if (madeJumpRequest) {
+                if (character.IsGrounded()) {
+                    // Regular jump if on ground
+                    Jump();
+                } else if (character.IsClimbing()) {
+                    // Wall jump if climbing
+                    WallJump();
+                }
             }
 
             // Check for stop jump request
@@ -72,6 +79,9 @@ namespace Abilities {
                 jumpVelocity.y = minJumpVelocity;
                 madeStopJumpRequest = false;
             }
+
+            // Apply lateral friction
+            jumpVelocity = Vector3.MoveTowards(jumpVelocity, Vector3.Project(jumpVelocity, Vector2.up), airFriction * Time.fixedDeltaTime);
 
             // Apply to global velocity
             character.globalVelocity += jumpVelocity;
@@ -98,6 +108,13 @@ namespace Abilities {
         public void Jump() {
             character.ResetGravity();
             jumpVelocity.y = maxJumpVelocity;
+            madeJumpRequest = false;
+            madeStopJumpRequest = false;
+        }
+
+        public void WallJump() {
+            character.ResetGravity();
+            jumpVelocity = Vector3.RotateTowards(character.characterCompass.transform.up, Vector3.up, 45 * Mathf.Deg2Rad, 0) * maxJumpVelocity;
             madeJumpRequest = false;
             madeStopJumpRequest = false;
         }
