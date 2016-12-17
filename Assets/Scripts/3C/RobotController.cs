@@ -113,7 +113,6 @@ public class RobotController : Character
 
 		if (input.bot.grab.WasPressed)
 		{
-
 			if (!isGrabbing)
 			{
 				AttachHook();
@@ -156,17 +155,6 @@ public class RobotController : Character
 		{
 			robotAnim.SetBool("Walking", false);
 		}
-
-		/*
-		if (Input.GetButtonDown("Jump"))
-		{
-			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration * 2, walkShakeMagnitude * 2));
-			GameObject particleImpact = Resources.Load("Particles/ImpactJump") as GameObject;
-			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.localScale.y / 2, 0), Quaternion.identity) as GameObject;
-			particleImpact.transform.forward = Vector3.up;
-
-			FMODUnity.RuntimeManager.PlayOneShot(jump, transform.position);
-		}*/
 
 	}
 

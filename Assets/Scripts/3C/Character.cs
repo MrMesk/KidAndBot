@@ -82,7 +82,8 @@ public class Character : MonoBehaviour {
         gravityVelocity = Vector3.zero;
     }
 
-    protected void ApplyGravity() {
+    protected void ApplyGravity()
+	{
         // Do not apply gravity if grounded
         if (IsGrounded()) return;
         // Do not apply gravity if climbing

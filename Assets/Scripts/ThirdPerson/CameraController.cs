@@ -136,16 +136,6 @@ public class CameraController : MonoBehaviour
 		coll.CheckColliding(targetPos); //using raycasts
 		position.adjustmentDistance = coll.GetAdjustedDistanceWithRayFrom(targetPos);
 	}
-	private void LateUpdate ()
-	{
-
-	}
-
-	void GetInput()
-	{
-		//hOrbitSnapInput = Input.GetAxisRaw(input.ORBIT_HORIZONTAL_SNAP);
-		//zoomInput = Input.GetAxisRaw(input.ZOOM);
-	}
 
 	void MouseOrbitTarget()
 	{
