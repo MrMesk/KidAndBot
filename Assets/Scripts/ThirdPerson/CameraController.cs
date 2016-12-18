@@ -103,12 +103,12 @@ public class CameraController : MonoBehaviour
 			}
 			else
 			{
-				Debug.Log("Target needs a character controller !");
+				//Debug.Log("Target needs a character controller !");
 			}
 		}
 		else
 		{
-			Debug.Log("The camera doesn't have a target !");
+			//Debug.Log("The camera doesn't have a target !");
 		}
 	}
 
@@ -143,14 +143,14 @@ public class CameraController : MonoBehaviour
 		currentMousePos.x = orbit.invertXAxis ? -currentMousePos.x : currentMousePos.x;
 		currentMousePos.y = orbit.invertYAxis ? -currentMousePos.y : currentMousePos.y;
 
-		Debug.Log ("Current Mouse Pos : " + currentMousePos);
+		//Debug.Log ("Current Mouse Pos : " + currentMousePos);
 
 		const float dead = 0f;
 		if(currentMousePos.magnitude <= dead)
 		{
 			resetCamTimer -= Time.deltaTime;
 			resetCamTimer = Mathf.Clamp(resetCamTimer, 0f, orbit.resetCamTime);
-			Debug.Log("reset cam timer : " + resetCamTimer);
+			//Debug.Log("reset cam timer : " + resetCamTimer);
 		}
 		//Possibly add snapping bool here to disable mouse orbit
 		else
