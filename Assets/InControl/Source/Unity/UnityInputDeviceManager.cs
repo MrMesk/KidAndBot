@@ -15,8 +15,10 @@ namespace InControl
         List<InputDeviceProfile> systemDeviceProfiles = new List<InputDeviceProfile>();
         List<InputDeviceProfile> customDeviceProfiles = new List<InputDeviceProfile>();
 
+#pragma warning disable 414
         bool hasJoystickHash;
         int joystickHash;
+#pragma warning restore 414
 
 
         public UnityInputDeviceManager() {
