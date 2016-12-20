@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class RobotController : Character
+public class RobotCharacter : Character
 {
 	[Space(10)]
 	[Header("Range Parameters")]
