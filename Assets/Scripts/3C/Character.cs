@@ -58,7 +58,7 @@ public class Character : MonoBehaviour {
             getController = delegate () {
                 return PlayerInput.Controller.kidController;
             };
-        } else if (characterType == typeof(RobotController)) {
+        } else if (characterType == typeof(RobotCharacter)) {
             getController = delegate () {
                 return PlayerInput.Controller.botController;
             };

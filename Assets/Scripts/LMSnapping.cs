@@ -53,6 +53,14 @@ public class LMSnapping : MonoBehaviour
 	//Moves cursor depending on snap value and direction
 	public void MoveGizmo(Vector3 dir)
 	{
+		Camera cam = Camera.current;
+		if(cam == null)
+		{
+			return;
+		}
+		// Get Closest direction snap from camera forward
+		//And multiply dir from it. No idea how to do that, fuck quaternions
+
 		cursorPos += dir * snapValue;
 	}
 

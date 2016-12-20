@@ -141,7 +141,7 @@ public class AnimCube : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale / 2 + 1, checkMask)) 
 		{
-			Debug.Log ("A Level Module is below !!!");
+			//Debug.Log ("A Level Module is below !!!");
 			linked = true;
 			hit.transform.GetComponent<AnimCube> ().linked = true;
 			FMODUnity.RuntimeManager.PlayOneShot(click, transform.position);
@@ -153,15 +153,15 @@ public class AnimCube : MonoBehaviour
 	{
 		Transform LMParent;
 		LMParent = transform.parent;
-		Debug.Log ("LM Parent : " + LMParent.name);
+		//Debug.Log ("LM Parent : " + LMParent.name);
 		if (LMParent.tag == "LevelContainer") 
 		{
-			Debug.Log ("This LM Is already at basis !");
+			//Debug.Log ("This LM Is already at basis !");
 			return GetComponent<AnimCube> ();
 		}
 
 		AnimCube below = LMParent.GetComponent<AnimCube> ();
-		Debug.Log ("Below : " + below.name);
+		//Debug.Log ("Below : " + below.name);
 		if (below != null) 
 		{
 			Transform bottomPoint = below.transform.parent;
@@ -183,15 +183,15 @@ public class AnimCube : MonoBehaviour
 	public bool IsAgainstWall(Vector3 dir)
 	{
 		float rayLength = cubeScale / 2 + 1f;
-		Debug.Log ("Ray length : " + rayLength);
+		//Debug.Log ("Ray length : " + rayLength);
 		if (Physics.Raycast (transform.position, dir, rayLength, bumpMask)) 
 		{
-			Debug.Log (gameObject.name + " is against a wall !");
+			//Debug.Log (gameObject.name + " is against a wall !");
 			return true;
 		} 
 		else 
 		{
-			Debug.Log (gameObject.name + " isn't against a wall !");
+			//Debug.Log (gameObject.name + " isn't against a wall !");
 			return false;
 		}
 	}

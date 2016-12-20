@@ -11,8 +11,13 @@ namespace Abilities
 
 		public float inputDead = 0.1f;
 		public float forwardVelocity = 12;
-		public float rotateVel = 100;
+		public float rotateVel = 100f;
+		public float chargingRotateVel = 50f;
+		public float chargeMaxVelMult = 2f;
+		public float accelMult = 1f;
+		public float slowdownMult = 2f;
 
+		[HideInInspector] public float accel = 1f;
 		Vector3 velocity = Vector3.zero;
 
 		Quaternion targetRot;
@@ -76,7 +81,29 @@ namespace Abilities
 		private void FixedUpdate ()
 		{
 			//Debug.Log("Velocity : " + velocity);
-			Run();
+			RobotCharacter bot = (RobotCharacter)character;
+
+			if(bot.isCharging)
+			{
+				accel += Time.deltaTime * accelMult;
+				accel = Mathf.Clamp(accel, 1f, chargeMaxVelMult);
+			}
+			else
+			{
+				//Lowering charge acceleration, adding 
+				accel -= Time.deltaTime * slowdownMult;
+				accel = Mathf.Clamp(accel, 1f, chargeMaxVelMult);
+			}
+
+			if (accel > 1f)
+			{
+				Charge();
+			}
+			else
+			{
+				Run();
+			}
+				
 			character.globalVelocity += character.transform.TransformDirection(velocity);
 
 		}
@@ -96,11 +123,29 @@ namespace Abilities
 			}
 		}
 
+		void Charge()
+		{
+			// Accelerating as long as the bot is charging
+
+
+			velocity.z = forwardVelocity * accel;
+			//Debug.Log("Accel : " + accel);
+		}
+
 		void Turn ()
 		{
 			if (Mathf.Abs(directionalInput.x) > inputDead)
 			{
-				targetRot *= Quaternion.AngleAxis(rotateVel * directionalInput.x * Time.deltaTime, Vector3.up);
+				RobotCharacter bot = (RobotCharacter)character;
+				if (bot.isCharging)
+				{
+					targetRot *= Quaternion.AngleAxis(chargingRotateVel * directionalInput.x * Time.deltaTime, Vector3.up);
+				}
+				else
+				{
+					targetRot *= Quaternion.AngleAxis(rotateVel * directionalInput.x * Time.deltaTime, Vector3.up);
+				}
+				
 				character.lookRotation = targetRot;
 				//character.transform.rotation = targetRot;
 			}
