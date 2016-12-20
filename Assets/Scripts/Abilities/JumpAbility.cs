@@ -40,12 +40,12 @@ namespace Abilities {
 
         private void InitialiseJump() {
             // Setup jump
-            character.gravity.y = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-            maxJumpVelocity = Mathf.Abs(character.gravity.y) * timeToJumpApex;
-            minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(character.gravity.y) * minJumpHeight);
+            character.physic.gravity.y = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+            maxJumpVelocity = Mathf.Abs(character.physic.gravity.y) * timeToJumpApex;
+            minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(character.physic.gravity.y) * minJumpHeight);
 
             // Bind handler(s)
-            character.eHitGround += OnHitGround;
+            character.physic.eHitGround += OnHitGround;
         }
 
         // Update is called once per frame
@@ -74,7 +74,7 @@ namespace Abilities {
             }
 
             // Check for stop jump request
-            float yVel = character.gravityVelocity.y + jumpVelocity.y;
+            float yVel = character.physic.gravityVelocity.y + jumpVelocity.y;
             if (madeStopJumpRequest && yVel > minJumpVelocity) {
                 jumpVelocity.y = minJumpVelocity;
                 madeStopJumpRequest = false;
@@ -84,14 +84,14 @@ namespace Abilities {
             jumpVelocity = Vector3.MoveTowards(jumpVelocity, Vector3.Project(jumpVelocity, Vector2.up), airFriction * Time.fixedDeltaTime);
 
             // Apply to global velocity
-            character.globalVelocity += jumpVelocity;
+            character.physic.globalVelocity += jumpVelocity;
 
         }
 
         // Event handlers    
         private void OnHitCeiling() {
             ResetJump();
-            character.ResetGravity();
+            character.Physic_ResetGravity();
         }
 
         private void OnHitGround() {
@@ -100,20 +100,20 @@ namespace Abilities {
 
         public void OnDestroy() {
             // Unbind jump reset
-            character.eHitGround -= OnHitGround;
+            character.physic.eHitGround -= OnHitGround;
         }
 
         // Logic
 
         public void Jump() {
-            character.ResetGravity();
+            character.Physic_ResetGravity();
             jumpVelocity.y = maxJumpVelocity;
             madeJumpRequest = false;
             madeStopJumpRequest = false;
         }
 
         public void WallJump() {
-            character.ResetGravity();
+            character.Physic_ResetGravity();
             jumpVelocity = Vector3.RotateTowards(character.characterCompass.transform.up, Vector3.up, 45 * Mathf.Deg2Rad, 0) * maxJumpVelocity;
             madeJumpRequest = false;
             madeStopJumpRequest = false;

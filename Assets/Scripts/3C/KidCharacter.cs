@@ -102,9 +102,9 @@ public class KidCharacter : Character {
         _selectedClimbableWall.SetHitMat();
 
         // Fake ground hit
-        ResetGravity();
-        if (eHitGround != null) {
-            eHitGround.Invoke();
+        Physic_ResetGravity();
+        if (physic.eHitGround != null) {
+            physic.eHitGround.Invoke();
         }
     }
 

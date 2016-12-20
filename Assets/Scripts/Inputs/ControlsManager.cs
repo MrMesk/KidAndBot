@@ -87,7 +87,6 @@ public class ControlsManager : MonoBehaviour {
             case 0:
                 // Solo player
                 break;
-                throw new NotImplementedException();
             case 1:
                 // Two players (Keyboard + GamePad)
                 // Gamepad
@@ -154,16 +153,4 @@ public class ControlsManager : MonoBehaviour {
         playerActionSet.ListenOptions.IncludeKeys = true;
         playerActionSet.ListenOptions.IncludeMouseButtons = true;
     }
-
-    public void Update() {
-        return;
-        var joystickNames = Input.GetJoystickNames();
-        var joystickNamesCount = joystickNames.Length;
-        string log = ".";
-        for (int i = 0; i < joystickNamesCount; ++i) {
-            log += "{" + joystickNames[i] + "} ";
-        }
-        Debug.Log(log);
-    }
-
 }

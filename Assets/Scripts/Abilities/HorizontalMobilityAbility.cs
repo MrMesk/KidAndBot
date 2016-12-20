@@ -51,7 +51,7 @@ namespace Abilities {
         public void LateUpdate() {
             // Refresh look rotation
             if (directionalVelocity.magnitude > editLookDirectionDeadZone) {
-                character.lookRotation = Quaternion.LookRotation(directionalVelocity, -character.gravity);
+                character.lookRotation = Quaternion.LookRotation(directionalVelocity, -character.physic.gravity);
             }
         }
 
@@ -69,7 +69,7 @@ namespace Abilities {
             directionalVelocity = GetDirectionalVelocity();
             
             // Apply to global velocity
-            character.globalVelocity += directionalVelocity;
+            character.physic.globalVelocity += directionalVelocity;
         }
 
         protected Vector3 GetDirectionalVelocity() {
