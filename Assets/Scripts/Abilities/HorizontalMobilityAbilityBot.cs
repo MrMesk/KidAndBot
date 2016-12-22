@@ -104,7 +104,7 @@ namespace Abilities
 				Run();
 			}
 				
-			character.globalVelocity += character.transform.TransformDirection(velocity);
+			character.physic.globalVelocity += character.transform.TransformDirection(velocity);
 
 		}
 

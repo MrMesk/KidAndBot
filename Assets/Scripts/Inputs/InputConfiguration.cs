@@ -36,7 +36,10 @@ namespace PlayerInput {
         // Jump
         [SerializeField]
         public TriggerInput jump = new TriggerInput();
-    }
+		// Anchor
+		[SerializeField]
+		public TriggerInput anchor = new TriggerInput();
+	}
 
     // Bot inputs
     [CreateAssetMenu(

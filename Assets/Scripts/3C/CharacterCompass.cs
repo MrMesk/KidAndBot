@@ -9,18 +9,11 @@ public class CharacterCompass : MonoBehaviour {
     /// </summary>
     public Character character;
     
-<<<<<<< HEAD
-    public Vector3 localPosition = new Vector3(0, -1, 0);
-
-	public Transform overrideCameraTransform;
-    
-    [NonSerialized] public Vector3 climbNormal;
-=======
     /// <summary>
     /// The position of this compass offseted from it's attached character's position.
     /// </summary>
     public Vector3 positionOffset = new Vector3(0, -1, 0);
->>>>>>> develop
+	public Transform overrideCameraTransform;
 
     public void Start() {
         // Store rotation
