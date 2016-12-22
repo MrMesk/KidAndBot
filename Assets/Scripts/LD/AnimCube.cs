@@ -3,28 +3,35 @@ using System.Collections;
 
 public class AnimCube : MonoBehaviour 
 {
-	public AnimationCurve moveUp;
-	public AnimationCurve fallingCurve;
-	public AnimationCurve moveForward;
+	[Header("Animation Curves")]
+	public AnimationCurve moveUpCurve; // Used for upwards movement smoothing
+	public AnimationCurve fallingCurve; // Used for downwards movement smoothing
+	public AnimationCurve moveForwardCurve; // Used for directional movement smoothing
 
-	public bool bumping;
-	public LayerMask bumpMask;
-	public LayerMask rayMask;
-	public LayerMask checkMask;
+	[Header("Layer Masks")]
+	public LayerMask bumpMask; // Used to check if there is a Level Module before the target destination
+	public LayerMask rayMask; // Used to check if there is a Level Module below
+	public LayerMask checkMask; // Used for obstacle checking when pushing a block
 
-	public float levitationRadius;
+	[Header("Levitation Parameters")]
+	public float levitationRadius; // Distance from which the Kid is considered close to the block
+	public float levitationTime; // Levitation time if the kid isn't nearby
 
-	public float levitationTime;
+	[HideInInspector]public bool bumping; // Is the LM currently being pushed upwards ?
+	[HideInInspector]public bool linked = false; //Is the LM Linked with another one ? (On top/Below it)
 
-	Transform kid;
-
-	Vector3 bumpPos;
-	float lerpState;
-	float moveEvaluateIndex;
-	/*[HideInInspector]*/ public bool linked = false; //Is the LM Linked with another one ? (On top/Below it)
+	[Header("SFX")]
 	[FMODUnity.EventRef]
 	public string click = "event:/Step";
 
+	Transform kid;
+
+	/// <summary>
+	/// Used to determine the final position of the Level Module at the end of the bumping. Is updated dynamically with each interaction, to allow multiple interactions in a short amount of time.
+	/// </summary>
+	Vector3 bumpPos;
+	float lerpState; // Set from reading Animation Curves and allows smooth movement
+	float moveEvaluateIndex;// Used to evaluate Animation Curves
 	int cubeScale;
 	Vector3 initialPos;
 	Vector3 movingPos;
@@ -46,6 +53,59 @@ public class AnimCube : MonoBehaviour
 		LMCheckBelow ();
 	}
 
+	#region DirectionalLevelModulePush
+	/// <summary>
+	/// Used to calculate bumpPos, depending on whether or not there are obstacles on the way and if there is ground below the available positions.
+	/// </summary>
+	/// <param name="maxDistance">Maximum distance at which the Level Module can go</param>
+	/// <param name="dir">Bumping direction</param>
+	/// <returns></returns>
+	public Vector3 GetFarthestPoint (int maxDistance, Vector3 dir)
+	{
+		Vector3 farthestPoint = bumpPos;
+		for (int i = cubeScale; i <= maxDistance; i += cubeScale)
+		{
+			//Debug.Log("i = " + i);
+			Vector3 checkPos = bumpPos + dir.normalized * i;
+
+			RaycastHit hit;
+			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
+
+			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale / 2 + 1))
+			{
+				Collider[] col = Physics.OverlapBox(checkPos, new Vector3(23.5f, 23.5f, 23.5f), Quaternion.identity, checkMask);
+
+				if (col.Length == 0)
+				{
+					//Debug.Log("No clutter around check pos !");
+					farthestPoint = checkPos;
+				}
+				else
+				{
+					Debug.Log("There are obstacles on the way !");
+					foreach (Collider clutter in col)
+					{
+						Debug.Log("Obstacle name : " + clutter.name);
+					}
+					break;
+				}
+				//Debug.Log("Position " + checkPos + "Accessible !");
+			}
+			else
+			{
+				break;
+			}
+		}
+		Debug.Log("Furthest position available in blocks : " + Vector3.Distance(farthestPoint,transform.position)/cubeScale);
+		//Debug.Log("Farthest point : " + farthestPoint);
+		return farthestPoint;
+	}
+
+	/// <summary>
+	/// Calls GetFarthestPoint to get the bumpPos, and starts moving with BumpToDir Coroutine
+	/// </summary>
+	/// <param name="bumpForce"></param>
+	/// <param name="bumpDir"></param>
 	public void BumpingToDir(float bumpForce, Vector3 bumpDir)
 	{
 		//Debug.Log("Bumping to :" + bumpDir + " At " + bumpForce + " force ");
@@ -67,46 +127,11 @@ public class AnimCube : MonoBehaviour
 		StartCoroutine (BumpToDir (1f));
 	}
 
-	public Vector3 GetFarthestPoint(int maxDistance, Vector3 dir)
-	{
-		Vector3 farthestPoint = bumpPos;
-		for (int i = cubeScale; i <= maxDistance; i += cubeScale)
-		{
-			//Debug.Log("i = " + i);
-			Vector3 checkPos = bumpPos + dir.normalized * i;
-
-			RaycastHit hit;
-			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
-			
-			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale/2 +1))
-			{
-				Collider[] col = Physics.OverlapBox(checkPos, new Vector3(23.5f, 23.5f, 23.5f), Quaternion.identity, checkMask);
-
-				if(col.Length == 0)
-				{
-					//Debug.Log("No clutter around check pos !");
-					farthestPoint = checkPos;
-				}
-				else
-				{
-					foreach(Collider clutter in col)
-					{
-						Debug.Log("Clutter name : " + clutter.name);
-					}
-					break;
-				}
-				//Debug.Log("Position " + checkPos + "Accessible !");
-				
-			}
-			else
-			{
-				break;
-			}
-		}
-		Debug.Log("Farthest point : " + farthestPoint);
-		return farthestPoint;
-	}
-
+	/// <summary>
+	/// Moves bumped Level Module to bumpPos, which is calculated in BumpingToDir. Follows moveForwardCurve Animation Curve for smooth movement
+	/// </summary>
+	/// <param name="bumpTime">Time in seconds during which the Level Module will move towards its destination</param>
+	/// <returns></returns>
 	public IEnumerator BumpToDir(float bumpTime)
 	{
 		initialPos = transform.position;
@@ -114,8 +139,8 @@ public class AnimCube : MonoBehaviour
 		lerpState = 0f;
 		while (lerpState < bumpTime) 
 		{
-			moveEvaluateIndex += Time.deltaTime;
-			lerpState = moveForward.Evaluate(moveEvaluateIndex/bumpTime);
+			moveEvaluateIndex += Time.deltaTime / bumpTime;
+			lerpState = moveForwardCurve.Evaluate(moveEvaluateIndex);
 			transform.position = Vector3.Lerp(initialPos, bumpPos, lerpState);
 			yield return null;
 		}
@@ -125,6 +150,15 @@ public class AnimCube : MonoBehaviour
 
 	}
 
+	#endregion
+
+	#region LevelModuleBumpUpwards
+	/// <summary>
+	/// Activates the bumping mode when hit by Ground Slam. Follows the moveUpCurve Animation Curve, then levitates for a fixed amount of time
+	/// </summary>
+	/// <param name="bumpTime">Time in seconds during which the cube goes upwards</param>
+	/// <param name="bumpForce">Used to determine desired height, depending on Ground slam strength</param>
+	/// <returns></returns>
 	public IEnumerator BumpUp(float bumpTime, float bumpForce)
 	{
 		bumping = true;
@@ -134,7 +168,7 @@ public class AnimCube : MonoBehaviour
 		{
 			//Debug.Log ("Bump Timer : " + bumpTimer);
 			bumpTimer += Time.deltaTime / bumpTime;
-			movingPos.y = initialPos.y + moveUp.Evaluate (bumpTimer) * bumpForce;
+			movingPos.y = initialPos.y + moveUpCurve.Evaluate (bumpTimer) * bumpForce;
 			transform.position = movingPos;
 			yield return null;
 		}
@@ -143,12 +177,19 @@ public class AnimCube : MonoBehaviour
 		StartCoroutine(Levitating(bumpTime, bumpForce));
 	}
 
+	/// <summary>
+	/// Levitates for a fixed amount of time that resets as long as the kid is near the block. Goes then into falling state
+	/// </summary>
+	/// <param name="bumpTime">Carrying previous BumpTime to calculate falling time</param>
+	/// <param name="bumpForce">Carrying previous BumpForce to calculate landing position</param>
+	/// <returns></returns>
 	public IEnumerator Levitating(float bumpTime, float bumpForce)
 	{
 		bumpTimer = levitationTime;
 
 		while(bumpTimer > 0f)
 		{
+			// If the Kid is nearby, resets the timer
 			if(Vector3.Distance(kid.position, transform.position) < levitationRadius)
 			{
 				bumpTimer = levitationTime;
@@ -160,31 +201,39 @@ public class AnimCube : MonoBehaviour
 			}
 			yield return null;
 		}
-
+		//Enter falling state. The values are used to normalize falling speed
 		StartCoroutine(Falling((bumpTime / 384) * bumpForce, bumpForce));
 	}
 
+	/// <summary>
+	/// Activates the falling State when Levitation state ends. Follows the fallingCurve Animation Curve
+	/// </summary>
+	/// <param name="fallTime">Time in seconds during which the block is going to fall</param>
+	/// <param name="bumpForce">Used to calculate landing position</param>
+	/// <returns></returns>
 	public IEnumerator Falling(float fallTime, float bumpForce)
 	{
 		initialPos = transform.position;
 		movingPos = transform.position;
 		while (bumpTimer < 1f)
 		{
-			//Debug.Log ("Bump Timer : " + bumpTimer);
 			bumpTimer += Time.deltaTime / fallTime;
 			movingPos.y = initialPos.y - fallingCurve.Evaluate(bumpTimer) * bumpForce;
 			transform.position = movingPos;
 			yield return null;
 		}
 
+		//Visual feedback
 		GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
 		particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.GetComponent<BoxCollider>().size.y / 2, 0), Quaternion.identity) as GameObject;
 		particleImpact.transform.forward = Vector3.up;
+		//Add sound feedback here
 
 		initialPos = transform.position;
 		bumpTimer = 0f;
 		bumping = false;
 	}
+	#endregion
 
 	#region LevelModuleStacking
 
