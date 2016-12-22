@@ -123,8 +123,11 @@ namespace Abilities {
             jumpVelocity = Vector3.zero;
         }
 
-        public void ForceJumpRequest() {
-            madeJumpRequest = true;
+        public void ForceJumpRequest(float bumpForce)
+		{
+			character.Physic_ResetGravity();
+			jumpVelocity.y = bumpForce;
+			madeJumpRequest = true;
             madeStopJumpRequest = false;
         }
 

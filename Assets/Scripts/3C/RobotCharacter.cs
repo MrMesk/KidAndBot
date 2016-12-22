@@ -80,6 +80,88 @@ public class RobotCharacter : Character
 	// Use this for initialization
 	void Start ()
 	{
+		Initialize();
+	}
+
+	// Update is called once per frame
+	protected override void FixedUpdate ()
+	{
+		if (!isGrabbing)
+		{
+			base.FixedUpdate();
+		}
+	}
+
+	protected override void Update ()
+	{
+		base.Update();
+
+		ChargeManagement();
+
+		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
+
+		InputManagement();
+
+		if (hMobility.accel == 1 && hMobility.directionalInput != Vector2.zero && !isGrabbing/* && IsGrounded()*/)
+		{
+			WalkingShake();
+			robotAnim.SetBool("Walking", true);
+		}
+		else
+		{
+			robotAnim.SetBool("Walking", false);
+		}
+
+	}
+
+	/// <summary>
+	/// Global input management for bot interactions
+	/// </summary>
+	void InputManagement()
+	{
+		// Attaching and detaching hook
+		if (input.bot.grab.WasPressed)
+		{
+			if (!isGrabbing)
+			{
+				AttachHook();
+			}
+			else
+			{
+				DetachHook();
+			}
+		}
+		// Cancels every other action and allows to pull if grabbing a block.
+		// Also sets hook position
+		if (isGrabbing)
+		{
+			grappin.enabled = true;
+			grappin.SetPosition(0, transform.position);
+			grappin.SetPosition(1, grabbedCube.transform.position);
+			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x / 2 - 1;
+			if (input.bot.punch.WasReleased && dist > 48f)
+			{
+				Pull(grabbedNormal, dist);
+				isGrabbing = false;
+				grabbedCube = null;
+				grabbedNormal = new Vector3();
+			}
+		}
+		//Allows to bump and charge if not grabbing, and disables hook
+		else
+		{
+			BumpUp();
+			Charge();
+			grappin.enabled = false;
+			grappinCollider.enabled = false;
+		}
+	}
+
+	/// <summary>
+	/// Initialize all needed variables
+	/// </summary>
+	private void Initialize ()
+	{
 		chargeTimer = 0f;
 		isCharging = false;
 		botHeight = GetComponent<CharacterController>().height;
@@ -101,70 +183,9 @@ public class RobotCharacter : Character
 		}
 	}
 
-	// Update is called once per frame
-	protected override void FixedUpdate ()
-	{
-		if (!isGrabbing)
-		{
-			base.FixedUpdate();
-		}
-	}
-	protected override void Update ()
-	{
-		base.Update();
-
-		ChargeManagement();
-
-		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
-
-		if (input.bot.grab.WasPressed)
-		{
-			if (!isGrabbing)
-			{
-				AttachHook();
-			}
-			else
-			{
-				DetachHook();
-			}
-		}
-		if (isGrabbing)
-		{
-			grappin.enabled = true;
-			grappin.SetPosition(0, transform.position);
-			grappin.SetPosition(1, grabbedCube.transform.position);
-			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x / 2 - 1;
-			//Debug.Log("Distance to LM : " + dist);
-			//Debug.Log("Character size" + GetComponent<CharacterController>().radius);
-			if (input.bot.punch.WasReleased && dist > 48f)
-			{
-				Pull(grabbedNormal, dist);
-				isGrabbing = false;
-				grabbedCube = null;
-				grabbedNormal = new Vector3();
-			}
-		}
-		else
-		{
-			BumpUp();
-			//BumpForward();
-			Charge();
-			grappin.enabled = false;
-		}
-
-		//Debug.Log("Directional Input" + _directionalInput);
-		if (hMobility.accel == 1 && hMobility.directionalInput != Vector2.zero && !isGrabbing/* && IsGrounded()*/)
-		{
-			WalkingShake();
-			robotAnim.SetBool("Walking", true);
-		}
-		else
-		{
-			robotAnim.SetBool("Walking", false);
-		}
-
-	}
-
+	/// <summary>
+	/// Little Camera shake to simulate heavy walking
+	/// </summary>
 	void WalkingShake ()
 	{
 		walkTimer += Time.deltaTime;
@@ -175,6 +196,10 @@ public class RobotCharacter : Character
 			FMODUnity.RuntimeManager.PlayOneShot(step, transform.position);
 		}
 	}
+
+	/// <summary>
+	/// Power amount management. If any input is held, the charge bar goes up. Else, the charge bar progressively goes down
+	/// </summary>
 	void ChargeManagement ()
 	{
 
@@ -191,6 +216,9 @@ public class RobotCharacter : Character
 		}
 	}
 
+	/// <summary>
+	/// Sets force depending on charge bar
+	/// </summary>
 	void ForceCheck ()
 	{
 		if (bumpForce >= bumpTiers[3])
@@ -213,6 +241,11 @@ public class RobotCharacter : Character
 		bumpForce = 0f;
 	}
 
+	#region Charging
+
+	/// <summary>
+	/// Sets charging state if input held by player and cooldown is available
+	/// </summary>
 	void Charge ()
 	{
 		if (input.bot.punch.IsPressed && chargeTimer == 0f)
@@ -224,132 +257,28 @@ public class RobotCharacter : Character
 			isCharging = false;
 		}
 	}
-	void BumpForward ()
+
+	/// <summary>
+	/// On Impact, resets the cooldown Timer so the player can't spam the charge.
+	/// </summary>
+	/// <returns></returns>
+	public IEnumerator ChargeCooldown ()
 	{
-		if (input.bot.punch.WasReleased)
+		chargeTimer = chargeCooldown;
+
+		while (chargeTimer > 0f)
 		{
-			Ray ray = new Ray(transform.position, transform.forward);
-			RaycastHit hit;
-
-			ForceCheck();
-			robotAnim.SetTrigger("Punching");
-			//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
-			if (Physics.Raycast(ray, out hit, bumpForwardRange, bumpForwardMask))
-			{
-				//Debug.Log ("Raycast hits !!");
-				Vector3 cubeNormal = hit.normal;
-				AnimCube animCube;
-				if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5f ||
-					Vector3.Dot(cubeNormal, -hit.transform.forward) > 0.5f ||
-					Vector3.Dot(cubeNormal, hit.transform.right) > 0.5f ||
-					Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5f)
-				{
-					animCube = hit.transform.GetComponent<AnimCube>();
-					if (animCube.bumping == false)
-					{
-						GameObject particleImpact = Resources.Load("Particles/Impact" + forceTier) as GameObject;
-						particleImpact = Instantiate(particleImpact, hit.point, Quaternion.identity) as GameObject;
-						particleImpact.transform.forward = cubeNormal;
-						//animCube.StartCoroutine (animCube.BumpToDir (2f, bumpForcesForward [forceTier], -cubeNormal));
-
-						AnimCube basis;
-						Debug.Log("Is Collided cube linked ? " + animCube.linked);
-						if (animCube.linked == true)
-						{
-							basis = animCube.GetBasis();
-							Debug.Log("Is Basis" + basis.name + " linked ? " + basis.linked);
-						}
-						else
-						{
-							basis = animCube;
-						}
-						Debug.Log("Basis : " + basis.name);
-						if (basis.IsAgainstWall(-cubeNormal))
-						{
-							if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall(-cubeNormal))
-							{
-								basis = animCube;
-								basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
-							}
-
-							basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
-							basis = animCube.GetBasis();
-						}
-
-						basis.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
-						//animCube.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
-					}
-				}
-				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
-				FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
-			}
-
-			else if (Physics.Raycast(ray, out hit, bumpForwardRange, destructibleWallMask))
-			{
-				//Debug.Log ("Raycast hits !!");
-				Vector3 cubeNormal = hit.normal;
-				DestructibleWall destructibleWall;
-				if (Vector3.Dot(cubeNormal, hit.transform.forward) > 0.5f ||
-					Vector3.Dot(cubeNormal, -hit.transform.forward) > 0.5f ||
-					Vector3.Dot(cubeNormal, hit.transform.right) > 0.5f ||
-					Vector3.Dot(cubeNormal, -hit.transform.right) > 0.5f)
-				{
-					destructibleWall = hit.transform.GetComponent<DestructibleWall>();
-
-					GameObject particleImpact = Resources.Load("Particles/Impact" + forceTier) as GameObject;
-					particleImpact = Instantiate(particleImpact, hit.point, Quaternion.identity) as GameObject;
-					particleImpact.transform.forward = cubeNormal;
-					destructibleWall.Destruct(-cubeNormal, bumpForcesForward[forceTier] * 20f);
-				}
-				cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
-				FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
-			}
+			chargeTimer -= Time.deltaTime;
+			//Debug.Log("Charge Timer : " + chargeTimer);
+			yield return null;
 		}
+		chargeTimer = 0f;
+		yield return null;
 	}
 
-	void Pull (Vector3 dir, float distToLM)
-	{
-		ForceCheck();
+	#endregion
 
-		while (bumpForcesForward[forceTier] > distToLM)
-		{
-			if (forceTier >= 1)
-			{
-				forceTier--;
-			}
-			else
-			{
-				break;
-			}
-		}
-		AnimCube basis;
-
-		if (grabbedCube.linked == true)
-		{
-			basis = grabbedCube.GetBasis();
-		}
-		else
-		{
-			basis = grabbedCube;
-		}
-
-		if (basis.IsAgainstWall(dir))
-		{
-			if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall(dir))
-			{
-				basis = grabbedCube;
-				basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
-			}
-
-			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
-			basis = grabbedCube.GetBasis();
-		}
-
-		basis.BumpingToDir(bumpForcesForward[forceTier], dir);
-
-		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
-		FMODUnity.RuntimeManager.PlayOneShot(pull, transform.position);
-	}
+	#region HookManagement
 
 	void DetachHook ()
 	{
@@ -400,82 +329,69 @@ public class RobotCharacter : Character
 		}
 	}
 
-	void BumpUp ()
-	{
-		if (input.bot.bump.WasReleased && IsGrounded())
-		{
-			ForceCheck();
-
-			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, botHeight / 2, 0), Quaternion.identity) as GameObject;
-			particleImpact.transform.forward = Vector3.up;
-
-			AnimCube animCube;
-
-			//Getting every block in range, but not the ones below the player and bumping them according to the bumping force
-			nearlyBlocks = Physics.OverlapSphere(transform.position, bumpRange, bumpUpMask);
-			foreach (Collider col in nearlyBlocks)
-			{
-				//Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
-				animCube = col.GetComponent<AnimCube>();
-				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - botHeight / 2 - 4f && animCube.bumping == false)
-				{
-					animCube.StartCoroutine(animCube.BumpUp(2f, bumpForcesUp[forceTier]));
-				}
-			}
-			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
-			FMODUnity.RuntimeManager.PlayOneShot(bump, transform.position);
-
-			// Bump kid
-			TryBumpKid();
-		}
-	}
-
-	public bool TryBumpKid ()
-	{
-		GameObject kid = GameObject.Find("Kid");
-		if (kid == null)
-		{ return false; } // Kid not found
-		float distToKid = Vector3.Distance(transform.position, kid.transform.position);
-		if (distToKid > bumpRange)
-		{ return false; } // Kid too far
-		Abilities.JumpAbility jumpAbility = kid.GetComponentInChildren<Abilities.JumpAbility>();
-		if (jumpAbility == null)
-		{ return false; } // Kid can't jump
-		jumpAbility.ForceJumpRequest();
-		return true; // Succesfully forced kid to jump
-	}
-
 	public override bool IsGrabbing ()
 	{
 		return isGrabbing;
 	}
 
-	private void OnTriggerEnter (Collider other)
-	{
-		if (isCharging)
-		{
-			Destructible prop = other.GetComponent<Destructible>();
-			if (prop != null)
-			{
-				
-				if (prop.Impact() == false)
-				{
-					isCharging = false;
-					hMobility.accel = 1f;
-					StartCoroutine(ChargeCooldown());
-				}
+	#endregion
 
-				AnimCube anim = other.GetComponent<AnimCube>();
-				if (anim != null)
-				{
-					Debug.Log("Colliding with a Level Module !");
-					PushLM(anim);
-				}
+	#region Level Module Movement
+
+
+	/// <summary>
+	/// Pulls a Level Module towards the Bot, depending on the force
+	/// </summary>
+	/// <param name="dir">Direction the Level Module is pulled towards</param>
+	/// <param name="distToLM">Distance between Bot and Level Module so the bot can't pull too far</param>
+	void Pull (Vector3 dir, float distToLM)
+	{
+		ForceCheck();
+
+		while (bumpForcesForward[forceTier] > distToLM)
+		{
+			if (forceTier >= 1)
+			{
+				forceTier--;
+			}
+			else
+			{
+				break;
 			}
 		}
+		AnimCube basis;
+
+		if (grabbedCube.linked == true)
+		{
+			basis = grabbedCube.GetBasis();
+		}
+		else
+		{
+			basis = grabbedCube;
+		}
+
+		if (basis.IsAgainstWall(dir))
+		{
+			if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall(dir))
+			{
+				basis = grabbedCube;
+				basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
+			}
+
+			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
+			basis = grabbedCube.GetBasis();
+		}
+
+		basis.BumpingToDir(bumpForcesForward[forceTier], dir);
+
+		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+		FMODUnity.RuntimeManager.PlayOneShot(pull, transform.position);
 	}
 
+	/// <summary>
+	/// Bumps a Level Module depending on the normal collided with the bot
+	/// </summary>
+	/// <param name="anim">The collided cube AnimCube component</param>
 	void PushLM (AnimCube anim)
 	{
 		Ray ray = new Ray(transform.position, anim.transform.position - transform.position);
@@ -526,18 +442,89 @@ public class RobotCharacter : Character
 		FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
 	}
 
-	public IEnumerator ChargeCooldown ()
+	/// <summary>
+	/// Bumps every block around impact point as long as they belong to the bumpable layer. Bumping force depends on charge bar
+	/// </summary>
+	void BumpUp ()
 	{
-		chargeTimer = chargeCooldown;
-
-		while (chargeTimer > 0f)
+		if (input.bot.bump.WasReleased && IsGrounded())
 		{
-			chargeTimer -= Time.deltaTime;
-			//Debug.Log("Charge Timer : " + chargeTimer);
-			yield return null;
+			ForceCheck();
+
+			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
+			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, botHeight / 2, 0), Quaternion.identity) as GameObject;
+			particleImpact.transform.forward = Vector3.up;
+
+			AnimCube animCube;
+
+			//Getting every block in range, but not the ones below the player and bumping them according to the bumping force
+			nearlyBlocks = Physics.OverlapSphere(transform.position - new Vector3(0,botHeight/2,0), bumpRange, bumpUpMask);
+			
+			foreach (Collider col in nearlyBlocks)
+			{
+				//Debug.Log("Pos X Player : " + (transform.position.y - transform.localScale.y) + "Pos X Target : " + (col.transform.position.y - col.transform.localScale.y / 2));
+				animCube = col.GetComponent<AnimCube>();
+				if (col.transform.position.y - col.transform.localScale.y / 2 >= transform.position.y - botHeight / 2 - 4f && animCube.bumping == false)
+				{
+					animCube.StartCoroutine(animCube.BumpUp(2f, bumpForcesUp[forceTier]));
+				}
+			}
+			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+			FMODUnity.RuntimeManager.PlayOneShot(bump, transform.position);
+
+			// Bump kid
+			TryBumpKid();
 		}
-		chargeTimer = 0f;
-		yield return null;
 	}
 
+	/// <summary>
+	/// Tries bumping the kid if he's nearby
+	/// </summary>
+	/// <returns></returns>
+	public bool TryBumpKid ()
+	{
+		GameObject kid = GameObject.Find("Kid");
+		if (kid == null)
+		{ return false; } // Kid not found
+		float distToKid = Vector3.Distance(transform.position - new Vector3(0, botHeight / 2, 0), kid.transform.position);
+		if (distToKid > bumpRange)
+		{ return false; } // Kid too far
+		Abilities.JumpAbility jumpAbility = kid.GetComponentInChildren<Abilities.JumpAbility>();
+		if (jumpAbility == null)
+		{ return false; } // Kid can't jump
+		jumpAbility.ForceJumpRequest(bumpForcesUp[forceTier] / 2);
+		return true; // Succesfully forced kid to jump
+	}
+
+	#endregion
+
+	/// <summary>
+	/// Impacts any obstacle or any Level Module when charging.
+	/// If the obstacle gets destroyed, the bot keeps charging.
+	/// </summary>
+	/// <param name="other">Returns any obstacle the Bot collides with</param>
+	private void OnTriggerEnter (Collider other)
+	{
+		if (isCharging)
+		{
+			Destructible prop = other.GetComponent<Destructible>();
+			if (prop != null)
+			{
+				
+				if (prop.Impact() == false)
+				{
+					isCharging = false;
+					hMobility.accel = 1f;
+					StartCoroutine(ChargeCooldown());
+				}
+
+				AnimCube anim = other.GetComponent<AnimCube>();
+				if (anim != null)
+				{
+					//Debug.Log("Colliding with a Level Module !");
+					PushLM(anim);
+				}
+			}
+		}
+	}
 }

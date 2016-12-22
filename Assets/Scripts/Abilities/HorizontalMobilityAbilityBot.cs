@@ -7,15 +7,23 @@ namespace Abilities
 	public class HorizontalMobilityAbilityBot : MonoBehaviour
 	{
 		[Header("Configuration")]
-		//public float _moveSpeed = 7.5f;
-
-		public float inputDead = 0.1f;
-		public float forwardVelocity = 12;
-		public float rotateVel = 100f;
-		public float chargingRotateVel = 50f;
-		public float chargeMaxVelMult = 2f;
-		public float accelMult = 1f;
-		public float slowdownMult = 2f;
+		[Range(0f,1f)]
+		public float inputDead = 0.1f; // Classic input dead, nullifies input values below that 
+		public float forwardVelocity = 12; // Default walking speed
+		public float rotateVel = 100f; // Rotation speed value when in running state
+		public float chargingRotateVel = 50f; // Rotation speed value when in charging state
+		[Range(1f, 10f)]
+		public float chargeMaxVelMult = 2f; // Max value for accel
+		[Range(1f, 10f)]
+		public float accelMult = 1f; // How fast does the bot reach maximum acceleration ! (Higher = faster)
+		[Range(1f, 10f)]
+		public float slowdownMult = 2f; // How fast does the bot reach minimum acceleration ! (Higher = faster)
+		[Range(1f, 2f)]
+		public float toKidSpeedMult = 1.5f;
+		[Range(0.1f, 1f)]
+		public float backwardSpeedMult = 0.5f;
+		[Range(-1f, 1f)]
+		public float _minDotToKid = 0.9f;
 
 		[HideInInspector] public float accel = 1f;
 		Vector3 velocity = Vector3.zero;
@@ -30,16 +38,14 @@ namespace Abilities
 			BOTH
 		}
 
-
 		// Debug
 		[Header("Debug")]
 		public DebugInputMode debugInputMode = DebugInputMode.BOTH;
 
 		// S&F
-		[Header("Sings & Feedbacks")]
+		[Header("Signs & Feedbacks")]
 		[Range(0, 1)]
 		public float editLookDirectionDeadZone = 0.1f;
-
 
 		// State
 		[NonSerialized]
@@ -56,10 +62,12 @@ namespace Abilities
 			get { return targetRot; }
 		}
 
+		Transform kid;
 		// Use this for initialization
 		void Start ()
 		{
 			// Retrieve required component(s)
+			kid = FindObjectOfType<KidCharacter>().transform;
 			character = GetComponentInParent<Character>();
 			if (character == null)
 			{
@@ -67,23 +75,29 @@ namespace Abilities
 				return;
 			}
 			targetRot = character.transform.rotation;
-			//rigid = GetComponent<Rigidbody>();
 		}
 
 		// Update is called once per frame
 		void Update ()
 		{
 			directionalInput = input.shared.directional.Value;
-			//Debug.Log("directionalVelocity : " + directionalInput);
 			Turn();
 		}
 
 		private void FixedUpdate ()
 		{
+			ChargeManagement();
+		}
+
+		/// <summary>
+		/// Checks if the bot is currently in charge state, and increases/decreases acceleration if true/false. Allows to walk as long as accel is equal to 1
+		/// </summary>
+		void ChargeManagement()
+		{
 			//Debug.Log("Velocity : " + velocity);
 			RobotCharacter bot = (RobotCharacter)character;
 
-			if(bot.isCharging)
+			if (bot.isCharging)
 			{
 				accel += Time.deltaTime * accelMult;
 				accel = Mathf.Clamp(accel, 1f, chargeMaxVelMult);
@@ -103,18 +117,39 @@ namespace Abilities
 			{
 				Run();
 			}
-				
-			character.physic.globalVelocity += character.transform.TransformDirection(velocity);
 
+			character.physic.globalVelocity += character.transform.TransformDirection(velocity);
 		}
 
+		/// <summary>
+		/// Classic walking mode. Allows to go Forward/Backwards, going faster if going towards the kid.
+		/// </summary>
 		void Run ()
 		{
 			if (Mathf.Abs(directionalInput.y) > inputDead)
 			{
 				//Move
-				//rigid.velocity = transform.forward * forwardInput * forwardVelocity;
-				velocity.z = forwardVelocity * directionalInput.y;
+				if(directionalInput.y > 0f)
+				{
+					Vector3 toKid = kid.position - transform.position;
+					toKid.Normalize();
+
+					float delta = Vector3.Dot(character.transform.forward, toKid);
+
+					if (delta > _minDotToKid)
+					{
+						velocity.z = forwardVelocity * directionalInput.y * toKidSpeedMult;
+					}
+					else
+					{
+						velocity.z = forwardVelocity * directionalInput.y;
+					}
+				}
+				else
+				{
+					velocity.z = forwardVelocity * directionalInput.y * backwardSpeedMult;
+				}
+				
 			}
 			else
 			{
@@ -123,15 +158,18 @@ namespace Abilities
 			}
 		}
 
+		/// <summary>
+		/// Charging mode. Goes forward as long as isCharging is set to true and accel is > 1.
+		/// </summary>
 		void Charge()
 		{
 			// Accelerating as long as the bot is charging
-
-
 			velocity.z = forwardVelocity * accel;
-			//Debug.Log("Accel : " + accel);
 		}
 
+		/// <summary>
+		/// Allows bot to rotate left or right. Rotation speed is lowered during charging state
+		/// </summary>
 		void Turn ()
 		{
 			if (Mathf.Abs(directionalInput.x) > inputDead)
@@ -147,10 +185,7 @@ namespace Abilities
 				}
 				
 				character.lookRotation = targetRot;
-				//character.transform.rotation = targetRot;
 			}
 		}
-
-		//character.globalVelocity += directionalVelocity;
 	}
 }

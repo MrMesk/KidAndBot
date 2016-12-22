@@ -4,13 +4,20 @@ using System.Collections;
 public class AnimCube : MonoBehaviour 
 {
 	public AnimationCurve moveUp;
+	public AnimationCurve fallingCurve;
 	public AnimationCurve moveForward;
-	Vector3 initialPos;
-	Vector3 movingPos;
-	float bumpTimer;
+
 	public bool bumping;
 	public LayerMask bumpMask;
+	public LayerMask rayMask;
 	public LayerMask checkMask;
+
+	public float levitationRadius;
+
+	public float levitationTime;
+
+	Transform kid;
+
 	Vector3 bumpPos;
 	float lerpState;
 	float moveEvaluateIndex;
@@ -19,10 +26,14 @@ public class AnimCube : MonoBehaviour
 	public string click = "event:/Step";
 
 	int cubeScale;
+	Vector3 initialPos;
+	Vector3 movingPos;
+	float bumpTimer;
 
 	// Use this for initialization
 	void Start () 
 	{
+		kid = FindObjectOfType<KidCharacter>().transform;
 		linked = false;
 		bumpPos = transform.position;
 		lerpState = 0f;
@@ -33,15 +44,6 @@ public class AnimCube : MonoBehaviour
 		cubeScale = Mathf.FloorToInt(GetComponent<BoxCollider>().size.x);
 
 		LMCheckBelow ();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		/*if(transform.position != bumpPos)
-		{
-			
-		}*/
 	}
 
 	public void BumpingToDir(float bumpForce, Vector3 bumpDir)
@@ -75,10 +77,26 @@ public class AnimCube : MonoBehaviour
 
 			RaycastHit hit;
 			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
+			
 			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale/2 +1))
 			{
+				Collider[] col = Physics.OverlapBox(checkPos, new Vector3(23.5f, 23.5f, 23.5f), Quaternion.identity, checkMask);
+
+				if(col.Length == 0)
+				{
+					//Debug.Log("No clutter around check pos !");
+					farthestPoint = checkPos;
+				}
+				else
+				{
+					foreach(Collider clutter in col)
+					{
+						Debug.Log("Clutter name : " + clutter.name);
+					}
+					break;
+				}
 				//Debug.Log("Position " + checkPos + "Accessible !");
-				farthestPoint = checkPos;
+				
 			}
 			else
 			{
@@ -121,25 +139,62 @@ public class AnimCube : MonoBehaviour
 			yield return null;
 		}
 
+		bumpTimer = 0f;
+		StartCoroutine(Levitating(bumpTime, bumpForce));
+	}
+
+	public IEnumerator Levitating(float bumpTime, float bumpForce)
+	{
+		bumpTimer = levitationTime;
+
+		while(bumpTimer > 0f)
+		{
+			if(Vector3.Distance(kid.position, transform.position) < levitationRadius)
+			{
+				bumpTimer = levitationTime;
+				Debug.Log("Kid is in Range !");
+			}
+			else
+			{
+				bumpTimer -= Time.deltaTime;
+			}
+			yield return null;
+		}
+
+		StartCoroutine(Falling((bumpTime / 384) * bumpForce, bumpForce));
+	}
+
+	public IEnumerator Falling(float fallTime, float bumpForce)
+	{
+		initialPos = transform.position;
+		movingPos = transform.position;
+		while (bumpTimer < 1f)
+		{
+			//Debug.Log ("Bump Timer : " + bumpTimer);
+			bumpTimer += Time.deltaTime / fallTime;
+			movingPos.y = initialPos.y - fallingCurve.Evaluate(bumpTimer) * bumpForce;
+			transform.position = movingPos;
+			yield return null;
+		}
+
 		GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
-		particleImpact = Instantiate (particleImpact, transform.position - new Vector3(0, transform.GetComponent<BoxCollider>().size.y/2,0), Quaternion.identity) as GameObject;
+		particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, transform.GetComponent<BoxCollider>().size.y / 2, 0), Quaternion.identity) as GameObject;
 		particleImpact.transform.forward = Vector3.up;
 
 		initialPos = transform.position;
 		bumpTimer = 0f;
 		bumping = false;
-
 	}
 
-	///////////////////// Stacking Modules
-	/// 
-	/// 
+	#region LevelModuleStacking
 
-
-	void LMCheckBelow()
+	/// <summary>
+	/// Checks if a Level Module is below, and sets it as parent if there is one
+	/// </summary>
+	void LMCheckBelow ()
 	{
 		RaycastHit hit;
-		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale / 2 + 1, checkMask)) 
+		if (Physics.Raycast (transform.position, Vector3.down, out hit, cubeScale / 2 + 1, rayMask)) 
 		{
 			//Debug.Log ("A Level Module is below !!!");
 			linked = true;
@@ -148,7 +203,11 @@ public class AnimCube : MonoBehaviour
 			transform.parent = hit.transform;
 		}
 	}
-
+	
+	/// <summary>
+	/// Checks parents until we get to the lowest Level Module from the pile.
+	/// </summary>
+	/// <returns></returns>
 	public AnimCube GetBasis()
 	{
 		Transform LMParent;
@@ -195,4 +254,5 @@ public class AnimCube : MonoBehaviour
 			return false;
 		}
 	}
+	#endregion
 }
