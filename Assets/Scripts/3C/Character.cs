@@ -17,7 +17,7 @@ public class Character : MonoBehaviour {
     /// <summary>
     /// The controller compass attached to this character.
     /// </summary>
-    public CharacterCompass characterCompass;   // Controller compas attached to this character
+    public CharacterCompass characterCompass;
 
     /// <summary>
     /// The <Ability> container attached to this character
