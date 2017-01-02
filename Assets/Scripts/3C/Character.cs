@@ -186,7 +186,9 @@ public class Character : MonoBehaviour {
     /// <summary>
     /// Apply gravity onto this character's global velocity.
     /// </summary>
-    protected void Physic_ApplyGravityOntoGlobalVelocity() {
+    protected void Physic_ApplyGravityOntoGlobalVelocity()
+	{
+
         // Do not apply gravity if grounded
         if (IsGrounded()) return;
         // Do not apply gravity if climbing

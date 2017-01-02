@@ -3,13 +3,15 @@ using System.Collections;
 using InControl;
 
 
-namespace PlayerInput.Configuration {
+namespace PlayerInput.Configuration
+{
     public class Kid : MonoBehaviour
 	{
         // Jump
         [SerializeField]
         public TriggerInput jump = new TriggerInput();
+		// Anchor
 		[SerializeField]
-		public TriggerInput shoot = new TriggerInput();
+		public TriggerInput anchor = new TriggerInput();
 	}
 }
