@@ -21,7 +21,7 @@ public class ControlsManager : MonoBehaviour {
         } else {
 
         }
-
+        
         //sharedInputsConfig = ScriptableObject.CreateInstance<SharedInputConfiguration>();
 
         //sharedInputsConfig.camera.xAxis.positive.gamePad = InputControlType.RightStickRight;

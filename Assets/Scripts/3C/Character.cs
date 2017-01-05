@@ -40,11 +40,12 @@ public class Character : MonoBehaviour {
     /// </summary>
     [NonSerialized]
     public Quaternion lookRotation;
+
     
 
-
-
-    // Physic
+    /*****************
+     * PHYSIC ENGINE *
+     *****************/
 
     /// <summary>
     /// Container of physic related members.
@@ -65,6 +66,7 @@ public class Character : MonoBehaviour {
         /// The global velocity of this character, applied and reset every frames.
         /// To apply a velocity onto this character, use the += statement each frame.
         /// </summary>
+        [NonSerialized]
         public Vector3 globalVelocity = Vector3.zero;
         
         /// <summary>
@@ -72,13 +74,19 @@ public class Character : MonoBehaviour {
         /// </summary>
         [NonSerialized]
         public Action eHitGround;
+
+        /// <summary>
+        /// Flag idicating if the character's foot where touching the ground last FixedUpdate().
+        /// </summary>
+        [NonSerialized]
+        public bool touchedGroundLastFixedUpdate = false;
     }
 
     /// <summary>
     /// Container of physic related members.
     /// </summary>
     public Physic physic = new Physic();
-    
+
 
 
 
@@ -88,12 +96,12 @@ public class Character : MonoBehaviour {
     /// Get controller handler
     /// </summary>
     /// <returns></returns>
-    private delegate PlayerInput.Controller GetControllerHandler();
+    protected delegate PlayerInput.Controller GetControllerHandler();
 
     /// <summary>
     /// Get controller delegate
     /// </summary>
-    private GetControllerHandler getController;
+    protected GetControllerHandler getController;
 
     /// <summary>
     /// Attached input system
@@ -115,7 +123,10 @@ public class Character : MonoBehaviour {
         
         // Retrieve input controller
         var characterType = this.GetType();
-        if (characterType == typeof(KidCharacter)) {
+        if (
+            characterType == typeof(KidCharacter) ||
+            characterType == typeof(Gameplay.KidCharacter)
+            ) {
             getController = delegate () {
                 return PlayerInput.Controller.kidController;
             };
@@ -127,11 +138,11 @@ public class Character : MonoBehaviour {
     }
 
     /// <summary>
-    /// Update is called every frame. Use it for everything input related.
+    /// Controller tick is called every frame. Use it for everything input related.
     /// </summary>
 	protected virtual void Update() {
         // Execute 
-        Controller(input, Time.deltaTime);
+        ControllerTick(input, Time.deltaTime);
     }
     
     /// <summary>
@@ -149,9 +160,9 @@ public class Character : MonoBehaviour {
     /// </summary>
     protected virtual void FixedUpdate() {
         // Apply logic
-        Logic(Time.fixedDeltaTime);
+        LogicTick(Time.fixedDeltaTime);
         // Calculate curent gravity velocity and apply it onto the global velocity
-        Physic_ApplyGravityOntoGlobalVelocity();
+        //Physic_ApplyGravityOntoGlobalVelocity();
         // Apply the global velocity onto this character
         CollisionFlags collisionFlags =
             Physic_ApplyGlobalVelocity();
@@ -164,7 +175,7 @@ public class Character : MonoBehaviour {
     /// <summary>
     /// Controller is called every frame. Use it for everything input related.
     /// </summary>
-    protected virtual void Controller(PlayerInput.Controller input, float dt) { }
+    protected virtual void ControllerTick(PlayerInput.Controller input, float dt) { }
 
     /// <summary>
     /// Rendering is called at the end of every frame. Use it for everything rendering related.
@@ -172,9 +183,9 @@ public class Character : MonoBehaviour {
     protected virtual void Rendering(float dt) { }
 
     /// <summary>
-    /// Update is called more than once a frame. Use it for everything logic related.
+    /// Logic tick is called more than once a frame. Use it for everything logic related.
     /// </summary>
-    protected virtual void Logic(float dt) { }
+    protected virtual void LogicTick(float dt) { }
 
     /// <summary>
     /// Reset current gravity velocity applyed on this character.
@@ -221,12 +232,17 @@ public class Character : MonoBehaviour {
             ((collisionFlags & CollisionFlags.Below) != 0) &&
             physic.globalVelocity.y < 0
         ) {
+            // Notify that the character touched the ground
+            physic.touchedGroundLastFixedUpdate = true;
             // Reset gravity
             Physic_ResetGravity();
             // Notifie collision with ground
             if (physic.eHitGround != null) {
                 physic.eHitGround.Invoke();
             }
+        } else {
+            // Notify that the character didn't touched the ground
+            physic.touchedGroundLastFixedUpdate = false;
         }
     }
     
@@ -251,7 +267,7 @@ public class Character : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public virtual bool IsGrounded() {
-        return (controller.collisionFlags & CollisionFlags.Below) != 0;
+        return physic.touchedGroundLastFixedUpdate;
     }
 
 

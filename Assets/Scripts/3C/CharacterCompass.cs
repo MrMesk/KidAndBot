@@ -20,7 +20,7 @@ public class CharacterCompass : MonoBehaviour {
         transform.rotation = GetWalkingCompassRotation();
     }
 
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
         // Rotation
         Quaternion targetRotation;
         try {
@@ -44,7 +44,7 @@ public class CharacterCompass : MonoBehaviour {
         transform.position = character.transform.position + positionOffset;
     }
 
-    public Quaternion GetWalkingCompassRotation() {
+    public virtual Quaternion GetWalkingCompassRotation() {
         // Get camera forward
 		Vector3 cameraForward = overrideCameraTransform != null ? overrideCameraTransform.forward : character.characterCamera.transform.forward;
         // Project on ground
@@ -54,7 +54,7 @@ public class CharacterCompass : MonoBehaviour {
         return forwardRotation;
     }
 
-    public Quaternion GetClimbingCompassRotation() {
+    public virtual Quaternion GetClimbingCompassRotation() {
         // Get kid character
         if(character.GetType() != typeof(KidCharacter)) {
             throw new System.Exception();
@@ -68,7 +68,7 @@ public class CharacterCompass : MonoBehaviour {
         Collider currentlyClimbingCollider = kidCharacter._selectedClimbableWall._collider;
                 
         // Get closest point on climbing collider
-        var pointData = ColliderHelper.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
+        var pointData = ColliderUtility.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
         // Get this point's normal
         Vector3 normal = pointData.normal;        
 
