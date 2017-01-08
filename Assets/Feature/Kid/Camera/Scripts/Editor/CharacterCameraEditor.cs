@@ -75,9 +75,18 @@ namespace Gameplay
             new HandleData(
                 delegate
                 {
-                    return
-                        t.GetLocalHorizontalPositionAroundCharacter(t.directionalTargetDirection) +
+                    if (t.kid.climbing.IsClimbing())
+                    {
+                        return
+                        t.GetLocalHorizontalPositionAroundCharacter(t.kid.compass.transform.up) +
                         t.GetLocalVerticalPositionAroundCharacter(t.transform.position - t.kid.transform.position);
+                    }
+                    else
+                    {
+                        return
+                            t.GetLocalHorizontalPositionAroundCharacter(-t.directionFacedByPlayerSmoothed) +
+                            t.GetLocalVerticalPositionAroundCharacter(t.transform.position - t.kid.transform.position);
+                    }
                 },
                 delegate
                 {
@@ -198,6 +207,15 @@ namespace Gameplay
                 t.GetTargetPosition()
                 );
 
+            // Line arrow
+            DrawAnimatedTargetLine(
+                t.transform.position,
+                t.GetTargetPosition(),
+                1f,
+                Color.magenta,
+                4f
+                );
+
             // Cone
             Handles.color = Color.magenta;
             arrowPosition = Vector3.MoveTowards(t.transform.position, t.GetTargetPosition(), 1f);
@@ -245,7 +263,7 @@ namespace Gameplay
                     0,
                     handlePosition,
                     handleRotation,
-                    0.25f
+                    Mathf.Clamp((Vector3.Distance(handlePosition, end) - stepLengh) / 8f, 0, 0.25f)
                     );
             }
 

@@ -207,7 +207,7 @@ namespace Gameplay
         /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
         /// </summary>
         [System.Serializable]
-        private class Jump
+        public class Jump
         {
 
             // Configuration
@@ -390,10 +390,15 @@ namespace Gameplay
                 acceleration = Vector3.up * GetGravityAcceleration(jumpConfig, isPressingJumpButton);
             }
 
+            public bool HasReachedPeak()
+            {
+                return hasReachedPeak;
+            }
+
         }
 
         [System.Serializable]
-        private class WallJump : Jump
+        public class WallJump : Jump
         {
 
             [System.Serializable]
@@ -466,7 +471,7 @@ namespace Gameplay
         /// The jump the kid is currently using.
         /// </summary>
         [System.NonSerialized]
-        private Jump activeJump = null;
+        public Jump activeJump = null;
 
         /// <summary>
         /// The jump whose gravity shall be used when the player isn't jumping. (Ex : fall from a cliff.)

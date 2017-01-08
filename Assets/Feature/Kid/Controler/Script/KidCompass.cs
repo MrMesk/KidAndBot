@@ -12,8 +12,6 @@ namespace Gameplay {
         [System.NonSerialized]
         public Vector3 normal;
 
-        public System.Action eDrasticlyChangedNormal;
-
         protected override void FixedUpdate() {
 
             // The most appropriate rotation the compass should take to match the player needs.
@@ -26,21 +24,13 @@ namespace Gameplay {
                 _lastNormal = normal;
                 normal = Vector3.up;
             }
-
-            if(_lastNormal.y > normal.y)
-            {
-                if (eDrasticlyChangedNormal != null)
-                    eDrasticlyChangedNormal();
-            }
-
+            
             // Rotation smoothing
             float deltaAngle = Quaternion.Angle(transform.rotation, targetRotation);
             if (deltaAngle < 135) {
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, (deltaAngle * 4 + 180) * Time.deltaTime);
             } else {
                 transform.rotation = targetRotation;
-                if (eDrasticlyChangedNormal != null)
-                    eDrasticlyChangedNormal();
             }
 
             // Position (Only visual, not usefull)

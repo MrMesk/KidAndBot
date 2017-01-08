@@ -17,7 +17,11 @@ namespace Gameplay {
 
         private void ClimbingLogicTick(float dt) {
 
-            climbing.TickLogic(dt, transform);
+            // Climb logic
+            if(!IsJumping() || activeJump.HasReachedPeak())
+            {
+                climbing.TickLogic(dt, transform);
+            }
 
             // Position correction
 
@@ -119,7 +123,7 @@ namespace Gameplay {
         /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
         /// </summary>
         [System.Serializable]
-        internal class Climbing {
+        public class Climbing {
 
             // Configuration
 
@@ -283,7 +287,7 @@ namespace Gameplay {
 
         [Header("Climbing")]
         [SerializeField]
-        internal Climbing climbing = new Climbing();
+        public Climbing climbing = new Climbing();
 
 
     }
