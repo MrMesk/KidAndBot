@@ -42,7 +42,7 @@ namespace Gameplay {
         /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
         /// </summary>
         [System.Serializable]
-        private class Directional {
+        public class Directional {
 
             // Configuration
 
@@ -102,7 +102,7 @@ namespace Gameplay {
 
         [Header("Directional")]
         [SerializeField]
-        private Directional directional = new Directional();
+        public Directional directional = new Directional();
 
     }
 

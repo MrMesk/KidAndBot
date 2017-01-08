@@ -7,6 +7,13 @@ namespace Gameplay {
 
         public KidCharacter kidCharacter;
 
+        [System.NonSerialized]
+        private Vector3 _lastNormal;
+        [System.NonSerialized]
+        public Vector3 normal;
+
+        public System.Action eDrasticlyChangedNormal;
+
         protected override void FixedUpdate() {
 
             // The most appropriate rotation the compass should take to match the player needs.
@@ -16,6 +23,14 @@ namespace Gameplay {
                 targetRotation = GetClimbingCompassRotation();
             } else {
                 targetRotation = GetWalkingCompassRotation();
+                _lastNormal = normal;
+                normal = Vector3.up;
+            }
+
+            if(_lastNormal.y > normal.y)
+            {
+                if (eDrasticlyChangedNormal != null)
+                    eDrasticlyChangedNormal();
             }
 
             // Rotation smoothing
@@ -24,6 +39,8 @@ namespace Gameplay {
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, (deltaAngle * 4 + 180) * Time.deltaTime);
             } else {
                 transform.rotation = targetRotation;
+                if (eDrasticlyChangedNormal != null)
+                    eDrasticlyChangedNormal();
             }
 
             // Position (Only visual, not usefull)
@@ -46,7 +63,8 @@ namespace Gameplay {
             // Get closest point from the kid's center of mass on the climbable object's collider.
             var pointData = ColliderUtility.GetClosestPointOnClollider(acoCollider, kidPosition);
             // Get this point's normal.
-            Vector3 normal = pointData.normal;
+            _lastNormal = this.normal;
+            Vector3 normal = this.normal = pointData.normal;
 
             // Retrieve the transform of the camera attached to the kid
             Transform cameraTransform = overrideCameraTransform != null ? overrideCameraTransform : kidCharacter.characterCamera.transform;

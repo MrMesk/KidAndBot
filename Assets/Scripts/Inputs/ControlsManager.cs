@@ -86,6 +86,8 @@ public class ControlsManager : MonoBehaviour {
         switch (devices.Count) {
             case 0:
                 // Solo player
+                // Keyboard
+                SetupControllerForKeybord(Controller.kidController);
                 break;
             case 1:
                 // Two players (Keyboard + GamePad)

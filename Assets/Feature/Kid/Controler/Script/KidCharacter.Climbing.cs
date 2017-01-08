@@ -39,31 +39,26 @@ namespace Gameplay {
                 position += closestPointOnCollider.position;
                 transform.position = position;
 
-                //try {
-                //    // Indicator A
-                //    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
-                //    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
-                //    climbing.config.climbingIndicatorA.position = point.position;
-                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
+                try
+                {
+                    // Indicator A
+                    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
+                    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
+                    climbing.config.climbingIndicatorA.position = point.position;
+                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
 
-                //    // Indocator B
-                //    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
-                //    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
-                //    climbing.config.climbingIndicatorB.position = point.position;
-                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
-
-                //    Vector3 position = transform.position;
-                //    position -= climbing.config.climbingIndicatorB.position;
-                //    position += climbing.config.climbingIndicatorA.position;
-
-                //    Debug.DrawLine(transform.position, position, Color.yellow);
-
-                //    transform.position = position;
+                    // Indocator B
+                    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
+                    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
+                    climbing.config.climbingIndicatorB.position = point.position;
+                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
 
 
-                //} catch (System.Exception e) {
-                //    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
-                //}
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
+                }
             } else {
                 //climbing.config.climbingIndicatorA.gameObject.SetActive(false);
                 //climbing.config.climbingIndicatorB.gameObject.SetActive(false);
