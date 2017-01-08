@@ -143,9 +143,21 @@ namespace Gameplay
 
 
             // Horizontal : Around
+            // Min Max
+            Color color;
+            color = Color.grey;
+            Handles.color = color;
+            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, t.distanceAroundMax); // Disc max
+            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, t.distanceAroundMin); // Disc min
+            color.a = 0.5f;
+            Handles.color = color;
+            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, Mathf.Lerp(t.distanceAroundMin, t.distanceAroundMax, t.distanceAroundRegular)); // Disc regular
+            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, Mathf.Lerp(t.distanceAroundMin, t.distanceAroundMax, t.distanceAroundFalling)); // Disc falling
+
+            // Current
             Vector3 currentHorizontalPositionAroundCharacter = this.currentHorizontalPositionAroundCharacter.getPosition(); // t.GetHorizontalPositionAroundCharacter(t.transform.position);
             Handles.color = this.currentHorizontalPositionAroundCharacter.color; // Color.green;
-            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, t.distanceAround); // Disc
+            Handles.DrawWireDisc(t.kid.transform.position, Vector3.up, t.distanceAroundSmoothed); // Disc
             Handles.SphereCap(
                 0,
                 t.kid.transform.position + currentHorizontalPositionAroundCharacter,
@@ -175,6 +187,20 @@ namespace Gameplay
             Color lineColor;
             Vector3 arrowPosition;
             Quaternion arrowRotation;
+
+
+            // CORRECTION TARGET 2.0
+            Vector3 currentTargetPositionAroundCharacter = this.currentTargetPositionAroundCharacter.getPosition(); // t.GetHorizontalPositionAroundCharacter(t.transform.position);
+            Handles.color = this.currentTargetPositionAroundCharacter.color; // Color.green;
+            Handles.SphereCap(
+                0,
+                t.kid.transform.position + currentTargetPositionAroundCharacter,
+                Quaternion.identity,
+                0.5f
+                );
+
+
+
             // CORRECTION
 
             // Line
@@ -190,7 +216,8 @@ namespace Gameplay
             Handles.color = Color.cyan;
             DrawAnimatedTargetLine(
                 t.transform.position,
-                t.kid.transform.position + currentHorizontalPositionAroundCharacter + currentVerticalPositionAroundCharacter,
+                t.kid.transform.position + currentTargetPositionAroundCharacter,
+                //t.kid.transform.position + currentHorizontalPositionAroundCharacter + currentVerticalPositionAroundCharacter,
                 1f,
                 Color.cyan,
                 4f
@@ -227,16 +254,6 @@ namespace Gameplay
                 0.5f
                 );
 
-
-            // TARGET 2.0
-            Vector3 currentTargetPositionAroundCharacter = this.currentTargetPositionAroundCharacter.getPosition(); // t.GetHorizontalPositionAroundCharacter(t.transform.position);
-            Handles.color = this.currentTargetPositionAroundCharacter.color; // Color.green;
-            Handles.SphereCap(
-                0,
-                t.kid.transform.position + currentTargetPositionAroundCharacter,
-                Quaternion.identity,
-                0.5f
-                );
         }
 
         public void DrawAnimatedTargetLine(Vector3 start, Vector3 end, float stepLengh, Color color, float animationSpeed)

@@ -41,7 +41,10 @@ namespace Gameplay {
                 Vector3 position = transform.position;
                 position -= closestPointOnPlayer.position;
                 position += closestPointOnCollider.position;
-                transform.position = position;
+                //transform.position = position;
+
+                Vector3 deltaPos = closestPointOnCollider.position - closestPointOnPlayer.position;
+                physic.translate += deltaPos;
 
                 try
                 {
@@ -270,8 +273,6 @@ namespace Gameplay {
                 // Notify that the player just attached himself to a new climbable object.
                 if (eAttachedToANewClimbalbeObject != null)
                     eAttachedToANewClimbalbeObject();
-
-                Debug.Log("Attach");
             }
 
             public void ForceClimbingModeExit() {

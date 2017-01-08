@@ -11,6 +11,7 @@ namespace Gameplay
          * UNITY *
          *********/
 
+        #region UNITY
         /// <summary>
         /// The unity camera that is used to render the scene.
         /// </summary>
@@ -109,7 +110,13 @@ namespace Gameplay
             TickPositionAroundCharacter(dt);
 
         }
+        #endregion UNITY
 
+
+        
+        /*********
+         * LOGIC *
+         *********/
 
         /*********
          * LOGIC *
@@ -118,21 +125,32 @@ namespace Gameplay
         /// <summary>
         /// The distance from the player the camera will circulate around.
         /// </summary>
-        [System.NonSerialized]
-        public float distanceAround = 10;
+        //[System.NonSerialized]
+        [Header("Distance around character")]
+        public float distanceAroundSmoothed = 10f;
+        public float distanceAroundMin = 5f;
+        public float distanceAroundMax = 15f;
+
+        [Range(0, 1)]
+        public float distanceAroundRegular = 0.5f;
+        [Range(0,1)]
+        public float distanceAroundFalling = 0;
 
         /// <summary>
         /// The direction the player is currently facing.
         /// </summary>
+        [System.NonSerialized]
         public Vector3 directionFacedByPlayer = Vector3.right;
         /// <summary>
         /// The smoothed direction the player is facing.
         /// </summary>
+        [System.NonSerialized]
         public Vector3 directionFacedByPlayerSmoothed = Vector3.right;
         /// <summary>
         /// Slider indicating how much the camera should look toward the direction the player is currently facing.
         /// </summary>
-        float sliderLookTowardDirectionFacedByPlayer = 0;
+        [System.NonSerialized]
+        public float sliderLookTowardDirectionFacedByPlayer = 0;
 
         /// <summary>
         /// Returns the position in world space the camera should look at.
@@ -159,7 +177,7 @@ namespace Gameplay
         public Vector3 GetLocalHorizontalPositionAroundCharacter(Vector3 direction)
         {
             direction = Vector3.ProjectOnPlane(direction, Vector3.up);
-            return direction.normalized * distanceAround;
+            return direction.normalized * distanceAroundSmoothed;
         }
 
         /// <summary>
@@ -188,12 +206,41 @@ namespace Gameplay
         /// <param name="instant"></param>
         public void TickPositionAroundCharacter(float dt, bool instant = false)
         {
-            float dist = Vector3.Distance(directionFacedByPlayerSmoothed, directionFacedByPlayer);
+            float dist; // Dist to target (may be reused trough the method)
+
+            // Smooth direction faced by player
+            Vector3 targetDirection =
+                (kid.IsJumping() && kid.activeJump.HasReachedPeak()
+                    ?
+                    Vector3.ProjectOnPlane(GetCharacterTowardCameraDirection(), Vector3.up).normalized
+                    :
+                    directionFacedByPlayer)
+                ;
+            dist = Vector3.Distance(directionFacedByPlayerSmoothed, targetDirection);
             directionFacedByPlayerSmoothed = Vector3.MoveTowards(
                 directionFacedByPlayerSmoothed,
-                directionFacedByPlayer,
+                targetDirection,
                 (dist + 0f) * dt *
-                (kid.IsJumping() ? 1f : 4f)
+                (kid.IsJumping() ? 1f : 2f)
+                );
+
+            // Smooth distance around player
+            float targetDist =
+                (kid.IsJumping() && kid.activeJump.HasReachedPeak()) ?
+                    Mathf.Lerp(distanceAroundMin, distanceAroundMax, distanceAroundFalling) // Falling
+                    :
+                    Mathf.Lerp(distanceAroundMin, distanceAroundMax, distanceAroundRegular) // Regular
+                ;
+            dist = Mathf.Abs(distanceAroundSmoothed - targetDist);
+            distanceAroundSmoothed = Mathf.MoveTowards(
+                distanceAroundSmoothed,
+                targetDist,
+                dt *
+                    ((kid.IsJumping() && kid.activeJump.HasReachedPeak()) ?
+                        Mathf.Abs((kid.activeJump.velocity.y) * (kid.activeJump.velocity.y) * (kid.activeJump.velocity.y)) * 0.001f
+                        :
+                        dist * 4f
+                    )
                 );
 
             Vector3 localPosition = Vector3.zero;
@@ -207,7 +254,7 @@ namespace Gameplay
         public void TickHorizontalPositionAroundCharacter(float dt, ref Vector3 localPosition, bool instant = false)
         {
             Vector3 localHorizontalPosition = GetLocalHorizontalPositionAroundCharacter(transform.position - kid.transform.position);
-            float magnitude = Vector3.Project(kid.compass.normal, Vector3.up).magnitude;
+            float magnitude = Vector3.Dot(kid.compass.transform.up.normalized, Vector3.up);
             if (kid.climbing.IsClimbing() && magnitude < 0.8f)
             {
                 Vector3 targetDirectionalPosition = GetLocalHorizontalPositionAroundCharacter(
@@ -236,6 +283,8 @@ namespace Gameplay
                         (angle * Mathf.Deg2Rad) * dt * 24f,
                         0
                         );
+                    directionFacedByPlayerSmoothed = Vector3.zero; // Debug, better transition
+                    sliderLookTowardDirectionFacedByPlayer = 0;
                 }
             }
             else
@@ -260,13 +309,22 @@ namespace Gameplay
         public void TickVerticalPositionAroundCharacter(float dt, ref Vector3 localPosition, bool instant = false)
         {
             Vector3 localVerticalPosition = GetLocalVerticalPositionAroundCharacter(transform.position - kid.transform.position);
-            Vector3 targetVerticalPosition = Vector3.up * 5;
+            Vector3 targetVerticalPosition =
+                Vector3.up *
+                (kid.IsJumping() ?
+                    !kid.activeJump.HasReachedPeak() ?
+                        10f + -kid.activeJump.velocity.y * 0.125f // Kid is ascending
+                        :
+                        1f + -kid.activeJump.velocity.y * 0.25f // Kid is decending
+                    :
+                    7.5f // Kid is running
+                );
 
             float dist = Vector3.Distance(localVerticalPosition, targetVerticalPosition);
             localVerticalPosition = Vector3.MoveTowards(
                 localVerticalPosition,
                 targetVerticalPosition,
-                (dist + 0f) * dt * (kid.IsJumping() && kid.activeJump.HasReachedPeak() ? 0.5f : 8f)
+                dist * dt * (kid.IsJumping() && kid.activeJump.HasReachedPeak() ? 0.25f : 2f)
                 );
 
 
