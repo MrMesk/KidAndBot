@@ -144,6 +144,7 @@ public class LMSnappingEditor : Editor
 		SceneView.lastActiveSceneView.pivot = position;
 		SceneView.lastActiveSceneView.Repaint();
 	}
+
 	private void OnSceneGUI ()
 	{
 		LMSnapping lmSnap = (LMSnapping)target;

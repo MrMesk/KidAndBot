@@ -14,6 +14,7 @@ public class Destructible : MonoBehaviour
 	public bool isBreakable;
 	public int lifePoints;
 
+	[System.Serializable]
 	public class BreakableOptions
 	{
 		public GameObject destroyParticle;
@@ -37,6 +38,7 @@ public class Destructible : MonoBehaviour
 		bool doesContinueCharging = true;
 		if (isBreakable)
 		{
+			Debug.Log("Is Breakable !");
 			lifePoints--;
 			if(lifePoints <= 0)
 			{
@@ -57,7 +59,7 @@ public class Destructible : MonoBehaviour
 				break;
 
 				case DestructibleSize.medium:
-				if (lifePoints > 0)
+				if (lifePoints < 0)
 				{
 					doesContinueCharging = true;
 				}
@@ -69,7 +71,7 @@ public class Destructible : MonoBehaviour
 				break;
 
 				case DestructibleSize.large:
-				if (lifePoints > 0)
+				if (lifePoints < 0)
 				{
 					doesContinueCharging = true;
 				}
@@ -87,6 +89,7 @@ public class Destructible : MonoBehaviour
 		}
 		else
 		{
+			Debug.Log("Is not Breakable !");
 			FMODUnity.RuntimeManager.PlayOneShot(breaking.impactSound, transform.position);
 			//Instantiate(breaking.impactParticle, transform.position, Quaternion.identity);
 			doesContinueCharging = false;
