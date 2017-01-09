@@ -40,7 +40,7 @@ public class AnimCube : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		kid = FindObjectOfType<KidCharacter>().transform;
+		kid = FindObjectOfType<Gameplay.KidCharacter>().transform;
 		linked = false;
 		bumpPos = transform.position;
 		lerpState = 0f;

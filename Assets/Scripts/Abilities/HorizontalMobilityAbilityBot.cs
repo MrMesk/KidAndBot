@@ -67,7 +67,7 @@ namespace Abilities
 		void Start ()
 		{
 			// Retrieve required component(s)
-			kid = FindObjectOfType<KidCharacter>().transform;
+			kid = FindObjectOfType<Gameplay.KidCharacter>().transform;
 			character = GetComponentInParent<Character>();
 			if (character == null)
 			{

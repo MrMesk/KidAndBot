@@ -51,7 +51,8 @@ public class Character : MonoBehaviour
     /// <summary>
     /// Container of physic related members.
     /// </summary>
-    public class Physic
+    [System.Serializable]
+	public class Physic
     {
         /// <summary>
         /// The current gravity acceleration of this character.
