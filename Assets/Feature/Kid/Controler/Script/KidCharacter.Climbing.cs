@@ -17,7 +17,11 @@ namespace Gameplay {
 
         private void ClimbingLogicTick(float dt) {
 
-            climbing.TickLogic(dt, transform);
+            // Climb logic
+            if(!IsJumping() || activeJump.HasReachedPeak())
+            {
+                climbing.TickLogic(dt, transform);
+            }
 
             // Position correction
 
@@ -37,33 +41,31 @@ namespace Gameplay {
                 Vector3 position = transform.position;
                 position -= closestPointOnPlayer.position;
                 position += closestPointOnCollider.position;
-                transform.position = position;
+                //transform.position = position;
 
-                //try {
-                //    // Indicator A
-                //    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
-                //    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
-                //    climbing.config.climbingIndicatorA.position = point.position;
-                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
+                Vector3 deltaPos = closestPointOnCollider.position - closestPointOnPlayer.position;
+                physic.translate += deltaPos;
 
-                //    // Indocator B
-                //    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
-                //    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
-                //    climbing.config.climbingIndicatorB.position = point.position;
-                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
+                try
+                {
+                    // Indicator A
+                    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
+                    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
+                    climbing.config.climbingIndicatorA.position = point.position;
+                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
 
-                //    Vector3 position = transform.position;
-                //    position -= climbing.config.climbingIndicatorB.position;
-                //    position += climbing.config.climbingIndicatorA.position;
-
-                //    Debug.DrawLine(transform.position, position, Color.yellow);
-
-                //    transform.position = position;
+                    // Indocator B
+                    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
+                    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
+                    climbing.config.climbingIndicatorB.position = point.position;
+                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
 
 
-                //} catch (System.Exception e) {
-                //    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
-                //}
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
+                }
             } else {
                 //climbing.config.climbingIndicatorA.gameObject.SetActive(false);
                 //climbing.config.climbingIndicatorB.gameObject.SetActive(false);
@@ -124,7 +126,7 @@ namespace Gameplay {
         /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
         /// </summary>
         [System.Serializable]
-        internal class Climbing {
+        public class Climbing {
 
             // Configuration
 
@@ -271,8 +273,6 @@ namespace Gameplay {
                 // Notify that the player just attached himself to a new climbable object.
                 if (eAttachedToANewClimbalbeObject != null)
                     eAttachedToANewClimbalbeObject();
-
-                Debug.Log("Attach");
             }
 
             public void ForceClimbingModeExit() {
@@ -288,7 +288,7 @@ namespace Gameplay {
 
         [Header("Climbing")]
         [SerializeField]
-        internal Climbing climbing = new Climbing();
+        public Climbing climbing = new Climbing();
 
 
     }

@@ -14,7 +14,7 @@ public class CharacterCompass : MonoBehaviour {
     /// </summary>
     public Vector3 positionOffset = new Vector3(0, -1, 0);
 	public Transform overrideCameraTransform;
-
+    
     public void Start() {
         // Store rotation
         transform.rotation = GetWalkingCompassRotation();
@@ -70,7 +70,7 @@ public class CharacterCompass : MonoBehaviour {
         // Get closest point on climbing collider
         var pointData = ColliderUtility.GetClosestPointOnClollider(currentlyClimbingCollider, kidPosition);
         // Get this point's normal
-        Vector3 normal = pointData.normal;        
+        Vector3 normal = pointData.normal;
 
         // Camera
 		Transform kidCamera = overrideCameraTransform != null ? overrideCameraTransform : kidCharacter.characterCamera.transform;

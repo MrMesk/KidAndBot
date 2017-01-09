@@ -2,17 +2,21 @@
 using System.Collections;
 using PlayerInput;
 
-namespace Gameplay {
+namespace Gameplay
+{
 
-    public partial class KidCharacter : Character {
-
+    public partial class KidCharacter : Character
+    {
         /*********
          * UNITY *
          *********/
 
+        public KidCompass compass;
+
         // Awake
         /// <inheritdoc />
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
 
             // Initialise this character
@@ -21,8 +25,9 @@ namespace Gameplay {
         }
 
         // Gui
-        private void OnGUI() {
-            
+        private void OnGUI()
+        {
+
             GUILayout.Label("Is grounded = " + IsGrounded());
         }
 
@@ -31,9 +36,11 @@ namespace Gameplay {
          *****************/
 
         // Enter
-        protected void OnCollisionEnter(Collision collision) {
+        protected void OnCollisionEnter(Collision collision)
+        {
             // Ignore collision if collided with self
-            if (collision.gameObject == gameObject) {
+            if (collision.gameObject == gameObject)
+            {
                 return;
             }
 
@@ -55,9 +62,11 @@ namespace Gameplay {
         }
 
         // Exit
-        protected void OnCollisionExit(Collision collision) {
+        protected void OnCollisionExit(Collision collision)
+        {
             // Ignore collision if collided with self
-            if (collision.gameObject == gameObject) {
+            if (collision.gameObject == gameObject)
+            {
                 return;
             }
 
@@ -78,11 +87,13 @@ namespace Gameplay {
          *********/
 
         // Initialisation
-        public void Init() {
+        public void Init()
+        {
 
             // Initialise controller (inputs)
             // Bind controller
-            getController = delegate () {
+            getController = delegate ()
+            {
                 return PlayerInput.Controller.kidController;
             };
 
@@ -102,8 +113,9 @@ namespace Gameplay {
         }
 
         // Logic tick
-        protected override void LogicTick(float dt) {
-            
+        protected override void LogicTick(float dt)
+        {
+
             // Branch to sub-systems
 
             // Directional
@@ -127,7 +139,8 @@ namespace Gameplay {
         /// <summary>
         /// Controller is called every frame. Use it for everything input related.
         /// </summary>
-        protected override void ControllerTick(Controller input, float dt) {
+        protected override void ControllerTick(Controller input, float dt)
+        {
 
             // Branch to sub-systems
 
@@ -140,7 +153,18 @@ namespace Gameplay {
             // Climbing
             ClimbingControllerTick(input, dt);
         }
-        
+
+
+        /*************
+         * RENDERING *
+         *************/
+
+        protected override void Rendering(float dt)
+        {
+            // SNF
+            SignAndFeebackRendering(dt);
+        }
+
     }
 
 }
