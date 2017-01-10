@@ -58,7 +58,10 @@ namespace Gameplay
             // Branch to sub-systems
 
             // Climbing
-            OnCollisionEnterClimbing(collision);
+            Climbing_OnCollisionEnter(collision);
+
+            // Adherence
+            Adherence_OnCollisionEnter(collision);
         }
 
         // Exit
@@ -78,7 +81,10 @@ namespace Gameplay
             // Branch to sub-systems
 
             // Climbing
-            OnCollisionExitClimbing(collision);
+            Climbing_OnCollisionExit(collision);
+
+            // Adherence
+            Adherence_OnCollisionExit(collision);
         }
 
 
@@ -102,13 +108,13 @@ namespace Gameplay
             // Branch to sub-systems
 
             // Directinal
-            InitDirectional();
+            Directional_Init();
 
             // Jump
-            InitJump();
+            Jump_Init();
 
             // Climbing
-            InitClimbing();
+            Climbing_Init();
 
         }
 
@@ -119,13 +125,16 @@ namespace Gameplay
             // Branch to sub-systems
 
             // Directional
-            DirectionalLogicTick(dt);
+            Directional_LogicTick(dt);
 
             // Jump
-            JumpLogicTick(dt);
+            Jump_LogicTick(dt);
 
             // Climbing 
-            ClimbingLogicTick(dt);
+            Climbing_LogicTick(dt);
+
+            // Adherence
+            Adherence_LogicTick(dt);
 
         }
 
@@ -145,13 +154,13 @@ namespace Gameplay
             // Branch to sub-systems
 
             // Directional
-            DirectionalController(input, dt);
+            Directional_ControllerTick(input, dt);
 
             // Jump
             JumpController(input, dt);
 
             // Climbing
-            ClimbingControllerTick(input, dt);
+            Climbing_ControllerTick(input, dt);
         }
 
 

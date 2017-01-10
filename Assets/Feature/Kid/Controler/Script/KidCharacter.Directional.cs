@@ -11,11 +11,11 @@ namespace Gameplay {
          * LOGIC *
          *********/
 
-        private void InitDirectional() {
+        private void Directional_Init() {
             directional.input = Vector2.zero;
         }
 
-        private void DirectionalLogicTick(float dt) {
+        private void Directional_LogicTick(float dt) {
             // Refresh directional logic
             directional.Tick(dt);
 
@@ -27,7 +27,7 @@ namespace Gameplay {
          * CONTROLLER *
          **************/
          
-        private void DirectionalController(Controller input, float dt) {
+        private void Directional_ControllerTick(Controller input, float dt) {
             directional.input = input.shared.directional.Value;
         }
 
