@@ -99,9 +99,10 @@ namespace Gameplay {
             if (climbableObject != null) {
                 // Connected with a climbable wall
                 climbing.ConnectedWithClimbalbeObject(climbableObject);
-                
+
                 // TODO :
                 // Need to refresh current parent
+                adherence.needAdherenceRefresh = true;
             }
         }
 
@@ -112,20 +113,35 @@ namespace Gameplay {
             if (climbableObject != null) {
                 // Disconected with a climbable wall
                 climbing.DisconnectedWithClimbalbeObject(climbableObject);
-               
+
                 // TODO :
                 // Need to refresh current parent
+                adherence.needAdherenceRefresh = true;
             }
         }
 
-        /***********
-         * CLIMING *
-         ***********/
+        // Stay
+        protected void Climbing_OnCollisionStay(Collision collision)
+        {
+            // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
+            ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
+            if (climbableObject != null)
+            {
+                // Need to refresh current attached climbable object
+                climbing.needRefreshAttachedClimbableObject = true;
+                // Need to refresh current parent
+                adherence.needAdherenceRefresh = true;
+            }
+        }
 
-        /// <summary>
-        /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
-        /// </summary>
-        [System.Serializable]
+    /***********
+     * CLIMING *
+     ***********/
+
+    /// <summary>
+    /// Class containing everything necesary to make the kid jump and configure the parabolic of this jump.
+    /// </summary>
+    [System.Serializable]
         public class Climbing {
 
             // Configuration

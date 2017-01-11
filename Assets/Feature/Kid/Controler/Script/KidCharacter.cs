@@ -72,12 +72,7 @@ namespace Gameplay
             {
                 return;
             }
-
-            // TODO :
-            // Refresh current parrent
-
-
-
+            
             // Branch to sub-systems
 
             // Climbing
@@ -85,6 +80,24 @@ namespace Gameplay
 
             // Adherence
             Adherence_OnCollisionExit(collision);
+        }
+
+        // Exit
+        protected void OnCollisionStay(Collision collision)
+        {
+            // Ignore collision if collided with self
+            if (collision.gameObject == gameObject)
+            {
+                return;
+            }
+
+            // Branch to sub-systems
+
+            // Climbing
+            Climbing_OnCollisionStay(collision);
+
+            // Adherence
+            //Adherence_OnCollisionStay(collision);
         }
 
 
