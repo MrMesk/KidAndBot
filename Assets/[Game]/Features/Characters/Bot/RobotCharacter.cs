@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Pro3DCamera;
 
 public class RobotCharacter : Character
 {
@@ -28,15 +29,15 @@ public class RobotCharacter : Character
 	[Space(10)]
 	[Header("Camera Shaking")]
 
-	public CameraShake cameraShaker;
+	public CameraControl cameraControl;
 	[Space(10)]
+	public string walkShake;
+	public string shakeLow;
+	public string shakeMid;
+	public string shakeHigh;
+
 	public float walkShakeFrequency;
-	public float walkShakeDuration;
-	public float walkShakeMagnitude;
 	float walkTimer;
-	[Space(10)]
-	public float[] shakeTiersMagnitude = new float[4];
-	public float[] shakeTiersDuration = new float[4];
 
 	[Space(10)]
 	[Header("SFX")]
@@ -77,6 +78,10 @@ public class RobotCharacter : Character
 
 	Abilities.HorizontalMobilityAbilityBot hMobility;
 
+	protected override void LogicTick (float dt)
+	{
+		Physic_ApplyGravityOntoGlobalVelocity ();
+	}
 	// Use this for initialization
 	void Start ()
 	{
@@ -170,10 +175,6 @@ public class RobotCharacter : Character
 		grappin = transform.Find("Rendering").Find("Grappin").GetComponent<LineRenderer>();
 		grappinCollider = transform.Find("Rendering").Find("GrappinCollider").GetComponent<BoxCollider>();
 
-		if (cameraShaker == null)
-		{
-			cameraShaker = characterCamera.transform.Find("BotCam").GetComponent<CameraShake>();
-		}
 		grappin.enabled = false;
 		grappinCollider.enabled = false;
 
@@ -192,7 +193,8 @@ public class RobotCharacter : Character
 		if (walkTimer >= walkShakeFrequency)
 		{
 			walkTimer = 0f;
-			cameraShaker.StartCoroutine(cameraShaker.Shake(walkShakeDuration, walkShakeMagnitude));
+			//Debug.Log ("Cam Control : " + cameraControl.name);
+			cameraControl.ShakeCamera(walkShake);
 			FMODUnity.RuntimeManager.PlayOneShot(step, transform.position);
 		}
 	}
@@ -384,7 +386,7 @@ public class RobotCharacter : Character
 
 		basis.BumpingToDir(bumpForcesForward[forceTier], dir);
 
-		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+		cameraControl.ShakeCamera(shakeMid);
 		FMODUnity.RuntimeManager.PlayOneShot(pull, transform.position);
 	}
 
@@ -438,7 +440,8 @@ public class RobotCharacter : Character
 				basis.BumpingToDir(bumpForcesForward[forceTier], -cubeNormal);
 			}
 		}
-		cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+
+		cameraControl.ShakeCamera(shakeMid);
 		FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
 	}
 
@@ -469,7 +472,7 @@ public class RobotCharacter : Character
 					animCube.StartCoroutine(animCube.BumpUp(2f, bumpForcesUp[forceTier]));
 				}
 			}
-			cameraShaker.StartCoroutine(cameraShaker.Shake(shakeTiersDuration[forceTier], shakeTiersMagnitude[forceTier]));
+			cameraControl.ShakeCamera(shakeMid);
 			FMODUnity.RuntimeManager.PlayOneShot(bump, transform.position);
 
 			// Bump kid
