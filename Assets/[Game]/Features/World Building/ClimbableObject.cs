@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ClimbableWall : MonoBehaviour {
+public class ClimbableObject : MonoBehaviour {
 
     public MeshRenderer meshRenderer;
     public Material hitMat;

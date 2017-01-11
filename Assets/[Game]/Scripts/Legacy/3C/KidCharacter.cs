@@ -55,7 +55,7 @@ public class KidCharacter : Character {
     //}
 
     public void RefreshSelectedClimbableWall() {
-        ClimbableWall selection = null;
+        ClimbableObject selection = null;
 
         int count = _triggeredClimbableWalls.Count;
         if (count == 1) {
@@ -63,7 +63,7 @@ public class KidCharacter : Character {
         } else if (count > 1) {
             // Check whose the closest
             // Setup loop
-            ClimbableWall climbableWall;
+            ClimbableObject climbableWall;
             float closestDistance;
             float dist;
             // Check first
@@ -85,12 +85,12 @@ public class KidCharacter : Character {
         if (selection = null) _needRefreshSelectedClimbableWall = false;
     }
 
-    public List<ClimbableWall> _triggeredClimbableWalls = new List<ClimbableWall>();
-    [NonSerialized] public ClimbableWall _selectedClimbableWall = null;
+    public List<ClimbableObject> _triggeredClimbableWalls = new List<ClimbableObject>();
+    [NonSerialized] public ClimbableObject _selectedClimbableWall = null;
 
     private bool _needRefreshSelectedClimbableWall = false;
 
-    public void SelectNewClimbableWall(ClimbableWall newClimbableWall) {
+    public void SelectNewClimbableWall(ClimbableObject newClimbableWall) {
         if (_selectedClimbableWall == newClimbableWall) return;
         if (_selectedClimbableWall != null) {
             // Unselect
@@ -109,7 +109,7 @@ public class KidCharacter : Character {
     }
 
     protected void OnTriggerEnter(Collider other) {
-        ClimbableWall cw = other.gameObject.GetComponent<ClimbableWall>();
+        ClimbableObject cw = other.gameObject.GetComponent<ClimbableObject>();
         if (cw != null) {
             // Entred climbable wall trigger
             _triggeredClimbableWalls.Add(cw);
@@ -118,7 +118,7 @@ public class KidCharacter : Character {
         }
     }
     protected void OnTriggerExit(Collider other) {
-        ClimbableWall cw = other.gameObject.GetComponent<ClimbableWall>();
+        ClimbableObject cw = other.gameObject.GetComponent<ClimbableObject>();
         if (cw != null) {
             // Exited climbable wall trigger
             _triggeredClimbableWalls.Remove(cw);
@@ -140,7 +140,7 @@ public class KidCharacter : Character {
         }
 
         // Climb
-        ClimbableWall cw = collision.gameObject.GetComponent<ClimbableWall>();
+        ClimbableObject cw = collision.gameObject.GetComponent<ClimbableObject>();
         if (cw != null) {
             // Entred climbable wall trigger
             _triggeredClimbableWalls.Add(cw);
@@ -168,7 +168,7 @@ public class KidCharacter : Character {
         }
 
         // Climb
-        ClimbableWall cw = collision.gameObject.GetComponent<ClimbableWall>();
+        ClimbableObject cw = collision.gameObject.GetComponent<ClimbableObject>();
         if (cw != null) {
             // Exited climbable wall trigger
             _triggeredClimbableWalls.Remove(cw);

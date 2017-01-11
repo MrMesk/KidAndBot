@@ -43,7 +43,7 @@ namespace Gameplay {
             Vector3 kidPosition = kidCharacter.transform.position;
 
             // Get the climbable object the kid is climbing on.
-            ClimbableWall attachedClimbalbeOject = kidCharacter.climbing.attachedClimbableObject;
+            ClimbableObject attachedClimbalbeOject = kidCharacter.climbing.attachedClimbableObject;
 
             // Get the collider of this climbable object
             Collider acoCollider = attachedClimbalbeOject._collider;

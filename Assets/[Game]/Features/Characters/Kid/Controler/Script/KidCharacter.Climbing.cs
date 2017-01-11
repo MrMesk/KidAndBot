@@ -95,7 +95,7 @@ namespace Gameplay {
         // Enter
         protected void Climbing_OnCollisionEnter(Collision collision) {
             // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
-            ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
+            ClimbableObject climbableObject = collision.gameObject.GetComponent<ClimbableObject>();
             if (climbableObject != null) {
                 // Connected with a climbable wall
                 climbing.ConnectedWithClimbalbeObject(climbableObject);
@@ -109,7 +109,7 @@ namespace Gameplay {
         // Exit
         protected void Climbing_OnCollisionExit(Collision collision) {
             // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
-            ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
+            ClimbableObject climbableObject = collision.gameObject.GetComponent<ClimbableObject>();
             if (climbableObject != null) {
                 // Disconected with a climbable wall
                 climbing.DisconnectedWithClimbalbeObject(climbableObject);
@@ -124,7 +124,7 @@ namespace Gameplay {
         protected void Climbing_OnCollisionStay(Collision collision)
         {
             // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
-            ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
+            ClimbableObject climbableObject = collision.gameObject.GetComponent<ClimbableObject>();
             if (climbableObject != null)
             {
                 // Need to refresh current attached climbable object
@@ -162,10 +162,10 @@ namespace Gameplay {
             public Config config = new Config();
 
             [System.NonSerialized]
-            public List<ClimbableWall> connectedClimbableObjectList = new List<ClimbableWall>();
+            public List<ClimbableObject> connectedClimbableObjectList = new List<ClimbableObject>();
 
             [System.NonSerialized]
-            public ClimbableWall attachedClimbableObject = null;
+            public ClimbableObject attachedClimbableObject = null;
 
             // Flag informing if it's necesary to refresh the climbable object this character is attached to
             [System.NonSerialized]
@@ -184,7 +184,7 @@ namespace Gameplay {
             public void RefreshAttachedClimbableObject(KidCharacter kid) {
 
                 // Find the best climbable object the player should be attached to
-                ClimbableWall bestClimbableObject = null;
+                ClimbableObject bestClimbableObject = null;
                 
                 int count = connectedClimbableObjectList.Count;
                 // If the player isn't connected to any climbable object
@@ -230,10 +230,10 @@ namespace Gameplay {
                     
                     // Setup loop
                     // Closest climbable object data
-                    ClimbableWall closestClimbableObject;
+                    ClimbableObject closestClimbableObject;
                     float distToClosest;
                     // Current climbable object data
-                    ClimbableWall currentClimbableObject = connectedClimbableObjectList[0];
+                    ClimbableObject currentClimbableObject = connectedClimbableObjectList[0];
                     float distToCurrentClimbableObject = Adherence.GetDistanceBetween(kid.transform, currentClimbableObject._collider, kid.directional.velocity);
                     // Select first climbable object
                     closestClimbableObject = currentClimbableObject;
@@ -274,21 +274,21 @@ namespace Gameplay {
 
             }
 
-            public void ConnectedWithClimbalbeObject(ClimbableWall climbableObject) {
+            public void ConnectedWithClimbalbeObject(ClimbableObject climbableObject) {
                 // Add the newly connected climbable object to the connected climbable object list.
                 connectedClimbableObjectList.Add(climbableObject);
                 // Remember to refresh the climbable object this character is attached to at next logic tick.
                 needRefreshAttachedClimbableObject = true;
             }
 
-            public void DisconnectedWithClimbalbeObject(ClimbableWall climbableObject) {
+            public void DisconnectedWithClimbalbeObject(ClimbableObject climbableObject) {
                 // Remove the disconnected climbable object from the connected climbable object list.
                 connectedClimbableObjectList.Remove(climbableObject);
                 // Remember to refresh the climbable object this character is attached to at next logic tick.
                 needRefreshAttachedClimbableObject = true;
             }
             
-            public void AttachToClimbableObject(ClimbableWall climbableObject) {
+            public void AttachToClimbableObject(ClimbableObject climbableObject) {
                 // Exit if already attached to this climbable object
                 if (attachedClimbableObject == climbableObject) return;
 
