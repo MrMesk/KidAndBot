@@ -11,16 +11,16 @@ namespace Gameplay {
          * LOGIC *
          *********/
 
-        private void InitClimbing() {
+        private void Climbing_Init() {
 
         }
 
-        private void ClimbingLogicTick(float dt) {
+        private void Climbing_LogicTick(float dt) {
 
             // Climb logic
             if(!IsJumping() || activeJump.HasReachedPeak())
             {
-                climbing.TickLogic(dt, transform);
+                climbing.TickLogic(dt, this);
             }
 
             // Position correction
@@ -38,34 +38,34 @@ namespace Gameplay {
                 var closestPointOnPlayer = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, closestPointOnCollider.position);
 
                 // Snap the player by move the point found on the player to the point found on the collider.
-                Vector3 position = transform.position;
-                position -= closestPointOnPlayer.position;
-                position += closestPointOnCollider.position;
-                //transform.position = position;
-
                 Vector3 deltaPos = closestPointOnCollider.position - closestPointOnPlayer.position;
                 physic.translate += deltaPos;
 
-                try
-                {
-                    // Indicator A
-                    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
-                    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
-                    climbing.config.climbingIndicatorA.position = point.position;
-                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
+                //Vector3 position = transform.position;
+                //position -= closestPointOnPlayer.position;
+                //position += closestPointOnCollider.position;
+                ////transform.position = position;
 
-                    // Indocator B
-                    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
-                    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
-                    climbing.config.climbingIndicatorB.position = point.position;
-                    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
+                //try
+                //{
+                //    // Indicator A
+                //    var point = ColliderUtility.GetClosestPointOnClollider(collider, transform.position);
+                //    climbing.config.climbingIndicatorA.gameObject.SetActive(true);
+                //    climbing.config.climbingIndicatorA.position = point.position;
+                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.red);
+
+                //    // Indocator B
+                //    point = CharacterControllerUtility.GetClosestPointOnCharacterController(controller, point.position);
+                //    climbing.config.climbingIndicatorB.gameObject.SetActive(true);
+                //    climbing.config.climbingIndicatorB.position = point.position;
+                //    Debug.DrawRay(point.position, point.normal * 1.5f, Color.green);
 
 
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
-                }
+                //}
+                //catch (System.Exception e)
+                //{
+                //    Debug.LogError("Climbing a collider type not handled.\n" + e.TargetSite);
+                //}
             } else {
                 //climbing.config.climbingIndicatorA.gameObject.SetActive(false);
                 //climbing.config.climbingIndicatorB.gameObject.SetActive(false);
@@ -84,7 +84,7 @@ namespace Gameplay {
          * CONTROLLER *
          **************/
 
-        private void ClimbingControllerTick(Controller input, float dt) {
+        private void Climbing_ControllerTick(Controller input, float dt) {
             
         }
 
@@ -93,7 +93,7 @@ namespace Gameplay {
          *****************/
 
         // Enter
-        protected void OnCollisionEnterClimbing(Collision collision) {
+        protected void Climbing_OnCollisionEnter(Collision collision) {
             // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
             ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
             if (climbableObject != null) {
@@ -106,7 +106,7 @@ namespace Gameplay {
         }
 
         // Exit
-        protected void OnCollisionExitClimbing(Collision collision) {
+        protected void Climbing_OnCollisionExit(Collision collision) {
             // Try to retrieve the climbable wall on the collided object to learn if it's climbable or not
             ClimbableWall climbableObject = collision.gameObject.GetComponent<ClimbableWall>();
             if (climbableObject != null) {
@@ -165,7 +165,7 @@ namespace Gameplay {
             /// <summary>
             /// Refresh the climbable object this character is attached to.
             /// </summary>
-            public void RefreshAttachedClimbableObject(Transform characterTransform) {
+            public void RefreshAttachedClimbableObject(KidCharacter kid) {
 
                 // Find the best climbable object the player should be attached to
                 ClimbableWall bestClimbableObject = null;
@@ -189,28 +189,56 @@ namespace Gameplay {
                 if (count > 1) {
                     // Then the best climbalbe object is the closest
 
-                    // Setup loop
-                    ClimbableWall closestClimbableObject;
-                    float distanceFromClosestClimbalbeObject;
-                    float distanceFromCurrentClimbableObjectInLoop;
+                    //// Setup loop
+                    //ClimbableWall closestClimbableObject;
+                    //float distanceFromClosestClimbalbeObject;
+                    //float distanceFromCurrentClimbableObjectInLoop;
 
-                    // Check first
-                    bestClimbableObject = closestClimbableObject = connectedClimbableObjectList[0];
-                    distanceFromClosestClimbalbeObject = Vector3.Distance(characterTransform.position, closestClimbableObject.transform.position);
+                    //// Check first
+                    //bestClimbableObject = closestClimbableObject = connectedClimbableObjectList[0];
+                    //distanceFromClosestClimbalbeObject = Vector3.Distance(character.position, closestClimbableObject.transform.position);
+                    //distanceFromClosestClimbalbeObject = Adherence.GetDistanceBetween(character.controller, closestClimbableObject)
+
+                    //// Check next
+                    //for (int i = 1; i < count; ++i) {
+
+                    //    closestClimbableObject = connectedClimbableObjectList[i];
+                    //    distanceFromCurrentClimbableObjectInLoop = Vector3.Distance(character.position, closestClimbableObject.transform.position);
+
+                    //    // If the currently checked climbable object is closer from the player than the prevously found climbalbe object,
+                    //    if (distanceFromCurrentClimbableObjectInLoop < distanceFromClosestClimbalbeObject) {
+                    //        // Then save it as the new closest one
+                    //        distanceFromClosestClimbalbeObject = distanceFromCurrentClimbableObjectInLoop;
+                    //    }
+                    //}
                     
-                    // Check next
-                    for (int i = 1; i < count; ++i) {
-
-                        closestClimbableObject = connectedClimbableObjectList[i];
-                        distanceFromCurrentClimbableObjectInLoop = Vector3.Distance(characterTransform.position, closestClimbableObject.transform.position);
-
-                        // If the currently checked climbable object is closer from the player than the prevously found climbalbe object,
-                        if (distanceFromCurrentClimbableObjectInLoop < distanceFromClosestClimbalbeObject) {
-                            // Then save it as the new closest one
-                            distanceFromClosestClimbalbeObject = distanceFromCurrentClimbableObjectInLoop;
+                    // Setup loop
+                    // Closest climbable object data
+                    ClimbableWall closestClimbableObject;
+                    float distToClosest;
+                    // Current climbable object data
+                    ClimbableWall currentClimbableObject = connectedClimbableObjectList[0];
+                    float distToCurrentClimbableObject = Adherence.GetDistanceBetween(kid.transform, currentClimbableObject._collider, kid.directional.velocity);
+                    // Select first climbable object
+                    closestClimbableObject = currentClimbableObject;
+                    distToClosest = distToCurrentClimbableObject;
+                    // Check for remaining climbable object
+                    for (int i = 1; i < connectedClimbableObjectList.Count; ++i)
+                    {
+                        // Select climbable object
+                        currentClimbableObject = connectedClimbableObjectList[i];
+                        distToCurrentClimbableObject = Adherence.GetDistanceBetween(kid.transform, currentClimbableObject._collider, kid.directional.velocity);
+                        // Check if it's a better match
+                        if (distToCurrentClimbableObject < distToClosest)
+                        {
+                            // Select it if it is
+                            closestClimbableObject = currentClimbableObject;
+                            distToClosest = distToCurrentClimbableObject;
                         }
+
                     }
 
+                    // The best clombable object is the closest
                     bestClimbableObject = closestClimbableObject;
                 }
 
@@ -221,11 +249,11 @@ namespace Gameplay {
                 needRefreshAttachedClimbableObject = false;
             }
 
-            public void TickLogic(float dt, Transform characterTransform) {
+            public void TickLogic(float dt, KidCharacter kid) {
 
                 // Refresh the climbable object this character is attached to, if necesary.
                 if (needRefreshAttachedClimbableObject) {
-                    RefreshAttachedClimbableObject(characterTransform);
+                    RefreshAttachedClimbableObject(kid);
                 }
 
             }
