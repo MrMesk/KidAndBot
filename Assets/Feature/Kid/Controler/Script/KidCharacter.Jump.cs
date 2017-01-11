@@ -16,7 +16,7 @@ namespace Gameplay
         /// <summary>
         /// Initialise jump related logic.
         /// </summary>
-        private void InitJump()
+        private void Jump_Init()
         {
             // *** Bind deletates ***
             // End active jump when the character hit the ground
@@ -71,7 +71,7 @@ namespace Gameplay
         /// Tick jump related logic.
         /// </summary>
         /// <param name="dt">Time elapsed since last tick.</param>
-        private void JumpLogicTick(float dt)
+        private void Jump_LogicTick(float dt)
         {
 
             // Normaly apply jump logic,
