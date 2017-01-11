@@ -519,10 +519,19 @@ public class RobotCharacter : Character
 				}
 
 				AnimCube anim = other.GetComponent<AnimCube>();
-				if (anim != null)
+				if (anim != null) 
 				{
 					//Debug.Log("Colliding with a Level Module !");
-					PushLM(anim);
+					PushLM (anim);
+				} 
+				else 
+				{
+					DestructibleWall wall = other.GetComponent<DestructibleWall> ();
+					if (wall != null) 
+					{
+						ForceCheck();
+						wall.Destruct (transform.forward, bumpForcesForward[forceTier] * 10f);
+					}
 				}
 			}
 		}
