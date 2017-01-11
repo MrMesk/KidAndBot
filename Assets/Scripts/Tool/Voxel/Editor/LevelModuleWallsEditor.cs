@@ -181,7 +181,7 @@ namespace LevelModule
                     // Start point isn't defined
 
                     // Get local hit point
-                    Vector3 localHitPoint = ColliderHelper.FromWorldToLocalPosition(hit.collider.transform, hit.point);
+                    Vector3 localHitPoint = TransformUtility.FromWorldToLocalPosition(hit.collider.transform, hit.point);
 
                     // Check for left click down
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && !Event.current.shift)
@@ -232,8 +232,8 @@ namespace LevelModule
                 // Destroy selection if the user release the input associated 
 
                 // Get selection's min/max
-                Vector3 localStartPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
-                Vector3 localEndPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
+                Vector3 localStartPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
+                Vector3 localEndPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
                 Vector3 min = new Vector3(
                     Mathf.Min(localStartPoint.x, localEndPoint.x),
                     Mathf.Min(localStartPoint.y, localEndPoint.y),
@@ -331,8 +331,8 @@ namespace LevelModule
                 const float selectionOffset = 0.05f / LevelModuleWalls.BlockSubdivisions; 
 
                 // Convert start and end point to 
-                Vector3 localStartPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
-                Vector3 localEndPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
+                Vector3 localStartPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
+                Vector3 localEndPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
 
                 // Get selection min position
                 Vector3 min = new Vector3(
