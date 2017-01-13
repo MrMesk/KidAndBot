@@ -3,52 +3,157 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LevelModule {
+namespace LevelModule
+{
 
     [CustomEditor(typeof(LevelModuleWalls))]
     [CanEditMultipleObjects]
-    public class LevelModuleWallsEditor : Editor {
+    public class LevelModuleWallsEditor : Editor
+    {
 
-        public enum SelectionMode {
+        /********
+         * DATA *
+         ********/
+
+        // Target
+
+        /// <summary>
+        /// The target level module wall this editor is currently editing.
+        /// </summary>
+        LevelModuleWalls t { get { return target as LevelModuleWalls; } }
+
+
+
+        // Selection
+
+        /// <summary>
+        /// The type of selection array the user can use.
+        /// </summary>
+        public enum SelectionMode
+        {
             NONE,
-            ADD,
-            REMOVE
+            FILL,
+            ERASE
         }
 
-        Vector3? startPos = null;
-        Vector3? endPos = null;
-        SelectionMode selectionArrayMode = SelectionMode.NONE;
+        /// <summary>
+        /// The curent type of selection the user is currently performing.
+        /// </summary>
+        SelectionMode selectionMode = SelectionMode.NONE;
 
-        public void OnEnable() {
-            LevelModuleWalls levelModuleWalls = (LevelModuleWalls)target;
+        /// <summary>
+        /// The curent selection start and end position.
+        /// </summary>
+        Vector3? selectionStartPos = null;
+        Vector3? selectionEndPos = null;
+
+        /// <summary>
+        /// The curent type of selection the user is currently performing.
+        /// </summary>
+        Material selectionFillMaterial;
+        Material selectionEraseMaterial;
+
+
+
+
+        /****************
+         * UNITY EDITOR *
+         ****************/
+
+        /// <summary>
+        /// This function is called when the object is loaded.
+        /// </summary>
+        public void OnEnable()
+        {
+            LevelModuleWalls levelModuleWalls = t;
             levelModuleWalls.InitialiseIfNeeded();
+            levelModuleWalls.GenerateMesh();
 
             Undo.undoRedoPerformed += OnUndoRedo;
+
+            // Setup selection draw materials
+            Color matColor;
+            // Fill material
+            selectionFillMaterial = new Material(Shader.Find("Particles/Alpha Blended"));
+            matColor = Color.cyan;
+            matColor.a = 0.25f;
+            selectionFillMaterial.SetColor("_TintColor", matColor);
+            selectionFillMaterial.SetFloat("_SoftParticlesFactor", 10);
+            // Erase material
+            selectionEraseMaterial = new Material(Shader.Find("Particles/Alpha Blended"));
+            matColor = Color.red;
+            matColor.a = 0.25f;
+            selectionEraseMaterial.SetColor("_TintColor", matColor);
+            selectionEraseMaterial.SetFloat("_SoftParticlesFactor", 10);
+
         }
 
-        public void OnUndoRedo() {
-            LevelModuleWalls levelModuleWalls = (LevelModuleWalls)target;
-            if(levelModuleWalls != null) {
-                levelModuleWalls.Draw();
+        /// <summary>
+        /// This function is called when the user performs either an undo or a redo. (CTRL+Z / CTRL+Y)
+        /// </summary>
+        public void OnUndoRedo()
+        {
+            LevelModuleWalls levelModuleWalls = t;
+            if (levelModuleWalls != null)
+            {
+                levelModuleWalls.GenerateMesh();
             }
         }
 
-        public override void OnInspectorGUI() {
-            LevelModuleWalls levelModuleWalls = (LevelModuleWalls)target;
+        /// <summary>
+        /// Implement this function to make a custom inspector.
+        /// </summary>
+        public override void OnInspectorGUI()
+        {
+            // Retrieve targeted LevelModuleWalls
+            LevelModuleWalls levelModuleWalls = t;
+
             DrawDefaultInspector();
+
             GUILayout.Label("Level Module Walls");
-            if (GUILayout.Button("Reset")) {
-                levelModuleWalls.Make();
-                levelModuleWalls.Draw();
+            // Buton used to reset a level module.
+            if (GUILayout.Button("Reset"))
+            {
+                // Save the current object state to allow an undo/redo.
+                Undo.RecordObject(levelModuleWalls, string.Format("Reset voxels from {0}", levelModuleWalls.name));
+                // Reinitialise this level-module.
+                levelModuleWalls.Init();
+                // Refresh it's mesh.
+                levelModuleWalls.RefreshMesh();
             }
         }
-        
-        private void OnSceneGUI() {
+
+        /// <summary>
+        /// Enables the Editor to handle an event in the scene view.
+        /// </summary>
+        private void OnSceneGUI()
+        {
+            LevelModuleWalls levelModuleWalls = (LevelModuleWalls)target;
+
+            // Update the selection by listening to user inputs.
+            UpdateSelection();
+
+            // Draw the selection
+            DrawSelection();
+        }
+
+
+
+
+
+        /****************
+         * EDITOR LOGIC *
+         ****************/
+
+        public void UpdateSelection()
+        {
+            // Retrieve targeted LevelModuleWalls
+            LevelModuleWalls levelModuleWalls = t;
+
             // Check if the user has his mouse over a scene window
             EditorWindow sceneEditorWindow = SceneView.mouseOverWindow;
-            if (sceneEditorWindow == null) return;
-
-            LevelModuleWalls levelModuleWalls = (LevelModuleWalls)target;
+            if (sceneEditorWindow == null)
+                return;
 
             // Get the position of the user's mouse on the scene window
             Vector2 mousePositionOnScreen = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);   // Get the mouse position on screen
@@ -63,165 +168,219 @@ namespace LevelModule {
             if (
                 Physics.Raycast(ray, out hit) &&                                    // Check if the raycast hit an object
                 hit.collider.gameObject.GetComponent<LevelModuleWalls>() != null    // Check if the object hit is a <LevelModuleWalls>
-            ) {
+            )
+            {
 
                 // DEBUG - Draw a sphere at the hit point found position
                 Handles.SphereCap(0, hit.point, Quaternion.identity, 0.01f);
 
-                // Check for selection array start
-                if (!startPos.HasValue) {
+                /// [Check for selection array start.]
+                if (!selectionStartPos.HasValue)
+                {
 
                     // Start point isn't defined
 
                     // Get local hit point
-                    Vector3 localHitPoint = ColliderHelper.FromWorldToLocalPosition(hit.collider.transform, hit.point);
+                    Vector3 localHitPoint = TransformUtility.FromWorldToLocalPosition(hit.collider.transform, hit.point);
 
                     // Check for left click down
-                    if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
+                    if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && !Event.current.shift)
+                    {
                         Event.current.Use();
                         // Set selction array start point
-                        startPos = hit.point;
-                        startPos += hit.normal * (0.25f / LevelModuleWalls.Resolution);
+                        selectionStartPos = hit.point;
+                        selectionStartPos += hit.normal * (0.25f / LevelModuleWalls.BlockSubdivisions);
                         // Set selection array as an add array
-                        selectionArrayMode = SelectionMode.ADD;
-                    } else
+                        selectionMode = SelectionMode.FILL;
+                    }
+                    else
                     // Check for right click down
-                    if (Event.current.type == EventType.MouseDown && Event.current.button == 1) {
+                    if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && Event.current.shift)
+                    {
                         Event.current.Use();
                         // Set selction array start point
-                        startPos = hit.point;
-                        startPos -= hit.normal * (0.25f / LevelModuleWalls.Resolution);
+                        selectionStartPos = hit.point;
+                        selectionStartPos -= hit.normal * (0.25f / LevelModuleWalls.BlockSubdivisions);
                         // Set selection array as a remove array
-                        selectionArrayMode = SelectionMode.REMOVE;
+                        selectionMode = SelectionMode.ERASE;
                     }
-                } else {
+                }
+                else
+                {
 
-                    // Start point is defined
+                    // Selection start point is defined
 
-                    // Refresh end pos
-                    endPos = hit.point;
-                    switch (selectionArrayMode) {
-                        case SelectionMode.ADD:
-                            endPos += hit.normal * (0.25f / LevelModuleWalls.Resolution);
+                    /// [Refresh selection end point.]
+                    selectionEndPos = hit.point;
+                    switch (selectionMode)
+                    {
+                        case SelectionMode.FILL:
+                            // End selection in front of the voxel if filling.
+                            selectionEndPos += hit.normal * (0.25f / LevelModuleWalls.BlockSubdivisions);
                             break;
-                        case SelectionMode.REMOVE:
-                            endPos -= hit.normal * (0.25f / LevelModuleWalls.Resolution);
+                        case SelectionMode.ERASE:
+                            // End selection inside the voxel if erasing.
+                            selectionEndPos -= hit.normal * (0.25f / LevelModuleWalls.BlockSubdivisions);
                             break;
                     }
                 }
             }
 
             // Check if a selection is active
-            if (selectionArrayMode != SelectionMode.NONE && startPos.HasValue && endPos.HasValue) {
+            if (selectionMode != SelectionMode.NONE && selectionStartPos.HasValue && selectionEndPos.HasValue)
+            {
                 // Destroy selection if the user release the input associated 
-                
-                    // Get selection's min/max
-                    Vector3 localStartPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, startPos.Value);
-                Vector3 localEndPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, endPos.Value);
+
+                // Get selection's min/max
+                Vector3 localStartPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
+                Vector3 localEndPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
                 Vector3 min = new Vector3(
                     Mathf.Min(localStartPoint.x, localEndPoint.x),
                     Mathf.Min(localStartPoint.y, localEndPoint.y),
                     Mathf.Min(localStartPoint.z, localEndPoint.z)
                     );
-                min = RaseterizeFloor(min, steps: LevelModuleWalls.Resolution);
+                min = MathUtility.RaseterizeFloor(min, steps: LevelModuleWalls.BlockSubdivisions);
                 Vector3 max = new Vector3(
                     Mathf.Max(localStartPoint.x, localEndPoint.x),
                     Mathf.Max(localStartPoint.y, localEndPoint.y),
                     Mathf.Max(localStartPoint.z, localEndPoint.z)
                     );
-                max = RaseterizeCeil(max, steps: LevelModuleWalls.Resolution);
+                max = MathUtility.RaseterizeCeil(max, steps: LevelModuleWalls.BlockSubdivisions);
 
                 min += Vector3.one * 0.5f;
                 max += Vector3.one * 0.5f;
-                min *= LevelModuleWalls.Resolution;
-                max *= LevelModuleWalls.Resolution;
+                min *= LevelModuleWalls.BlockSubdivisions;
+                max *= LevelModuleWalls.BlockSubdivisions;
 
                 // Check for left click up
-                if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && selectionArrayMode == SelectionMode.ADD) {
+                if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && selectionMode == SelectionMode.FILL)
+                {
                     Event.current.Use();
 
                     // Add voxels
                     Undo.RecordObject(levelModuleWalls, string.Format("Add voxels from {0}", levelModuleWalls.name));
-                    levelModuleWalls.Add(min, max);
-                    levelModuleWalls.Draw();
+                    levelModuleWalls.Edit_FillArray(min, max);
+                    levelModuleWalls.RefreshMesh();
 
                     // DEBUG
                     levelModuleWalls.colorDebug = Color.green;
 
                     // Remove selction array start and end points
-                    startPos = null;
-                    endPos = null;
+                    selectionStartPos = null;
+                    selectionEndPos = null;
                     // Set selection array as non existent
-                    selectionArrayMode = SelectionMode.NONE;
-                } else
+                    selectionMode = SelectionMode.NONE;
+                }
+                else
                 // Check for left click down
-                if (Event.current.type == EventType.MouseUp && Event.current.button == 1 && selectionArrayMode == SelectionMode.REMOVE) {
+                if (Event.current.type == EventType.MouseUp && Event.current.button == 0 && selectionMode == SelectionMode.ERASE)
+                {
                     Event.current.Use();
 
                     // Remove voxels
                     Undo.RecordObject(levelModuleWalls, string.Format("Removed voxels from {0}", levelModuleWalls.name));
-                    levelModuleWalls.Remove(min, max);
-                    levelModuleWalls.Draw();
+                    levelModuleWalls.Edit_EraseArray(min, max);
+                    levelModuleWalls.RefreshMesh();
 
                     // DEBUG
                     levelModuleWalls.colorDebug = Color.red;
 
                     // Remove selction array start and end points
-                    startPos = null;
-                    endPos = null;
+                    selectionStartPos = null;
+                    selectionEndPos = null;
                     // Set selection array as non existent
-                    selectionArrayMode = SelectionMode.NONE;
+                    selectionMode = SelectionMode.NONE;
                 }
             }
+        }
+
+
+
+
+        /********************
+         * EDITOR RENDERING *
+         ********************/
+
+        public void DrawSelection()
+        {
+            // Retrieve targeted LevelModuleWalls
+            LevelModuleWalls levelModuleWalls = t;
 
             // DEBUG - Two points
             Color handlesColorBackup = Handles.color; // Backup handles color
-            if (startPos.HasValue) {
+            if (selectionStartPos.HasValue)
+            {
                 // DEBUG - Draw a sphere at the start point position
                 Handles.color = Color.red;
-                Handles.SphereCap(0, startPos.Value, Quaternion.identity, 0.05f);
+                Handles.SphereCap(0, selectionStartPos.Value, Quaternion.identity, 0.05f);
             }
-            if (endPos.HasValue) {
+            if (selectionEndPos.HasValue)
+            {
                 // DEBUG - Draw a sphere at the start point position
                 Handles.color = Color.blue;
-                Handles.SphereCap(0, endPos.Value, Quaternion.identity, 0.05f);
+                Handles.SphereCap(0, selectionEndPos.Value, Quaternion.identity, 0.05f);
             }
 
-            if (startPos.HasValue && endPos.HasValue) {
-                Vector3 middlePoint = Vector3.Lerp(startPos.Value, endPos.Value, 0.5f);
+            // Draw selection if it exist
+            if (selectionStartPos.HasValue && selectionEndPos.HasValue)
+            {
+                Vector3 selectionCenter = Vector3.Lerp(selectionStartPos.Value, selectionEndPos.Value, 0.5f);
                 Handles.color = new Color32(0, 255, 255, 128);
 
-                // Get local start point
-                Vector3 localStartPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, startPos.Value);
-                Vector3 localEndPoint = ColliderHelper.FromWorldToLocalPosition(levelModuleWalls.transform, endPos.Value);
+                // Config
+                const float selectionOffset = 0.05f / LevelModuleWalls.BlockSubdivisions; 
 
+                // Convert start and end point to 
+                Vector3 localStartPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionStartPos.Value);
+                Vector3 localEndPoint = TransformUtility.FromWorldToLocalPosition(levelModuleWalls.transform, selectionEndPos.Value);
+
+                // Get selection min position
                 Vector3 min = new Vector3(
                     Mathf.Min(localStartPoint.x, localEndPoint.x),
                     Mathf.Min(localStartPoint.y, localEndPoint.y),
                     Mathf.Min(localStartPoint.z, localEndPoint.z)
                     );
-                min = RaseterizeFloor(min, steps: LevelModuleWalls.Resolution);
+                min = MathUtility.RaseterizeFloor(min, steps: LevelModuleWalls.BlockSubdivisions);
+                min -= Vector3.one * selectionOffset;
+
+                // Get selection max position
                 Vector3 max = new Vector3(
                     Mathf.Max(localStartPoint.x, localEndPoint.x),
                     Mathf.Max(localStartPoint.y, localEndPoint.y),
                     Mathf.Max(localStartPoint.z, localEndPoint.z)
                     );
-                max = RaseterizeCeil(max, steps: LevelModuleWalls.Resolution);
+                max = MathUtility.RaseterizeCeil(max, steps: LevelModuleWalls.BlockSubdivisions);
+                max += Vector3.one * selectionOffset;
 
-                Mesh mesh = GenerateMesh(min, max); 
+                // Generate selction mesh
+                Mesh mesh = GenerateSelectionMesh(min, max);
+
+                // Position mesh in world
                 Matrix4x4 matrix = Matrix4x4.TRS(
                     levelModuleWalls.transform.position,
                     levelModuleWalls.transform.rotation,
-                    levelModuleWalls.transform.lossyScale * 20
+                    levelModuleWalls.transform.lossyScale
                     );
+
+                // Set draw material
+                if (selectionMode == SelectionMode.FILL)
+                {
+                    selectionFillMaterial.SetPass(0);
+                }
+                else
+                {
+                    selectionEraseMaterial.SetPass(0);
+                }
+
+                // Draw the selection
                 Graphics.DrawMeshNow(mesh, matrix);
             }
 
             Handles.color = handlesColorBackup;      // Restore handles color
-
         }
 
-        public static Mesh GenerateMesh(Vector3 min, Vector3 max) {
+        public static Mesh GenerateSelectionMesh(Vector3 min, Vector3 max)
+        {
             // Mesh data
             List<Vector3> vertices = new List<Vector3>();
             List<Vector2> uv = new List<Vector2>();
@@ -452,27 +611,52 @@ namespace LevelModule {
             return mesh;
         }
 
-        public static float RaseterizeFloor(float value, float steps) {
+    }
+
+    /// <summary>
+    /// Extention class providing LevelModuleWalls related utility methods.
+    /// </summary>
+    internal static class LevelModuleWallsExtention
+    {
+        /// <summary>
+        /// Regenerate the mesh of a targeted level-module and set it on it's mesh filter (rendering) and collider.
+        /// </summary>
+        /// <param name="levelModuleWalls"></param>
+        internal static void RefreshMesh(this LevelModuleWalls levelModuleWalls)
+        {
+            levelModuleWalls.SetMesh(levelModuleWalls.GenerateMesh());
+        }
+    }
+
+    /// <summary>
+    /// Class providing mathematics related utility methods.
+    /// </summary>
+    internal static class MathUtility
+    {
+        public static float RaseterizeFloor(float value, float steps)
+        {
             return Mathf.Floor(value * steps) / steps;
         }
-        public static float RaseterizeCeil(float value, float steps) {
+        public static float RaseterizeCeil(float value, float steps)
+        {
             return Mathf.Ceil(value * steps) / steps;
         }
-        public static Vector3 RaseterizeFloor(Vector3 value, float steps) {
+        public static Vector3 RaseterizeFloor(Vector3 value, float steps)
+        {
             return new Vector3(
                 RaseterizeFloor(value.x, steps),
                 RaseterizeFloor(value.y, steps),
                 RaseterizeFloor(value.z, steps)
                 );
         }
-        public static Vector3 RaseterizeCeil(Vector3 value, float steps) {
+        public static Vector3 RaseterizeCeil(Vector3 value, float steps)
+        {
             return new Vector3(
                 RaseterizeCeil(value.x, steps),
                 RaseterizeCeil(value.y, steps),
                 RaseterizeCeil(value.z, steps)
                 );
         }
-
     }
 
 }
