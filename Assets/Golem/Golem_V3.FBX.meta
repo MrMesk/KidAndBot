@@ -1,0 +1,1113 @@
+fileFormatVersion: 2
+guid: 2c2ff91ac6ad8f14f8ba30c643bddbc4
+timeCreated: 1484425727
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: BallHead
+    100002: Body
+    100004: //RootNode
+    100006: IK Chain001
+    100008: IK Chain002
+    100010: IK Chain003
+    100012: IK Chain004
+    100014: LFinger1
+    100016: LFinger2
+    100018: LFinger3
+    100020: LFinger4
+    100022: LFoot
+    100024: LHand
+    100026: LKnee
+    100028: LKnee 1
+    100030: LShoulder
+    100032: Point001
+    100034: Point002
+    100036: Point003
+    100038: Point004
+    100040: Point005
+    100042: Point006
+    100044: Point007
+    100046: Point008
+    100048: Point009
+    100050: Point010
+    100052: Point011
+    100054: RFinger1
+    100056: RFinger2
+    100058: RFinger3
+    100060: RFinger4
+    100062: RFoot
+    100064: RHand
+    100066: RKnee
+    100068: RLeg
+    100070: RShoulder
+    400000: BallHead
+    400002: Body
+    400004: //RootNode
+    400006: IK Chain001
+    400008: IK Chain002
+    400010: IK Chain003
+    400012: IK Chain004
+    400014: LFinger1
+    400016: LFinger2
+    400018: LFinger3
+    400020: LFinger4
+    400022: LFoot
+    400024: LHand
+    400026: LKnee
+    400028: LKnee 1
+    400030: LShoulder
+    400032: Point001
+    400034: Point002
+    400036: Point003
+    400038: Point004
+    400040: Point005
+    400042: Point006
+    400044: Point007
+    400046: Point008
+    400048: Point009
+    400050: Point010
+    400052: Point011
+    400054: RFinger1
+    400056: RFinger2
+    400058: RFinger3
+    400060: RFinger4
+    400062: RFoot
+    400064: RHand
+    400066: RKnee
+    400068: RLeg
+    400070: RShoulder
+    2300000: BallHead
+    2300002: Body
+    2300004: LFinger1
+    2300006: LFinger2
+    2300008: LFinger3
+    2300010: LFinger4
+    2300012: LFoot
+    2300014: LHand
+    2300016: LKnee
+    2300018: LKnee 1
+    2300020: LShoulder
+    2300022: RFinger1
+    2300024: RFinger2
+    2300026: RFinger3
+    2300028: RFinger4
+    2300030: RFoot
+    2300032: RHand
+    2300034: RKnee
+    2300036: RLeg
+    2300038: RShoulder
+    3300000: BallHead
+    3300002: Body
+    3300004: LFinger1
+    3300006: LFinger2
+    3300008: LFinger3
+    3300010: LFinger4
+    3300012: LFoot
+    3300014: LHand
+    3300016: LKnee
+    3300018: LKnee 1
+    3300020: LShoulder
+    3300022: RFinger1
+    3300024: RFinger2
+    3300026: RFinger3
+    3300028: RFinger4
+    3300030: RFoot
+    3300032: RHand
+    3300034: RKnee
+    3300036: RLeg
+    3300038: RShoulder
+    4300000: RLeg
+    4300002: RKnee
+    4300004: RFoot
+    4300006: LKnee
+    4300008: LKnee
+    4300010: LFoot
+    4300012: Body
+    4300014: BallHead
+    4300016: LShoulder
+    4300018: LHand
+    4300020: LFinger4
+    4300022: LFinger3
+    4300024: LFinger2
+    4300026: LFinger1
+    4300028: RShoulder
+    4300030: RHand
+    4300032: RFinger1
+    4300034: RFinger2
+    4300036: RFinger3
+    4300038: RFinger4
+    7400000: Iddle
+    7400002: Start_Walk
+    7400004: Walk
+    7400006: End_Walk
+    7400008: Start_Charge
+    7400010: Charge
+    7400012: End_Charge
+    7400014: Bump
+    7400016: Dab
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Iddle
+      takeName: golem-2.0-IK
+      firstFrame: 120
+      lastFrame: 140
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Start_Walk
+      takeName: golem-2.0-IK
+      firstFrame: 5
+      lastFrame: 10
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Walk
+      takeName: golem-2.0-IK
+      firstFrame: 10
+      lastFrame: 40
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: End_Walk
+      takeName: golem-2.0-IK
+      firstFrame: 40
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Start_Charge
+      takeName: golem-2.0-IK
+      firstFrame: 60
+      lastFrame: 64
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Charge
+      takeName: golem-2.0-IK
+      firstFrame: 65
+      lastFrame: 99
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: End_Charge
+      takeName: golem-2.0-IK
+      firstFrame: 100
+      lastFrame: 111
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Bump
+      takeName: golem-2.0-IK
+      firstFrame: 180
+      lastFrame: 230
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Dab
+      takeName: golem-2.0-IK
+      firstFrame: 240
+      lastFrame: 260
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: IK Chain001
+        weight: 1
+      - path: IK Chain002
+        weight: 1
+      - path: IK Chain003
+        weight: 1
+      - path: IK Chain004
+        weight: 1
+      - path: Point001
+        weight: 1
+      - path: Point001/Body
+        weight: 1
+      - path: Point001/Body/BallHead
+        weight: 1
+      - path: Point001/Body/Point006
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger1
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger2
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger3
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/LFinger4
+        weight: 1
+      - path: Point001/Body/Point006/LShoulder/Point010/LHand/Point009
+        weight: 1
+      - path: Point001/Body/Point007
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/Point008
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger1
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger2
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger3
+        weight: 1
+      - path: Point001/Body/Point007/RShoulder/Point011/RHand/RFinger4
+        weight: 1
+      - path: Point001/Point002
+        weight: 1
+      - path: Point001/Point002/LKnee
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot
+        weight: 1
+      - path: Point001/Point002/LKnee/LKnee 1/LFoot/Point004
+        weight: 1
+      - path: Point001/Point003
+        weight: 1
+      - path: Point001/Point003/RLeg
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot
+        weight: 1
+      - path: Point001/Point003/RLeg/RKnee/RFoot/Point005
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
