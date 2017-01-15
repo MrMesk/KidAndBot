@@ -63,8 +63,8 @@ public class RobotCharacter : Character
 	float chargeTimer;
 	int forceTier;
 
-
-	bool isGrabbing;
+	[HideInInspector]
+	public bool isGrabbing;
 	[HideInInspector]
 	public bool isCharging;
 
@@ -144,13 +144,21 @@ public class RobotCharacter : Character
 			grappin.SetPosition(0, transform.position);
 			grappin.SetPosition(1, grabbedCube.transform.position);
 			float dist = Vector3.Distance(transform.position, grabbedCube.transform.position) - GetComponent<CharacterController>().radius - grabbedCube.GetComponent<BoxCollider>().size.x / 2 - 1;
-			if (input.bot.punch.WasReleased && dist > 48f)
+			if (input.bot.punch.WasReleased)
 			{
-				Pull(grabbedNormal, dist);
-				isGrabbing = false;
-				grabbedCube = null;
-				grabbedNormal = new Vector3();
+				if(dist > 48f)
+				{
+					Pull(grabbedNormal, dist);
+					isGrabbing = false;
+					grabbedCube = null;
+					grabbedNormal = new Vector3();
+				}
+				else
+				{
+					isGrabbing = false;
+				}
 			}
+			
 		}
 		//Allows to bump and charge if not grabbing, and disables hook
 		else
@@ -208,14 +216,12 @@ public class RobotCharacter : Character
 		if (input.bot.punch.IsPressed || input.bot.pull.IsPressed || input.bot.bump.IsPressed)
 		{
 			//Debug.Log("Charging");
-			robotAnim.SetBool("Charging", true);
-			robotAnim.SetBool("Walking", false);
 			bumpForce += Time.deltaTime;
 			bumpForce = Mathf.Clamp(bumpForce, 0f, bumpTiers[3] * 1.25f);
 		}
 		else
 		{
-			robotAnim.SetBool("Charging", false);
+
 			bumpForce -= Time.deltaTime;
 			bumpForce = Mathf.Clamp(bumpForce, 0f, bumpTiers[3] * 1.25f);
 		}
@@ -255,10 +261,13 @@ public class RobotCharacter : Character
 	{
 		if (input.bot.punch.IsPressed && chargeTimer == 0f)
 		{
+			robotAnim.SetBool("Charging", true);
+			robotAnim.SetBool("Walking", false);
 			isCharging = true;
 		}
 		else
 		{
+			robotAnim.SetBool("Charging", false);
 			isCharging = false;
 		}
 	}
@@ -403,7 +412,7 @@ public class RobotCharacter : Character
 		RaycastHit hit;
 
 		ForceCheck();
-		robotAnim.SetTrigger("Punching");
+		robotAnim.SetBool("Charging", false);
 		//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 		if (Physics.Raycast(ray, out hit, bumpForwardRange, bumpForwardMask))
 		{
@@ -456,7 +465,7 @@ public class RobotCharacter : Character
 		if (input.bot.bump.WasReleased && IsGrounded())
 		{
 			ForceCheck();
-
+			robotAnim.SetTrigger("Bump");
 			GameObject particleImpact = Resources.Load("Particles/ImpactGround") as GameObject;
 			particleImpact = Instantiate(particleImpact, transform.position - new Vector3(0, botHeight / 2, 0), Quaternion.identity) as GameObject;
 			particleImpact.transform.forward = Vector3.up;
@@ -519,6 +528,7 @@ public class RobotCharacter : Character
 				
 				if (prop.Impact() == false)
 				{
+					robotAnim.SetBool("Charging", false);
 					isCharging = false;
 					hMobility.accel = 1f;
 					StartCoroutine(ChargeCooldown());

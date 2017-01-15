@@ -126,7 +126,9 @@ namespace Abilities
 		/// </summary>
 		void Run ()
 		{
-			if (Mathf.Abs(directionalInput.y) > inputDead)
+			RobotCharacter bot = (RobotCharacter)character;
+			
+			if (Mathf.Abs(directionalInput.y) > inputDead && bot.isGrabbing == false)
 			{
 				//Move
 				if(directionalInput.y > 0f)
@@ -172,9 +174,9 @@ namespace Abilities
 		/// </summary>
 		void Turn ()
 		{
-			if (Mathf.Abs(directionalInput.x) > inputDead)
+			RobotCharacter bot = (RobotCharacter)character;
+			if (Mathf.Abs(directionalInput.x) > inputDead && bot.isGrabbing == false)
 			{
-				RobotCharacter bot = (RobotCharacter)character;
 				if (bot.isCharging)
 				{
 					targetRot *= Quaternion.AngleAxis(chargingRotateVel * directionalInput.x * Time.deltaTime, Vector3.up);
