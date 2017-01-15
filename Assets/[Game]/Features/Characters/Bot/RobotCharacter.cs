@@ -208,11 +208,14 @@ public class RobotCharacter : Character
 		if (input.bot.punch.IsPressed || input.bot.pull.IsPressed || input.bot.bump.IsPressed)
 		{
 			//Debug.Log("Charging");
+			robotAnim.SetBool("Charging", true);
+			robotAnim.SetBool("Walking", false);
 			bumpForce += Time.deltaTime;
 			bumpForce = Mathf.Clamp(bumpForce, 0f, bumpTiers[3] * 1.25f);
 		}
 		else
 		{
+			robotAnim.SetBool("Charging", false);
 			bumpForce -= Time.deltaTime;
 			bumpForce = Mathf.Clamp(bumpForce, 0f, bumpTiers[3] * 1.25f);
 		}
@@ -295,7 +298,7 @@ public class RobotCharacter : Character
 		grappinCollider.enabled = true;
 		Vector3 toCube = grabbedCube.transform.position - transform.position;
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x / 4f);
-		Vector3 newSize = new Vector3(4f, 4f, (transform.position - targetPoint).magnitude * 3);
+		Vector3 newSize = new Vector3(16f, 16f, (transform.position - targetPoint).magnitude * 3);
 
 		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
