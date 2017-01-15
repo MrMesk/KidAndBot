@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b62264ae90f884d20bebae0a7577fbe2
-timeCreated: 1483969668
+guid: ed9c64fe940a8b94c9e3e44de54a1406
+timeCreated: 1484514366
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Mur_Trou_049
+    4300000: LM2-3_Practice_Jump
     9500000: //RootNode
   materials:
     importMaterials: 1
