@@ -102,25 +102,34 @@ namespace Gameplay
             // Initialise handles
             InitHandles();
         }
-        
+
+        RenderTexture cameraPreview;
         private void DisplayCameraPreview(Camera camera)
         {
             RenderTexture rtBackup = camera.targetTexture;
             int height = 128;
             int width = (camera.pixelWidth * height) / camera.pixelHeight;
-            RenderTexture cameraPreview = new RenderTexture(camera.pixelWidth, camera.pixelHeight, 16);
+            if(cameraPreview != null)
+            {
+                cameraPreview.Release();
+            }
+            cameraPreview = new RenderTexture(camera.pixelWidth, camera.pixelHeight, 16);
+            cameraPreview.Create();
             camera.targetTexture = cameraPreview;
             camera.Render();
             camera.targetTexture = rtBackup;
             //Handles.BeginGUI();
 
-            GUILayout.Window(0, new Rect(Screen.width - width - 32, Screen.height - height - 64, width, height), (id) => {
+            GUILayout.Window(0, new Rect(Screen.width - width - 32, Screen.height - height - 64, width, height), (id) =>
+            {
                 // Content of window here
                 Rect previewRect = GUILayoutUtility.GetRect(width, height);
                 GUI.DrawTexture(previewRect, cameraPreview);
-                DestroyImmediate(cameraPreview, true); // Avoid memory leak
+                // Avoid memory leak
+                cameraPreview.Release();
+                DestroyImmediate(cameraPreview, true);
             }, "Camera Preview");
-            
+
             //Handles.EndGUI();
         }
 

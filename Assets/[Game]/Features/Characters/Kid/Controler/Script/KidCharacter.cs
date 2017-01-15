@@ -11,6 +11,8 @@ namespace Gameplay
          * UNITY *
          *********/
 
+        System.Action eOnDestroy;
+
         public KidCompass compass;
 
         // Awake
@@ -24,11 +26,22 @@ namespace Gameplay
 
         }
 
+        private void OnDestroy()
+        {
+            // Branch to sub-systems
+
+            if(eOnDestroy != null)
+            {
+                eOnDestroy();
+            }
+        }
+
         // Gui
         private void OnGUI()
         {
 
             GUILayout.Label("Is grounded = " + IsGrounded());
+            GUILayout.Label("Gravity = " + gravityJumpFallback.velocity);
         }
 
         /*****************
@@ -129,6 +142,9 @@ namespace Gameplay
             // Climbing
             Climbing_Init();
 
+            // Attach
+            Attach_Init();
+
         }
 
         // Logic tick
@@ -148,6 +164,9 @@ namespace Gameplay
 
             // Adherence
             Adherence_LogicTick(dt);
+
+            // Attach
+            Attach_LogicTick(dt);
 
         }
 

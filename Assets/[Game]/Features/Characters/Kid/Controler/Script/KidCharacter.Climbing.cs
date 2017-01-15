@@ -18,7 +18,7 @@ namespace Gameplay {
         private void Climbing_LogicTick(float dt) {
 
             // Climb logic
-            if(!IsJumping() || activeJump.HasReachedPeak())
+            if(!Jump_IsJumping() || activeJump.HasReachedPeak())
             {
                 climbing.TickLogic(dt, this);
             }

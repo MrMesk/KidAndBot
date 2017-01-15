@@ -210,7 +210,7 @@ namespace Gameplay
 
             // Smooth direction faced by player
             Vector3 targetDirection =
-                (kid.IsJumping() && kid.activeJump.HasReachedPeak()
+                (kid.Jump_IsJumping() && kid.activeJump.HasReachedPeak()
                     ?
                     Vector3.ProjectOnPlane(GetCharacterTowardCameraDirection(), Vector3.up).normalized
                     :
@@ -221,12 +221,12 @@ namespace Gameplay
                 directionFacedByPlayerSmoothed,
                 targetDirection,
                 (dist + 0f) * dt *
-                (kid.IsJumping() ? 1f : 2f)
+                (kid.Jump_IsJumping() ? 1f : 2f)
                 );
 
             // Smooth distance around player
             float targetDist =
-                (kid.IsJumping() && kid.activeJump.HasReachedPeak()) ?
+                (kid.Jump_IsJumping() && kid.activeJump.HasReachedPeak()) ?
                     Mathf.Lerp(distanceAroundMin, distanceAroundMax, distanceAroundFalling) // Falling
                     :
                     Mathf.Lerp(distanceAroundMin, distanceAroundMax, distanceAroundRegular) // Regular
@@ -236,7 +236,7 @@ namespace Gameplay
                 distanceAroundSmoothed,
                 targetDist,
                 dt *
-                    ((kid.IsJumping() && kid.activeJump.HasReachedPeak()) ?
+                    ((kid.Jump_IsJumping() && kid.activeJump.HasReachedPeak()) ?
                         Mathf.Abs((kid.activeJump.velocity.y) * (kid.activeJump.velocity.y) * (kid.activeJump.velocity.y)) * 0.001f
                         :
                         dist * 4f
@@ -297,7 +297,7 @@ namespace Gameplay
                         Vector3.RotateTowards(
                             localHorizontalPosition,
                             targetDirectionalPosition,
-                            (angle * Mathf.Deg2Rad) * dt * (kid.IsJumping()? 0.5f : 2f) * sliderLookTowardDirectionFacedByPlayer,
+                            (angle * Mathf.Deg2Rad) * dt * (kid.Jump_IsJumping()? 0.5f : 2f) * sliderLookTowardDirectionFacedByPlayer,
                             0
                             );
                 }
@@ -311,7 +311,7 @@ namespace Gameplay
             Vector3 localVerticalPosition = GetLocalVerticalPositionAroundCharacter(transform.position - kid.transform.position);
             Vector3 targetVerticalPosition =
                 Vector3.up *
-                (kid.IsJumping() ?
+                (kid.Jump_IsJumping() ?
                     !kid.activeJump.HasReachedPeak() ?
                         10f + -kid.activeJump.velocity.y * 0.125f // Kid is ascending
                         :
@@ -324,7 +324,7 @@ namespace Gameplay
             localVerticalPosition = Vector3.MoveTowards(
                 localVerticalPosition,
                 targetVerticalPosition,
-                dist * dt * (kid.IsJumping() && kid.activeJump.HasReachedPeak() ? 0.25f : 2f)
+                dist * dt * (kid.Jump_IsJumping() && kid.activeJump.HasReachedPeak() ? 0.25f : 2f)
                 );
 
 

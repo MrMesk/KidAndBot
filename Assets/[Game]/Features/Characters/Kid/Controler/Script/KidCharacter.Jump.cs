@@ -20,10 +20,10 @@ namespace Gameplay
         {
             // *** Bind deletates ***
             // End active jump when the character hit the ground
-            physic.eHitGround += EndActiveJump;
+            physic.eHitGround += Jump_EndActiveJump;
 
             // End active jump when the character connect to a new climbable object
-            climbing.eAttachedToANewClimbalbeObject += EndActiveJump;
+            climbing.eAttachedToANewClimbalbeObject += Jump_EndActiveJump;
 
             // *** Init regular gravity ***
             /// Explanation :
@@ -39,7 +39,7 @@ namespace Gameplay
         /// <summary>
         /// End any jump the kid is currently performing, as well as resetting the gravity.
         /// </summary>
-        private void EndActiveJump()
+        private void Jump_EndActiveJump()
         {
             // Reset active jump
             if (activeJump != null)
@@ -58,7 +58,7 @@ namespace Gameplay
         /// Returns if the kid is currently jumping.
         /// </summary>
         /// <returns></returns>
-        public bool IsJumping()
+        public bool Jump_IsJumping()
         {
             return activeJump != null;
         }
@@ -78,16 +78,15 @@ namespace Gameplay
             if (!climbing.IsClimbing())
             {
                 // Tf the character is jumping,
-                if (IsJumping())
+                if (Jump_IsJumping())
                 {
                     // Then apply this jump's physic.
-
-                    Vector3 jumpVelocity = activeJump.velocity;
-
+                    
+                    // LEGACy :
+                    //Vector3 jumpVelocity = activeJump.velocity;
                     // Apply
-                    physic.globalVelocity += jumpVelocity;
+                    //physic.globalVelocity += jumpVelocity;
 
-                    // TODO :
                     // Position (p) :
                     //
                     //            at²
@@ -95,24 +94,34 @@ namespace Gameplay
                     //             2
                     //
                     // Change the global velocity sytem to a translation system
-                    // Vector3 translation = regularJump.velocity * dt + 0.5f * regularJump.acceleration * dt * dt;
+                    Vector3 translation = activeJump.velocity * dt + 0.5f * activeJump.acceleration * dt * dt;
+                    physic.translate += translation;
 
                     // Tick active jump
                     activeJump.Tick(dt);
                 }
-                else
-                // If he ain't juming,
+                else if(!attach.IsAttached())
+                // If he ain't juming an not attached,
                 {
                     // Then apply the gravity physic.
 
                     // Tick garavity (DEBUG : before)
                     gravityJumpFallback.Tick(dt);
 
-                    Vector3 jumpVelocity = gravityJumpFallback.velocity;
+                    //Vector3 jumpVelocity = gravityJumpFallback.velocity;
 
-                    // Apply
-                    physic.globalVelocity += jumpVelocity;
+                    //// Apply
+                    //physic.globalVelocity += jumpVelocity;
 
+                    // Position (p) :
+                    //
+                    //            at²
+                    // p += vt + -----
+                    //             2
+                    //
+                    // Change the global velocity sytem to a translation system
+                    Vector3 translation = gravityJumpFallback.velocity * dt + 0.5f * gravityJumpFallback.acceleration * dt * dt;
+                    physic.translate += translation;
 
                 }
             }
@@ -146,7 +155,7 @@ namespace Gameplay
                 else
 
                 // If is curently perfoming any other jump than an air jump,
-                if (IsJumping() && activeJump != airJump)
+                if (Jump_IsJumping() && activeJump != airJump)
                 {
                     // Then do an air jump
                     jumpToPerform = airJump;
@@ -166,7 +175,7 @@ namespace Gameplay
                     // Perform this jump.
 
                     // End active jumpt before starting a new one.
-                    EndActiveJump();
+                    Jump_EndActiveJump();
 
                     // Start the new jump.
                     jumpToPerform.StartJump();
@@ -192,7 +201,7 @@ namespace Gameplay
             if (input.kid.jump.WasReleased)
             {
                 // Then notifie the active jump that the jump button was released.
-                if (IsJumping())
+                if (Jump_IsJumping())
                     activeJump.RefreshGravityAcceleration(false);
             }
         }

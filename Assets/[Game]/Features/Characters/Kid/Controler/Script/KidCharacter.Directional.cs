@@ -18,7 +18,7 @@ namespace Gameplay {
         private void Directional_LogicTick(float dt) {
             // Refresh directional logic
             directional.Tick(dt);
-
+            
             // Apply to global velocity
             physic.globalVelocity += directional.velocity;
         }
