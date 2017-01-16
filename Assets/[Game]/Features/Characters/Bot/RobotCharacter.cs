@@ -525,7 +525,7 @@ public class RobotCharacter : Character
 			Destructible prop = other.GetComponent<Destructible>();
 			if (prop != null)
 			{
-				
+				Debug.Log ("Colliding with something !");
 				if (prop.Impact() == false)
 				{
 					robotAnim.SetBool("Charging", false);
@@ -537,7 +537,7 @@ public class RobotCharacter : Character
 				AnimCube anim = other.GetComponent<AnimCube>();
 				if (anim != null) 
 				{
-					//Debug.Log("Colliding with a Level Module !");
+					Debug.Log("Colliding with a Level Module !");
 					PushLM (anim);
 				} 
 				else 

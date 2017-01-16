@@ -136,6 +136,8 @@ namespace Gameplay
         [Range(0,1)]
         public float distanceAroundFalling = 0;
 
+		public Vector3 cameraTargetOffset;
+
         /// <summary>
         /// The direction the player is currently facing.
         /// </summary>
@@ -164,8 +166,11 @@ namespace Gameplay
             const float aheadDist = 8f; // How far in that direction the camera shoold look
             Vector3 ahead = character + (directionFacedByPlayerSmoothed * sliderLookTowardDirectionFacedByPlayer * aheadDist);
 
+
+			Vector3 offset = this.cameraTargetOffset;
+
             // Make an avreage of both
-            Vector3 targetPosition = (ahead + character) / 2f;
+			Vector3 targetPosition = ((ahead + character) / 2f) + offset;
 
             // Return it
             return targetPosition;
@@ -317,7 +322,7 @@ namespace Gameplay
                         :
                         1f + -kid.activeJump.velocity.y * 0.25f // Kid is decending
                     :
-                    7.5f // Kid is running
+                    5f // Kid is running
                 );
 
             float dist = Vector3.Distance(localVerticalPosition, targetVerticalPosition);

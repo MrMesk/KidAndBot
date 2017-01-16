@@ -43,13 +43,20 @@ public class Destructible : MonoBehaviour
 			if(lifePoints <= 0)
 			{
 				FMODUnity.RuntimeManager.PlayOneShot(breaking.destroySound, transform.position);
-				Instantiate(breaking.destroyParticle, transform.position, Quaternion.identity);
+				if (breaking.destroyParticle != null) 
+				{
+					Instantiate(breaking.destroyParticle, transform.position, Quaternion.identity);
+				}
+
 				Destroy(gameObject);
 			}
 			else
 			{
 				FMODUnity.RuntimeManager.PlayOneShot(breaking.impactSound, transform.position);
-				Instantiate(breaking.impactParticle, transform.position, Quaternion.identity);
+				if (breaking.impactParticle != null) 
+				{
+					Instantiate (breaking.impactParticle, transform.position, Quaternion.identity);
+				}
 			}
 
 			switch (propSize)

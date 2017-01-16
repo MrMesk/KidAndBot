@@ -17,7 +17,7 @@ namespace Gameplay {
 
         private void Directional_LogicTick(float dt) {
             // Refresh directional logic
-            directional.Tick(dt);
+			directional.Tick(dt, Jump_IsJumping());
             
             // Apply to global velocity
             physic.globalVelocity += directional.velocity;
@@ -62,6 +62,12 @@ namespace Gameplay {
                 /// </summary>
                 [Tooltip("The speed the player move on both horizontal axis (x, z).")]
                 public float moveSpeed = 7.5f;
+
+				/// <summary>
+				/// The speed the player move on both horizontal axis (x, z) when jumping.
+				/// </summary>
+				[Tooltip("The speed the player move on both horizontal axis (x, z) when jumping.")]
+				public float moveSpeedWhileJumping = 15f;
             }
 
             /// <summary>
@@ -78,11 +84,12 @@ namespace Gameplay {
             [System.NonSerialized]
             public Vector3 velocity;
 
-            public void Tick(float dt) {
-                velocity = GetDirectionalVelocity();
+			public void Tick(float dt, bool isPlayerJumping) {
+				velocity = GetDirectionalVelocity(isPlayerJumping);
             }
 
-            private Vector3 GetDirectionalVelocity() {
+			private Vector3 GetDirectionalVelocity(bool isPlayerJumping) 
+			{
                 // Directional
                 Quaternion forwardRotation = directionalConfig.compassTransform.rotation;
 
@@ -93,7 +100,7 @@ namespace Gameplay {
                 directional = forwardRotation * directional;
 
                 // Apply move speed to direction
-                directional *= directionalConfig.moveSpeed;
+				directional *= isPlayerJumping ? directionalConfig.moveSpeedWhileJumping : directionalConfig.moveSpeed;
 
                 return directional;
             }

@@ -55,13 +55,17 @@ namespace Gameplay {
             if (targetParent == null)
             {
                 transform.SetParent(null);
+				transform.localScale = Vector3.one;
                 return;
             }
             
             // Adjhre to the target parent
             if (targetParent != transform.parent)
             {
-                transform.SetParent(targetParent);
+				transform.SetParent(targetParent);
+				Vector3 scaleCorrection = targetParent.lossyScale;
+				scaleCorrection = new Vector3 (1 / scaleCorrection.x, 1 / scaleCorrection.y, 1 / scaleCorrection.z);
+				transform.localScale = scaleCorrection;
             }
         }
 
@@ -170,6 +174,8 @@ namespace Gameplay {
 
             public static Transform FindFirstUnscaledParent(Transform transform)
             {
+				return transform;
+
                 Transform parent = transform.parent;
                 while (parent != null)
                 {
