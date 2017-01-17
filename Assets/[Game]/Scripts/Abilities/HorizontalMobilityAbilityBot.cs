@@ -57,6 +57,9 @@ namespace Abilities
 
 		public Vector3 directionalVelocity { get; private set; }
 
+        [Header("KID")]
+        public Gameplay.KidCharacter kidCharacter;
+
 		public Quaternion TargetRotation
 		{
 			get { return targetRot; }
@@ -119,6 +122,10 @@ namespace Abilities
 			}
 
 			character.physic.globalVelocity += character.transform.TransformDirection(velocity);
+            if (kidCharacter.transform.IsChildOf(character.transform))
+            {
+                kidCharacter.physic.globalVelocity += character.transform.TransformDirection(velocity);
+            }
 		}
 
 		/// <summary>

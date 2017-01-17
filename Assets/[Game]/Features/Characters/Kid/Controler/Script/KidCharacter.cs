@@ -40,8 +40,8 @@ namespace Gameplay
         private void OnGUI()
         {
 
-            GUILayout.Label("Is grounded = " + IsGrounded());
-            GUILayout.Label("Gravity = " + gravityJumpFallback.velocity);
+            //GUILayout.Label("Is grounded = " + IsGrounded());
+            //GUILayout.Label("Gravity = " + gravityJumpFallback.velocity);
         }
 
         /*****************

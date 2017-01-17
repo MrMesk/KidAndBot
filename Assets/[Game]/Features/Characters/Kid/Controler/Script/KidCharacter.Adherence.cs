@@ -174,8 +174,6 @@ namespace Gameplay {
 
             public static Transform FindFirstUnscaledParent(Transform transform)
             {
-				return transform;
-
                 Transform parent = transform.parent;
                 while (parent != null)
                 {
@@ -185,7 +183,7 @@ namespace Gameplay {
                     }
                     parent = parent.parent;
                 }
-                return parent;
+                return parent ?? transform;
             }
 
             public static float GetDistanceBetween(Transform characterTransform, Collider collider, Vector3 intentionedDeplacement)
