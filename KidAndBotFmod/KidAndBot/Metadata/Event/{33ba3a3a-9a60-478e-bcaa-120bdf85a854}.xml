@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.01.08.00">
     <object class="Event" id="{33ba3a3a-9a60-478e-bcaa-120bdf85a854}">
         <property name="name">
-            <value>Step</value>
+            <value>OnBotWalk</value>
         </property>
         <property name="outputFormat">
             <value>1</value>
@@ -32,7 +32,7 @@
             <destination>{d1e078a2-03cc-4fe7-aaa4-f4bfa334c83b}</destination>
         </relationship>
         <relationship name="folder">
-            <destination>{26528baa-1451-46f6-b6db-c7f3115b1eef}</destination>
+            <destination>{87aa329a-7273-44ff-a781-d1d3c40f8c5b}</destination>
         </relationship>
     </object>
     <object class="EventMixer" id="{02755263-1798-4bc6-a8fc-f7f5d46ef261}">
@@ -72,9 +72,6 @@
         </relationship>
     </object>
     <object class="EventMixerMaster" id="{6354de12-7286-4ab6-b132-a956683c3d26}">
-        <property name="volume">
-            <value>-5</value>
-        </property>
         <relationship name="effectChain">
             <destination>{dd5f8d8c-67e1-4932-b50c-571efffc0527}</destination>
         </relationship>
@@ -102,7 +99,7 @@
             <value>8.7999999999999936</value>
         </property>
         <property name="volume">
-            <value>-10.5</value>
+            <value>-5</value>
         </property>
         <relationship name="modulators">
             <destination>{8a3999ec-3aea-4758-b5d3-b0dd65d772b5}</destination>
@@ -113,6 +110,9 @@
         </relationship>
     </object>
     <object class="EventMixerGroup" id="{676a7aeb-1986-419c-831c-dfe5b23df66d}">
+        <property name="volume">
+            <value>-10.5</value>
+        </property>
         <property name="name">
             <value>Audio 1</value>
         </property>
@@ -160,7 +160,7 @@
     <object class="MixerBusFader" id="{5107abe4-db52-43ac-b201-8c3e138c1c7d}"/>
     <object class="LowpassEffect" id="{6e9ccb0e-4931-4c3d-8683-f58eebce2a86}">
         <property name="cutoff">
-            <value>200</value>
+            <value>480</value>
         </property>
         <property name="resonance">
             <value>1.99999988</value>

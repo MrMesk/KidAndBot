@@ -37,6 +37,7 @@ public class RobotCharacter : Character
 	public string shakeHigh;
 
 	public float walkShakeFrequency;
+	public float chargeShakeFrequency;
 	float walkTimer;
 
 	[Space(10)]
@@ -44,13 +45,19 @@ public class RobotCharacter : Character
 	[Space(10)]
 
 	[FMODUnity.EventRef]
-	public string step = "event:/Step";
-	public string jump = "event:/Step";
-	public string punch = "event:/Step";
-	public string hookOn = "event:/Step";
-	public string hookOff = "event:/Step";
-	public string pull = "event:/Step";
-	public string bump = "event:/Step";
+	public string step = "event:/Bot/OnBotWalk";
+	[FMODUnity.EventRef]
+	public string impact = "event:/Bot/OnBotChargeImpact";
+	FMOD.Studio.EventInstance impactEv;
+	FMOD.Studio.ParameterInstance impactStrParam;
+	[FMODUnity.EventRef]
+	public string hookOn = "event:/OnBotHookAttach";
+	[FMODUnity.EventRef]
+	public string hookOff = "event:/OnBotHookAttach";
+	[FMODUnity.EventRef]
+	public string pull = "event:/OnBotChargeImpact";
+	[FMODUnity.EventRef]
+	public string bump = "event:/OnBotBumpHit";
 
 	[Space(10)]
 	[Header("Animation")]
@@ -175,6 +182,9 @@ public class RobotCharacter : Character
 	/// </summary>
 	private void Initialize ()
 	{
+		//impactEv = FMODUnity.RuntimeManager.CreateInstance(impact);
+		//impactEv.getParameter("Strength", out impactStrParam);
+
 		chargeTimer = 0f;
 		isCharging = false;
 		botHeight = GetComponent<CharacterController>().height;
@@ -198,7 +208,14 @@ public class RobotCharacter : Character
 	void WalkingShake ()
 	{
 		walkTimer += Time.deltaTime;
-		if (walkTimer >= walkShakeFrequency)
+		if (walkTimer >= walkShakeFrequency && isCharging == false)
+		{
+			walkTimer = 0f;
+			//Debug.Log ("Cam Control : " + cameraControl.name);
+			cameraControl.ShakeCamera(walkShake);
+			FMODUnity.RuntimeManager.PlayOneShot(step, transform.position);
+		}
+		else if(walkTimer >= chargeShakeFrequency && isCharging == true)
 		{
 			walkTimer = 0f;
 			//Debug.Log ("Cam Control : " + cameraControl.name);
@@ -261,6 +278,7 @@ public class RobotCharacter : Character
 	{
 		if (input.bot.punch.IsPressed && chargeTimer == 0f)
 		{
+			WalkingShake();
 			robotAnim.SetBool("Charging", true);
 			robotAnim.SetBool("Walking", false);
 			isCharging = true;
@@ -454,7 +472,10 @@ public class RobotCharacter : Character
 		}
 
 		cameraControl.ShakeCamera(shakeMid);
-		FMODUnity.RuntimeManager.PlayOneShot(punch, transform.position);
+		//impactStrParam.setValue(forceTier+1);
+		//impactEv.start();
+		//impactEv.release();
+		FMODUnity.RuntimeManager.PlayOneShot(impact, transform.position);
 	}
 
 	/// <summary>
