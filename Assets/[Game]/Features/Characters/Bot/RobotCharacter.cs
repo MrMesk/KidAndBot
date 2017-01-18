@@ -24,7 +24,7 @@ public class RobotCharacter : Character
 	public LayerMask bumpUpMask;
 	public LayerMask bumpForwardMask;
 	public LayerMask destructibleWallMask;
-	public Slider forceBar;
+	//public Slider forceBar;
 
 	[Space(10)]
 	[Header("Camera Shaking")]
@@ -110,7 +110,7 @@ public class RobotCharacter : Character
 
 		ChargeManagement();
 
-		forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
+		//forceBar.value = Mathf.Lerp(forceBar.value, bumpForce, 0.1f);
 
 		InputManagement();
 
@@ -173,8 +173,8 @@ public class RobotCharacter : Character
 			BumpUp();
 			Charge();
 			grappin.enabled = false;
-			grappinCollider.enabled = false;
-		}
+            grappinCollider.gameObject.SetActive(false);
+        }
 	}
 
 	/// <summary>
@@ -190,17 +190,17 @@ public class RobotCharacter : Character
 		botHeight = GetComponent<CharacterController>().height;
 		hMobility = GetComponentInChildren<Abilities.HorizontalMobilityAbilityBot>();
 
-		grappin = transform.Find("Rendering").Find("Grappin").GetComponent<LineRenderer>();
-		grappinCollider = transform.Find("Rendering").Find("GrappinCollider").GetComponent<BoxCollider>();
+		grappin = transform.Find("Bot Abilities").Find("Grappin").GetComponent<LineRenderer>();
+		grappinCollider = transform.Find("Bot Abilities").Find("GrappinCollider").GetComponent<BoxCollider>();
 
 		grappin.enabled = false;
-		grappinCollider.enabled = false;
+        grappinCollider.gameObject.SetActive(false);
 
-		if (forceBar == null)
-		{
-			forceBar = GameObject.Find("ForceBar").GetComponent<Slider>();
-		}
-	}
+        //if (forceBar == null)
+        //{
+        //	forceBar = GameObject.Find("ForceBar").GetComponent<Slider>();
+        //}
+    }
 
 	/// <summary>
 	/// Little Camera shake to simulate heavy walking
@@ -316,21 +316,22 @@ public class RobotCharacter : Character
 	{
 		grabbedCube = null;
 		isGrabbing = false;
-		grappinCollider.enabled = false;
+		grappinCollider.gameObject.SetActive(false);
 		FMODUnity.RuntimeManager.PlayOneShot(hookOff, transform.position);
 	}
 
 	void PlaceGrapCollider (Vector3 targetPoint)
-	{
-		grappinCollider.enabled = true;
-		Vector3 toCube = grabbedCube.transform.position - transform.position;
+    {
+        grappinCollider.gameObject.SetActive(true);
+        Vector3 toCube = grabbedCube.transform.position - transform.position;
 		grappinCollider.transform.position = transform.position + (toCube) / 2 - toCube.normalized * (grabbedCube.transform.GetComponent<BoxCollider>().size.x / 4f);
-		Vector3 newSize = new Vector3(16f, 16f, (transform.position - targetPoint).magnitude * 3);
+        const float size = 4f;
+        Vector3 newSize = new Vector3(size, size, (transform.position - targetPoint).magnitude * 1);
 
 		//Debug.Log("Attaching hook");
 		Ray ray = new Ray(transform.position, transform.forward);
 
-		grappinCollider.size = newSize;
+		grappinCollider.transform.localScale = newSize;
 		grappinCollider.transform.forward = (grabbedCube.transform.position - grappinCollider.transform.position);
 	}
 
@@ -407,7 +408,14 @@ public class RobotCharacter : Character
 			if (basis.transform.GetComponentInChildren<AnimCube>().IsAgainstWall(dir))
 			{
 				basis = grabbedCube;
-				basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
+                try
+                {
+                    basis.transform.parent = GameObject.FindGameObjectWithTag("LevelContainer").transform;
+                }
+                catch
+                {
+                    Debug.LogWarning("No LevelContainer set");
+                }
 			}
 
 			basis.transform.GetComponentInChildren<AnimCube>().transform.parent = basis.transform.parent;
