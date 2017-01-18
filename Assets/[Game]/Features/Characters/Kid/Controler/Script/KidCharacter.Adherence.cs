@@ -59,7 +59,7 @@ namespace Gameplay {
                 return;
             }
             
-            // Adjhre to the target parent
+            // Adhere to the target parent
             if (targetParent != transform.parent)
             {
 				transform.SetParent(targetParent);
@@ -175,6 +175,8 @@ namespace Gameplay {
             public static Transform FindFirstUnscaledParent(Transform transform)
             {
                 Transform parent = transform.parent;
+                if (parent == null)
+                    return null;
                 while (parent != null)
                 {
                     if (parent.lossyScale == Vector3.one)
