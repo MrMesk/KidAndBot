@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{ed34ed8e-13ff-4ad2-8f14-3080dd60a1c7}">
+        <property name="assetPath">
+            <value>Kid/Cable/cloth/run/fst_cloth_carpet_run_001.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>1</value>
+        </property>
+        <property name="length">
+            <value>0.40346938775510205</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{ae74d3a2-c5fc-4a23-94a2-3836ab5fc1a5}</destination>
+        </relationship>
+    </object>
+</objects>

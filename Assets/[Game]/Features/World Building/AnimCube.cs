@@ -23,6 +23,8 @@ public class AnimCube : MonoBehaviour
 	[Header("SFX")]
 	[FMODUnity.EventRef]
 	public string click = "event:/Step";
+	[FMODUnity.EventRef]
+	public string move = "event:/Step";
 
 	Transform kid;
 
@@ -40,6 +42,11 @@ public class AnimCube : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		Init();
+	}
+
+	private void Init ()
+	{
 		kid = FindObjectOfType<Gameplay.KidCharacter>().transform;
 		linked = false;
 		bumpPos = transform.position;
@@ -50,7 +57,7 @@ public class AnimCube : MonoBehaviour
 
 		cubeScale = Mathf.FloorToInt(GetComponent<BoxCollider>().size.x);
 
-		LMCheckBelow ();
+		LMCheckBelow();
 	}
 
 	#region DirectionalLevelModulePush
@@ -123,6 +130,7 @@ public class AnimCube : MonoBehaviour
 			bumpPos = GetFarthestPoint(Mathf.RoundToInt(bumpForce), bumpDir);
 			//bumpPos += bumpDir * bumpForce;
 		}
+		FMODUnity.RuntimeManager.PlayOneShot(move, transform.position);
 		StopCoroutine (BumpToDir (1f));
 		StartCoroutine (BumpToDir (1f));
 	}
