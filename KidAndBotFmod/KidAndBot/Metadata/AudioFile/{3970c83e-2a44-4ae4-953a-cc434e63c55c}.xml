@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{3970c83e-2a44-4ae4-953a-cc434e63c55c}">
+        <property name="assetPath">
+            <value>Kid/Dirt/cloth/Jump/fst_cloth_dirt_sprint_001.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>1</value>
+        </property>
+        <property name="length">
+            <value>0.58564625850340135</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{ae74d3a2-c5fc-4a23-94a2-3836ab5fc1a5}</destination>
+        </relationship>
+    </object>
+</objects>

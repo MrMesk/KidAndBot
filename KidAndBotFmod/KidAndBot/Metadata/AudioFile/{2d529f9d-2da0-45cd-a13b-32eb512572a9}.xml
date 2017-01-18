@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{2d529f9d-2da0-45cd-a13b-32eb512572a9}">
+        <property name="assetPath">
+            <value>Kid/Cable/cloth/Jump/fst_cloth_carpet_walk_006.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>1</value>
+        </property>
+        <property name="length">
+            <value>0.48312925170068027</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{ae74d3a2-c5fc-4a23-94a2-3836ab5fc1a5}</destination>
+        </relationship>
+    </object>
+</objects>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="EncodableAsset" id="{53d23ffc-fad7-4fc5-8145-462b92c1ed92}">
+        <property name="assetPath">
+            <value>Charge_Impact/</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{ae74d3a2-c5fc-4a23-94a2-3836ab5fc1a5}</destination>
+        </relationship>
+    </object>
+</objects>
