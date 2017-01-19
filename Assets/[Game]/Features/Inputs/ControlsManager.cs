@@ -47,6 +47,13 @@ public class ControlsManager : MonoBehaviour {
         HandleDeviceCountChange();
     }
 
+    private void OnDestroy()
+    {
+        InputManager.OnDeviceAttached -= InputManager_OnDeviceAttached;
+        InputManager.OnDeviceDetached -= InputManager_OnDeviceDetached;
+    }
+
+
     private void InputManager_OnDeviceAttached(InputDevice device) {
         if (Controller.kidController.device == null) {
             // Kid controller attached

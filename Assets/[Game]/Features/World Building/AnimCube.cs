@@ -38,9 +38,11 @@ public class AnimCube : MonoBehaviour
 	Vector3 initialPos;
 	Vector3 movingPos;
 	float bumpTimer;
+    //[Header("GrabDebug")]
+    //public LayerMask getFarthestPointMask;
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Start () 
 	{
 		Init();
 	}
@@ -55,7 +57,7 @@ public class AnimCube : MonoBehaviour
 		bumpTimer = 0f;
 		bumping = false;
 
-		cubeScale = Mathf.FloorToInt(GetComponent<BoxCollider>().size.x);
+		cubeScale = Mathf.FloorToInt(GetComponentInChildren<BoxCollider>().size.x);
 
 		LMCheckBelow();
 	}
@@ -77,8 +79,9 @@ public class AnimCube : MonoBehaviour
 
 			RaycastHit hit;
 			//Debug.Log("Cube Scale : " + (cubeScale * 2 + 1));
+            //const int layer = 
 
-			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale / 2 + 1))
+			if (Physics.Raycast(checkPos, Vector3.down, out hit, cubeScale / 2 + 1 /*, getFarthestPointMask*/))
 			{
 				Collider[] col = Physics.OverlapBox(checkPos, new Vector3(23.5f, 23.5f, 23.5f), Quaternion.identity, checkMask);
 

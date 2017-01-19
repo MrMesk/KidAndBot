@@ -71,6 +71,10 @@ namespace Gameplay
         // Container transform
         [Header("Configuration")]
         public KidCharacter kid;
+        public void OnDestroy()
+        {
+            Camera.onPreCull -= OnRenderingPreCull;
+        }
 
         public void OnApplicationQuit()
         {
